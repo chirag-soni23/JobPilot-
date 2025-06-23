@@ -9,28 +9,36 @@ const Signup = () => {
   const illustrationRef = useRef(null);
   const navigate = useNavigate();
 
-  const handleLoginClick = () => {
-    const tl = gsap.timeline({
-      defaults: { ease: "expo.out" },
-      onComplete: () => navigate("/signin"),
-    });
+ const handleLoginClick = () => {
+  const isMobile = window.innerWidth < 768;
 
-    tl.to(illustrationRef.current, {
-      opacity: 0,
-      duration: 0.4,
-      ease: "power2.out",
-      pointerEvents: "none",
-    }).to(
-      formPanelRef.current,
-      {
-        width: "100%",
-        borderRadius: "0px",
-        scale: 1.02,
-        duration: 1,
-      },
-      "<"
-    );
-  };
+  if (isMobile) {
+    navigate("/signin");
+    return;
+  }
+
+  const tl = gsap.timeline({
+    defaults: { ease: "expo.out" },
+    onComplete: () => navigate("/signin"),
+  });
+
+  tl.to(illustrationRef.current, {
+    opacity: 0,
+    duration: 0.4,
+    ease: "power2.out",
+    pointerEvents: "none",
+  }).to(
+    formPanelRef.current,
+    {
+      width: "100%",
+      borderRadius: "0px",
+      scale: 1.02,
+      duration: 1,
+    },
+    "<"
+  );
+};
+
 
   return (
     <section className="min-h-screen relative flex bg-white overflow-hidden">

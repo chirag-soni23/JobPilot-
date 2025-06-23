@@ -10,6 +10,13 @@ const Signin = () => {
   const navigate = useNavigate();
 
   const handleSignupClick = () => {
+    const isMobile = window.innerWidth < 768;
+
+    if (isMobile) {
+      navigate("/signup");
+      return;
+    }
+
     const tl = gsap.timeline({
       defaults: { ease: "expo.out" },
       onComplete: () => navigate("/signup"),
