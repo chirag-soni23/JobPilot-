@@ -1,6 +1,6 @@
 import React from "react";
 import { Bookmark, MapPin, ArrowRight } from "lucide-react";
-import google from "../assets/google.png"; 
+import { assets } from "../assets/assets.js"
 
 const jobs = [
   {
@@ -99,7 +99,7 @@ const FeaturedJobs = () => {
 
             <div className="flex items-center gap-3">
               <img
-                src={google}
+                src={assets.google}
                 alt={job.company}
                 className="w-8 h-8 object-contain"
               />

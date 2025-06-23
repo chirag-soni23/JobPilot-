@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
-import user1 from "../assets/user1.png";
-import user2 from "../assets/user2.png";
-import user3 from "../assets/user3.png";
+import { assets } from "../assets/assets.js";
 
 const testimonials = [
   {
@@ -10,21 +8,21 @@ const testimonials = [
     name: "Robert Fox",
     role: "UI/UX Designer",
     text: "Ut ullamcorper hendrerit tempor. Aliquam in rutrum dui. Maecenas ac placerat metus, in faucibus est.",
-    image: user1,
+    image: assets.user1,
   },
   {
     id: 2,
     name: "Bessie Cooper",
     role: "Creative Director",
     text: "Mauris eget lorem odio. Mauris convallis justo molestie metus aliquam lacinia. Suspendisse ut dui vulputate augue condimentum ornare. Morbi vitae tristique ante.",
-    image: user2,
+    image: assets.user2,
   },
   {
     id: 3,
     name: "Jane Cooper",
     role: "Photographer",
     text: "Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse et magna quis nibh accumsan venenatis sit amet id orci. Duis vestibulum bibendum dapibus.",
-    image: user3,
+    image: assets.user3,
   },
 ];
 

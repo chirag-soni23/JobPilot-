@@ -1,11 +1,10 @@
-import React from 'react';
-import Heroimage from "../assets/hero.png";
-import { Search } from 'lucide-react';
+import React from "react";
+import { Search } from "lucide-react";
+import { assets } from "../assets/assets";
 
 const Hero = () => {
   return (
     <main className="flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 mt-12 md:mt-24 mb-16">
-      
       <div className="max-w-xl w-full">
         <h1 className="font-semibold text-3xl md:text-4xl text-black leading-snug">
           Find a Job that Suits{" "}
@@ -36,7 +35,7 @@ const Hero = () => {
 
       <img
         className="w-48 md:w-80 scale-x-[-1] max-md:mt-10"
-        src={Heroimage}
+        src={assets.hero}
         alt="hero"
       />
     </main>

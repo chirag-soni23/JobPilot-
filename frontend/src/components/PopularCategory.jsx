@@ -1,23 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ArrowRight } from "lucide-react";
-import design from "../assets/design.png";
-import code from "../assets/code.png";
-import marketing from "../assets/marketing.png";
-import video from "../assets/video.png";
-import music from "../assets/music.png";
-import finance from "../assets/finance.png";
-import health from "../assets/health.png";
-import data from "../assets/data.png";
+import { assets } from "../assets/assets.js";
 
 const categories = [
-  { id: 1, title: "Graphics & Design", positions: 357, icon: design },
-  { id: 2, title: "Code & Programing", positions: 312, icon: code },
-  { id: 3, title: "Digital Marketing", positions: 297, icon: marketing },
-  { id: 4, title: "Video & Animation", positions: 247, icon: video },
-  { id: 5, title: "Music & Audio", positions: 204, icon: music },
-  { id: 6, title: "Account & Finance", positions: 167, icon: finance },
-  { id: 7, title: "Health & Care", positions: 125, icon: health },
-  { id: 8, title: "Data & Science", positions: 57, icon: data },
+  { id: 1, title: "Graphics & Design", positions: 357, icon: assets.design },
+  { id: 2, title: "Code & Programing", positions: 312, icon: assets.code },
+  { id: 3, title: "Digital Marketing", positions: 297, icon: assets.marketing },
+  { id: 4, title: "Video & Animation", positions: 247, icon: assets.video },
+  { id: 5, title: "Music & Audio", positions: 204, icon: assets.music },
+  { id: 6, title: "Account & Finance", positions: 167, icon: assets.finance },
+  { id: 7, title: "Health & Care", positions: 125, icon: assets.health },
+  { id: 8, title: "Data & Science", positions: 57, icon: assets.data },
 ];
 
 const PopularCategory = () => {

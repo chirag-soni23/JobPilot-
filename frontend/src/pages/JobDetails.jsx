@@ -1,25 +1,7 @@
-import React from "react";
-import {
-  Bookmark,
-  ArrowRight,
-  MapPin,
-  Calendar,
-  Briefcase,
-  GraduationCap,
-} from "lucide-react";
+import { Bookmark, ArrowRight, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-
-import companyLogo from "../assets/facebook.png";
-import calendar from "../assets/calendar.png";
-import timer from "../assets/timer.png";
-import stack from "../assets/stack.png";
-import copylink from "../assets/copylink.png";
-import wallet from "../assets/wallet.png";
-import briefcase from "../assets/briefcase.png";
-import facebook from "../assets/facebookicon.png";
-import linkedin from "../assets/linkedin.png";
-import twitter from "../assets/twitter.png";
 import Footer from "../components/Footer";
+import { assets } from "../assets/assets.js";
 
 const JobDetails = () => {
   return (
@@ -29,14 +11,18 @@ const JobDetails = () => {
           <div>
             <h1 className="text-2xl font-bold text-gray-800">Job Details</h1>
             <p className="text-sm text-gray-500">
-               Learn more about the role and its requirements.
+              Learn more about the role and its requirements.
             </p>
           </div>
           <div className="text-sm text-gray-500">
             <Link className="text-blue-600 hover:underline" to="/">
               Home
             </Link>{" "}
-            / <Link className="text-blue-600 hover:underline" to={"/findjobs"}>Find Job</Link> / Java Developer / jobdetails
+            /{" "}
+            <Link className="text-blue-600 hover:underline" to={"/findjobs"}>
+              Find Job
+            </Link>{" "}
+            / Java Developer / jobdetails
           </div>
         </div>
 
@@ -46,15 +32,14 @@ const JobDetails = () => {
             {/* Job Header */}
             <div className="flex items-start gap-4 mb-6">
               <img
-                src={companyLogo}
+                src={assets.facebook}
                 alt="Company"
                 className="w-14 h-14 rounded-full"
               />
               <div>
                 <h2 className="text-xl font-semibold">Senior UX Designer</h2>
                 <p className="text-sm text-gray-500">
-                  at{" "}
-                  <span className="text-gray-800 font-medium">Facebook</span>
+                  at <span className="text-gray-800 font-medium">Facebook</span>
                 </p>
                 <div className="flex gap-2 mt-2 text-xs font-medium">
                   <span className="bg-green-100 text-green-600 px-2 py-1 rounded">
@@ -75,10 +60,12 @@ const JobDetails = () => {
             {/* Description Sections */}
             <div className="space-y-6 text-sm text-gray-700">
               <div>
-                <h3 className="text-base font-semibold mb-1">Job Description</h3>
+                <h3 className="text-base font-semibold mb-1">
+                  Job Description
+                </h3>
                 <p>
-                  Velstar is a Shopify Plus agency, and we partner with brands to
-                  help them grow...
+                  Velstar is a Shopify Plus agency, and we partner with brands
+                  to help them grow...
                 </p>
               </div>
 
@@ -133,19 +120,24 @@ const JobDetails = () => {
               </h4>
               <div className="text-sm text-gray-600 space-y-2">
                 <p className="flex items-center gap-2">
-                  <img src={calendar} className="w-4 h-4" alt="" /> <span>14 Jun, 2021</span>
+                  <img src={assets.calendar} className="w-4 h-4" alt="" />{" "}
+                  <span>14 Jun, 2021</span>
                 </p>
                 <p className="flex items-center gap-2">
-                 <img src={timer} className="w-4 h-4" alt="" />  <span>14 Aug, 2021</span>
+                  <img src={assets.timer} className="w-4 h-4" alt="" />{" "}
+                  <span>14 Aug, 2021</span>
                 </p>
                 <p className="flex items-center gap-2">
-                  <img src={stack} className="w-4 h-4" alt="" /> Entry Level
+                  <img src={assets.stack} className="w-4 h-4" alt="" /> Entry
+                  Level
                 </p>
                 <p className="flex items-center gap-2">
-                  <img src={wallet} className="w-4 h-4" alt="" /> $50k-80k/month
+                  <img src={assets.wallet} className="w-4 h-4" alt="" />{" "}
+                  $50k-80k/month
                 </p>
                 <p className="flex items-center gap-2">
-                  <img src={briefcase} className="w-4 h-4" alt="" />  Graduation
+                  <img src={assets.briefcase} className="w-4 h-4" alt="" />{" "}
+                  Graduation
                 </p>
               </div>
             </div>
@@ -155,22 +147,22 @@ const JobDetails = () => {
               <h4 className="text-base font-semibold mb-2">Share this job:</h4>
               <div className="flex items-center gap-3">
                 <img
-                  src={copylink}
+                  src={assets.copylink}
                   alt="Copy Link"
                   className="w-28 cursor-pointer hover:scale-105 transition-transform"
                 />
                 <img
-                  src={facebook}
+                  src={assets.facebook}
                   alt="Facebook"
                   className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
                 />
                 <img
-                  src={linkedin}
+                  src={assets.linkedin}
                   alt="LinkedIn"
                   className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
                 />
                 <img
-                  src={twitter}
+                  src={assets.twitter}
                   alt="Twitter"
                   className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
                 />
@@ -184,7 +176,7 @@ const JobDetails = () => {
           </div>
         </div>
       </section>
-      <Footer/>
+      <Footer />
     </>
   );
 };

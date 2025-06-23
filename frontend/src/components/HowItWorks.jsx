@@ -1,35 +1,29 @@
-import upload from '../assets/upload.png';
-import user from '../assets/user.png';
-import search from '../assets/search.png';
-import plus from '../assets/tick.png';
-import arrow1 from "../assets/arrow1.png";
-import arrow2 from "../assets/arrow2.png";
-import arrow3 from "../assets/arrow3.png";
+import { assets } from '../assets/assets';
 
 const steps = [
   {
-    icon: user,
+    icon: assets.user,
     title: "Create account",
     desc: "Aliquam facilisis egestas sapien, nec tempor leo tristique at.",
   },
   {
-    icon: upload,
+    icon: assets.upload,
     title: "Upload CV/Resume",
     desc: "Curabitur sit amet maximus ligula. Nam a nulla ante. Nam sodales.",
   },
   {
-    icon: search,
+    icon: assets.search,
     title: "Find suitable job",
     desc: "Phasellus quis eleifend ex. Morbi nec fringilla nibh.",
   },
   {
-    icon: plus,
+    icon: assets.tick,
     title: "Apply job",
     desc: "Curabitur sit amet maximus ligula. Nam a nulla ante. Nam sodales purus.",
   },
 ];
 
-const vectors = [arrow1, arrow2, arrow3];
+const vectors = [assets.arrow1, assets.arrow2, assets.arrow3];
 
 const HowItWorks = () => {
   return (
@@ -58,5 +52,4 @@ const HowItWorks = () => {
     </section>
   );
 };
-
 export default HowItWorks;
