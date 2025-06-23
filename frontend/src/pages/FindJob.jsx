@@ -1,16 +1,47 @@
-import React from "react";
-import { SlidersHorizontal, Search, MapPin } from "lucide-react";
+import React, { useState } from "react";
+import {
+  SlidersHorizontal,
+  Search,
+  MapPin,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+
+const jobsData = Array.from({ length: 20 }).map((_, index) => ({
+  id: index + 1,
+  type: "PART-TIME",
+  title: "Technical Support Specialist",
+  salary: "$20,000 – $25,000",
+  company: "Google Inc.",
+  logo: "https://logo.clearbit.com/google.com",
+  location: "Dhaka, Bangladesh",
+}));
 
 const FindJob = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 8;
+
+  const totalPages = Math.ceil(jobsData.length / jobsPerPage);
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = jobsData.slice(indexOfFirstJob, indexOfLastJob);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   return (
     <div className="w-full py-6 space-y-10 px-6 md:px-16 lg:px-24 xl:px-32">
-      {/* Header Section */}
+      {/* Header */}
       <div className="space-y-6 bg-white p-4 rounded-xl shadow-sm">
         <h1 className="text-2xl font-bold text-gray-800">Find Job</h1>
       </div>
+
+      {/* Search + Filters */}
       <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
         <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
-          {/* Job Title Input */}
           <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 rounded-l-lg flex-1 bg-white shadow-sm">
             <span className="text-[#0A65CC]">
               <Search className="w-5 h-5" />
@@ -22,9 +53,8 @@ const FindJob = () => {
             />
           </div>
 
-          {/* Location Input */}
           <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 rounded-r-lg flex-1 bg-white shadow-sm">
-            <span className=" text-[#0A65CC]">
+            <span className="text-[#0A65CC]">
               <MapPin className="w-5 h-5" />
             </span>
             <input
@@ -36,7 +66,6 @@ const FindJob = () => {
         </div>
 
         <div className="flex gap-3 w-full lg:w-auto justify-end">
-          {/* Filter button */}
           <button className="flex items-center gap-2 px-4 py-2 border rounded-md text-sm text-gray-600 hover:bg-gray-50">
             <SlidersHorizontal className="w-4 h-4" />
             Filters
@@ -48,24 +77,65 @@ const FindJob = () => {
         </div>
       </div>
 
-      {/* One Job Card */}
-      <div className="bg-white shadow-md rounded-xl p-4 w-full max-w-sm">
-        <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600">
-          PART-TIME
-        </span>
-        <h2 className="text-lg font-semibold mt-2">
-          Technical Support Specialist
-        </h2>
-        <p className="text-sm text-gray-500 mt-1">Salary: $20,000 – $25,000</p>
-        <div className="flex items-center gap-2 mt-2">
-          <img
-            src="https://logo.clearbit.com/google.com"
-            alt="Company"
-            className="w-6 h-6"
-          />
-          <p className="text-sm text-gray-600">Google Inc.</p>
+      {/* Job Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {currentJobs.map((job) => (
+          <div
+            key={job.id}
+            className="bg-white shadow-md rounded-xl p-4 w-full"
+          >
+            <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600">
+              {job.type}
+            </span>
+            <h2 className="text-lg font-semibold mt-2">{job.title}</h2>
+            <p className="text-sm text-gray-500 mt-1">Salary: {job.salary}</p>
+            <div className="flex items-center gap-2 mt-2">
+              <img src={job.logo} alt="Company" className="w-6 h-6" />
+              <p className="text-sm text-gray-600">{job.company}</p>
+            </div>
+            <p className="text-xs text-gray-400">{job.location}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-center pt-10">
+        <div className="flex items-center justify-between w-full max-w-80 text-gray-500 font-medium">
+          {/* Prev */}
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="rounded-full bg-slate-200/50 p-2 disabled:opacity-50"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+
+          {/* Page Numbers */}
+          <div className="flex items-center gap-2 text-sm font-medium">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+              <button
+                key={num}
+                onClick={() => paginate(num)}
+                className={`h-10 w-10 flex items-center justify-center aspect-square ${
+                  currentPage === num
+                    ? "text-indigo-500 border border-indigo-200 rounded-full"
+                    : ""
+                }`}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
+
+          {/* Next */}
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="rounded-full bg-slate-200/50 p-2 disabled:opacity-50"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
         </div>
-        <p className="text-xs text-gray-400">Dhaka, Bangladesh</p>
       </div>
     </div>
   );
