@@ -48,7 +48,6 @@ const Signup = () => {
         </div>
       </div>
 
-      {/* Illustration Image */}
       <img
         ref={illustrationRef}
         src={assets.illustration}

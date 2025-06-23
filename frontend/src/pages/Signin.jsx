@@ -17,8 +17,8 @@ const Signin = () => {
 
     tl.to(illustrationRef.current, {
       opacity: 0,
-      duration: 0.5,
-      ease: "power4.out",
+      duration: 0.4,
+      ease: "power2.out",
       pointerEvents: "none",
     }).to(
       formPanelRef.current,
@@ -34,7 +34,28 @@ const Signin = () => {
 
   return (
     <section className="min-h-screen relative flex bg-white overflow-hidden">
-      {/* Left Panel with form */}
+      {/* Left Panel */}
+      <div className="w-full bg-gradient-to-br from-indigo-500 to-blue-400 text-white p-10 z-10 flex flex-col justify-center items-end">
+        <img
+          src={assets.blob}
+          alt="blob background"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        />
+        <div className="absolute top-10 z-10 space-y-6 right-10">
+          <h2 className="text-3xl font-bold leading-snug flex items-center justify-center gap-4">
+            <BriefcaseIcon className="w-10 h-10" /> JobPilot
+          </h2>
+        </div>
+      </div>
+
+      <img
+        ref={illustrationRef}
+        src={assets.illustration}
+        alt="illustration"
+        className="absolute z-50 w-[350px] md:w-[400px] lg:w-[450px] right-[36%] top-1/2 translate-x-1/2 -translate-y-1/2 hidden md:block"
+      />
+
+      {/* Right Panel */}
       <div
         ref={formPanelRef}
         className="w-full md:w-[60%] absolute left-0 top-0 h-full bg-white lg:rounded-br-[100px] lg:rounded-tr-[100px] shadow-2xl md:rounded-br-[100px] md:rounded-tr-[100px] z-20 flex items-center justify-center p-6 sm:p-10"
@@ -42,7 +63,7 @@ const Signin = () => {
         <form className="md:w-96 w-80 flex flex-col items-center justify-center">
           <h2 className="text-4xl text-gray-900 font-medium">Sign In</h2>
           <p className="text-sm text-gray-500/90 mt-3">
-            Welcome back! Please login to your account
+            Welcome back! Please login to your account.
           </p>
 
           <button
@@ -64,7 +85,7 @@ const Signin = () => {
           </div>
 
           {/* Email */}
-          <div className="flex items-center w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2">
+          <div className="flex items-center w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2 mb-4">
             <svg
               width="16"
               height="11"
@@ -88,7 +109,7 @@ const Signin = () => {
           </div>
 
           {/* Password */}
-          <div className="flex items-center mt-6 w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2">
+          <div className="flex items-center w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2">
             <svg
               width="13"
               height="17"
@@ -125,40 +146,20 @@ const Signin = () => {
             type="submit"
             className="mt-8 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
           >
-            Login
+            Sign In
           </button>
 
           <p className="text-gray-500/90 text-sm mt-4">
             Don’t have an account?{" "}
             <button
-              type="button"
               onClick={handleSignupClick}
+              type="button"
               className="text-indigo-400 hover:underline"
             >
-              Sign up
+              Sign Up
             </button>
           </p>
         </form>
-      </div>
-
-      {/* Right Panel */}
-      <div className="w-1/2 bg-gradient-to-br from-indigo-500 to-blue-400 text-white p-10 relative z-10 flex flex-col justify-center items-center">
-        <img
-          src={assets.blob}
-          alt="blob background"
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        />
-        <div className="absolute top-10 z-10 space-y-6">
-          <h2 className="text-3xl font-bold leading-snug flex items-center justify-center gap-4">
-            <BriefcaseIcon className="w-10 h-10" /> JobPilot
-          </h2>
-        </div>
-        <img
-          ref={illustrationRef}
-          src={assets.illustration}
-          alt="illustration"
-          className="relative z-10 w-[350px] md:w-[400px] lg:w-[450px] hidden md:block"
-        />
       </div>
     </section>
   );
