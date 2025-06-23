@@ -14,6 +14,7 @@ import copylink from "../assets/copylink.png";
 import facebook from "../assets/facebookicon.png";
 import linkedin from "../assets/linkedin.png";
 import twitter from "../assets/twitter.png";
+import Footer from "../components/Footer";
 
 const JobDetails = () => {
   return (
@@ -178,6 +179,7 @@ const JobDetails = () => {
           </div>
         </div>
       </section>
+      <Footer/>
     </>
   );
 };
