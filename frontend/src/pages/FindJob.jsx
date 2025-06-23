@@ -7,6 +7,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import Footer from "../components/Footer";
 
 const jobsData = Array.from({ length: 100 }).map((_, index) => ({
   id: index + 1,
@@ -31,13 +32,13 @@ const FindJob = () => {
   };
 
   return (
+    <>
     <div className="w-full py-6 space-y-10 px-6 md:px-16 lg:px-24 xl:px-32">
       {/* Header */}
       <div className="space-y-6 bg-white p-4 rounded-xl shadow-sm">
         <h1 className="text-2xl font-bold text-gray-800">Find Job</h1>
       </div>
 
-      {/* Search + Filters */}
       <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
         <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
           <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 rounded-l-lg flex-1 bg-white shadow-sm">
@@ -93,7 +94,6 @@ const FindJob = () => {
         ))}
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-center pt-10">
         <ReactPaginate
           previousLabel={<ChevronLeft className="w-4 h-4" />}
@@ -115,6 +115,9 @@ const FindJob = () => {
         />
       </div>
     </div>
+      <Footer/>
+
+    </>
   );
 };
 
