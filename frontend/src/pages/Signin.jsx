@@ -2,35 +2,15 @@ import { Link } from "react-router-dom";
 import { assets } from "../assets/assets.js";
 import { BriefcaseIcon } from "lucide-react";
 
-const Signup = () => {
+const Signin = () => {
   return (
     <section className="min-h-screen relative flex bg-white overflow-hidden">
-      {/* Left Panel */}
-      <div className="w-1/2 bg-gradient-to-br from-indigo-500 to-blue-400 text-white p-10 relative z-10 flex flex-col justify-center">
-        <img
-          src={assets.blob}
-          alt="blob background"
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        />
-        <div className="absolute top-10 z-10 space-y-6">
-          <h2 className="text-3xl top-0 bg-blend-difference font-bold leading-snug flex items-center justify-center gap-4">
-            <BriefcaseIcon className="w-10 h-10" /> JobPilot
-          </h2>
-        </div>
-      </div>
-
-      <img
-        src={assets.illustration}
-        alt="illustration"
-        className="absolute z-50 w-[350px] md:w-[400px] lg:w-[450px] left-[32%] top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:block"
-      />
-
-      {/* Right Panel with form */}
-      <div className="w-full md:w-[60%] absolute right-0 top-0 h-full bg-white lg:rounded-bl-[100px] lg:rounded-tl-[100px] shadow-2xl md:rounded-bl-[100px] md:rounded-tl-[100px] z-20 flex items-center justify-center p-6 sm:p-10">
+      {/* Left Panel with form */}
+      <div className="w-full md:w-[60%] absolute left-0 top-0 h-full bg-white lg:rounded-br-[100px] lg:rounded-tr-[100px] shadow-2xl md:rounded-br-[100px] md:rounded-tr-[100px] z-20 flex items-center justify-center p-6 sm:p-10">
         <form className="md:w-96 w-80 flex flex-col items-center justify-center">
-          <h2 className="text-4xl text-gray-900 font-medium">Sign Up</h2>
+          <h2 className="text-4xl text-gray-900 font-medium">Sign In</h2>
           <p className="text-sm text-gray-500/90 mt-3">
-            Join us today! Please fill the details to create an account.
+            Welcome back! Please login to your account
           </p>
 
           <button
@@ -46,31 +26,9 @@ const Signup = () => {
           <div className="flex items-center gap-4 w-full my-5">
             <div className="w-full h-px bg-gray-300/90"></div>
             <p className="w-full text-nowrap text-sm text-gray-500/90">
-              or sign up with email
+              or sign in with email
             </p>
             <div className="w-full h-px bg-gray-300/90"></div>
-          </div>
-
-          {/* Full Name */}
-          <div className="flex items-center w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2 mb-4">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5Zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5Z"
-                fill="#6B7280"
-              />
-            </svg>
-            <input
-              type="text"
-              placeholder="Full Name"
-              required
-              className="bg-transparent text-gray-500/80 placeholder-gray-500/80 outline-none text-sm w-full h-full"
-            />
           </div>
 
           {/* Email */}
@@ -135,19 +93,38 @@ const Signup = () => {
             type="submit"
             className="mt-8 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
           >
-            Sign Up
+            Login
           </button>
 
           <p className="text-gray-500/90 text-sm mt-4">
-            Already have an account?{" "}
-            <Link className="text-indigo-400 hover:underline" to="/signin">
-              Login
+            Don’t have an account?{" "}
+            <Link className="text-indigo-400 hover:underline" to="/signup">
+              Sign up
             </Link>
           </p>
         </form>
+      </div>
+
+      {/* Right Panel */}
+      <div className="w-1/2 bg-gradient-to-br from-indigo-500 to-blue-400 text-white p-10 relative z-10 flex flex-col justify-center items-center">
+        <img
+          src={assets.blob}
+          alt="blob background"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        />
+        <div className="absolute top-10 z-10 space-y-6">
+          <h2 className="text-3xl font-bold leading-snug flex items-center justify-center gap-4">
+            <BriefcaseIcon className="w-10 h-10" /> JobPilot
+          </h2>
+        </div>
+        <img
+          src={assets.illustration}
+          alt="illustration"
+          className="relative z-10 w-[350px] md:w-[400px] lg:w-[450px] hidden md:block"
+        />
       </div>
     </section>
   );
 };
 
-export default Signup;
+export default Signin;
