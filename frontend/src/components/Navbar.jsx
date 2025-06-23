@@ -1,32 +1,30 @@
 import React, { useState } from "react";
 import { Phone, Menu, X } from "lucide-react";
 import Header from "./Header";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  const navLinkClass = (path) =>
+    currentPath === path
+      ? "text-[#0A65CC] font-medium border-b-2 border-[#0A65CC] pb-1"
+      : "text-gray-700 hover:text-[#0A65CC] font-medium hover:border-b-2 hover:border-[#0A65CC] pb-1 transition";
 
   return (
     <>
       <nav className="bg-white shadow-md px-6 md:px-20 py-4">
         <div className="flex justify-between items-center">
           <div className="hidden md:flex items-center gap-6">
-            <Link
-              to={"/"}
-              className="text-[#0A65CC] font-medium border-b-2 border-[#0A65CC] pb-1"
-            >
+            <Link to="/" className={navLinkClass("/")}>
               Home
             </Link>
-            <Link
-              to={"/findjob"}
-              className="text-gray-700 hover:text-[#0A65CC] font-medium hover:border-b-2 hover:border-[#0A65CC] pb-1 transition"
-            >
+            <Link to="/findjob" className={navLinkClass("/findjob")}>
               Find Jobs
             </Link>
-            <Link
-              to={"/contact"}
-              className="text-gray-700 hover:text-[#0A65CC] font-medium hover:border-b-2 hover:border-[#0A65CC] pb-1 transition"
-            >
+            <Link to="/contact" className={navLinkClass("/contact")}>
               Contact
             </Link>
           </div>
@@ -53,22 +51,13 @@ const Navbar = () => {
 
         {isOpen && (
           <div className="mt-4 flex flex-col gap-4 md:hidden">
-            <Link
-              to={"/"}
-              className="text-[#0A65CC] w-fit font-medium border-b-2 border-[#0A65CC] pb-1"
-            >
+            <Link to="/" className={`${navLinkClass("/")} w-fit`}>
               Home
             </Link>
-            <Link
-              to={"/findjob"}
-              className="text-gray-700 w-fit hover:text-[#0A65CC] font-medium hover:border-b-2 hover:border-[#0A65CC] pb-1 transition"
-            >
+            <Link to="/findjob" className={`${navLinkClass("/findjob")} w-fit`}>
               Find Jobs
             </Link>
-            <Link
-              to={"/contact"}
-              className="text-gray-700 w-fit hover:text-[#0A65CC] font-medium hover:border-b-2 hover:border-[#0A65CC] pb-1 transition"
-            >
+            <Link to="/contact" className={`${navLinkClass("/contact")} w-fit`}>
               Contact
             </Link>
             <span className="text-gray-700 flex items-center gap-2 font-medium">
