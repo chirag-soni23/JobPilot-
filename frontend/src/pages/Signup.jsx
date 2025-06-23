@@ -1,8 +1,37 @@
-import { Link } from "react-router-dom";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets.js";
 import { BriefcaseIcon } from "lucide-react";
+import { gsap } from "gsap";
 
 const Signup = () => {
+  const formPanelRef = useRef(null);
+  const illustrationRef = useRef(null);
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    const tl = gsap.timeline({
+      defaults: { ease: "expo.out" },
+      onComplete: () => navigate("/signin"),
+    });
+
+    tl.to(illustrationRef.current, {
+      opacity: 0,
+      duration: 0.4,
+      ease: "power2.out",
+      pointerEvents: "none",
+    }).to(
+      formPanelRef.current,
+      {
+        width: "100%",
+        borderRadius: "0px",
+        scale: 1.02,
+        duration: 1,
+      },
+      "<"
+    );
+  };
+
   return (
     <section className="min-h-screen relative flex bg-white overflow-hidden">
       {/* Left Panel */}
@@ -13,20 +42,25 @@ const Signup = () => {
           className="absolute inset-0 w-full h-full object-cover z-0"
         />
         <div className="absolute top-10 z-10 space-y-6">
-          <h2 className="text-3xl top-0 bg-blend-difference font-bold leading-snug flex items-center justify-center gap-4">
+          <h2 className="text-3xl font-bold leading-snug flex items-center justify-center gap-4">
             <BriefcaseIcon className="w-10 h-10" /> JobPilot
           </h2>
         </div>
       </div>
 
+      {/* Illustration Image */}
       <img
+        ref={illustrationRef}
         src={assets.illustration}
         alt="illustration"
         className="absolute z-50 w-[350px] md:w-[400px] lg:w-[450px] left-[32%] top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:block"
       />
 
-      {/* Right Panel with form */}
-      <div className="w-full md:w-[60%] absolute right-0 top-0 h-full bg-white lg:rounded-bl-[100px] lg:rounded-tl-[100px] shadow-2xl md:rounded-bl-[100px] md:rounded-tl-[100px] z-20 flex items-center justify-center p-6 sm:p-10">
+      {/* Right Panel */}
+      <div
+        ref={formPanelRef}
+        className="w-full md:w-[60%] absolute right-0 top-0 h-full bg-white lg:rounded-bl-[100px] lg:rounded-tl-[100px] shadow-2xl md:rounded-bl-[100px] md:rounded-tl-[100px] z-20 flex items-center justify-center p-6 sm:p-10"
+      >
         <form className="md:w-96 w-80 flex flex-col items-center justify-center">
           <h2 className="text-4xl text-gray-900 font-medium">Sign Up</h2>
           <p className="text-sm text-gray-500/90 mt-3">
@@ -140,9 +174,13 @@ const Signup = () => {
 
           <p className="text-gray-500/90 text-sm mt-4">
             Already have an account?{" "}
-            <Link className="text-indigo-400 hover:underline" to="/signin">
+            <button
+              onClick={handleLoginClick}
+              type="button"
+              className="text-indigo-400 hover:underline"
+            >
               Login
-            </Link>
+            </button>
           </p>
         </form>
       </div>
