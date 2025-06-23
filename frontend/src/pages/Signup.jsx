@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { assets } from "../assets/assets.js";
+import { BriefcaseIcon } from "lucide-react";
 
 const Signup = () => {
   return (
@@ -11,10 +12,9 @@ const Signup = () => {
           alt="blob background"
           className="absolute inset-0 w-full h-full object-cover z-0"
         />
-        <div className="relative z-10 space-y-6">
-          <h2 className="text-3xl font-bold leading-snug">
-            Stay on top of <br />
-            time tracking
+        <div className="absolute top-10 z-10 space-y-6">
+          <h2 className="text-3xl top-0 bg-blend-difference font-bold leading-snug flex items-center justify-center gap-4">
+          <BriefcaseIcon className="w-10 h-10" />  JobPilot
           </h2>
         </div>
       </div>
@@ -25,7 +25,7 @@ const Signup = () => {
       />
 
       {/* Right Panel with updated form */}
-      <div className="w-full md:w-[60%] absolute right-0 top-0 h-full bg-white rounded-bl-[100px] rounded-tl-[100px] shadow-2xl z-20 flex items-center justify-center p-6 sm:p-10">
+      <div className="w-full md:w-[60%] absolute right-0 top-0 h-full bg-white lg:rounded-bl-[100px] lg:rounded-tl-[100px] shadow-2xl md:rounded-bl-[100px] md:rounded-tl-[100px] z-20 flex items-center justify-center p-6 sm:p-10">
         <form className="md:w-96 w-80 flex flex-col items-center justify-center">
           <h2 className="text-4xl text-gray-900 font-medium">Sign in</h2>
           <p className="text-sm text-gray-500/90 mt-3">
