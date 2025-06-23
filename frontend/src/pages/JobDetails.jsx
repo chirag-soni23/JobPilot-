@@ -50,7 +50,11 @@ const JobDetails = () => {
               </div>
               <div className="ml-auto">
                 <button className="p-2 cursor-pointer rounded-md">
-                  <img src={assets.save} className="w-10 h-10 " alt="save-image" />
+                  <img
+                    src={assets.save}
+                    className="w-10 h-10 "
+                    alt="save-image"
+                  />
                 </button>
               </div>
             </div>
@@ -112,30 +116,84 @@ const JobDetails = () => {
 
             {/* Job Overview */}
             <div>
-              <h4 className="text-base font-semibold text-gray-800 mb-2">
+              <h4 className="text-base font-semibold text-gray-800 mb-4">
                 Job Overview
               </h4>
-              <div className="text-sm text-gray-600 space-y-2">
-                <p className="flex items-center gap-2">
-                  <img src={assets.calendar} className="w-4 h-4" alt="" />{" "}
-                  <span>14 Jun, 2021</span>
-                </p>
-                <p className="flex items-center gap-2">
-                  <img src={assets.timer} className="w-4 h-4" alt="" />{" "}
-                  <span>14 Aug, 2021</span>
-                </p>
-                <p className="flex items-center gap-2">
-                  <img src={assets.stack} className="w-4 h-4" alt="" /> Entry
-                  Level
-                </p>
-                <p className="flex items-center gap-2">
-                  <img src={assets.wallet} className="w-4 h-4" alt="" />{" "}
-                  $50k-80k/month
-                </p>
-                <p className="flex items-center gap-2">
-                  <img src={assets.briefcase} className="w-4 h-4" alt="" />{" "}
-                  Graduation
-                </p>
+              <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                {/* Job Posted */}
+                <div className="flex items-start gap-2">
+                  <img
+                    src={assets.calendar}
+                    className="w-5 h-5 mt-1"
+                    alt="calendar"
+                  />
+                  <div>
+                    <p className="text-xs text-gray-400">JOB POSTED</p>
+                    <p className="text-sm font-medium text-gray-800">
+                      24 Jun, 2021
+                    </p>
+                  </div>
+                </div>
+
+                {/* Job Expire */}
+                <div className="flex items-start gap-2">
+                  <img
+                    src={assets.timer}
+                    className="w-5 h-5 mt-1"
+                    alt="timer"
+                  />
+                  <div>
+                    <p className="text-xs text-gray-400">JOB EXPIRE IN</p>
+                    <p className="text-sm font-medium text-gray-800">
+                      14 Aug, 2021
+                    </p>
+                  </div>
+                </div>
+
+                {/* Job Level */}
+                <div className="flex items-start gap-2">
+                  <img
+                    src={assets.stack}
+                    className="w-5 h-5 mt-1"
+                    alt="stack"
+                  />
+                  <div>
+                    <p className="text-xs text-gray-400">JOB LEVEL</p>
+                    <p className="text-sm font-medium text-gray-800">
+                      Entry Level
+                    </p>
+                  </div>
+                </div>
+
+                {/* Experience */}
+                <div className="flex items-start gap-2">
+                  <img
+                    src={assets.wallet}
+                    className="w-5 h-5 mt-1"
+                    alt="wallet"
+                  />
+                  <div>
+                    <p className="text-xs text-gray-400">EXPERIENCE</p>
+                    <p className="text-sm font-medium text-gray-800">
+                      $50k - 80k/month
+                    </p>
+                  </div>
+                </div>
+
+                {/* Education */}
+                <div className="flex items-start gap-2">
+                  <img
+                    src={assets.briefcase}
+                    className="w-5 h-5 mt-1"
+                    alt="briefcase"
+                  />
+                  <div>
+                    <p className="text-xs text-gray-400">EDUCATION</p>
+                    <p className="text-sm font-medium text-gray-800">
+                      Graduation
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
