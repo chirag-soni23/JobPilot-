@@ -1,5 +1,5 @@
 import React from "react";
-import { SlidersHorizontal, Search } from "lucide-react";
+import { SlidersHorizontal, Search, MapPin } from "lucide-react";
 
 const FindJob = () => {
   return (
@@ -8,11 +8,13 @@ const FindJob = () => {
       <div className="space-y-6 bg-white p-4 rounded-xl shadow-sm">
         <h1 className="text-2xl font-bold text-gray-800">Find Job</h1>
       </div>
-        <div className="flex flex-wrap gap-4 items-center">
+      <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
+        <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
           {/* Job Title Input */}
-          <div className="flex items-center gap-3 px-4 py-3 border rounded-lg flex-1 bg-white shadow-sm">
-          
-            <Search className="w-5 h-5 text-gray-400" />
+          <div className="flex items-center gap-3 px-4 py-3 border rounded-l-lg flex-1 bg-white shadow-sm">
+            <span className="text-[#0A65CC]">
+              <Search className="w-5 h-5" />
+            </span>
             <input
               type="text"
               placeholder="Search by Job title, Position, Keyword..."
@@ -21,37 +23,30 @@ const FindJob = () => {
           </div>
 
           {/* Location Input */}
-          <div className="flex items-center gap-3 px-4 py-3 border rounded-lg flex-1 bg-white shadow-sm">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-gray-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.05 4.05a7 7 0 019.9 0c2.73 2.73 2.73 7.17 0 9.9l-4.95 4.95-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                clipRule="evenodd"
-              />
-            </svg>
+          <div className="flex items-center gap-3 px-4 py-3 border rounded-r-lg flex-1 bg-white shadow-sm">
+            <span className=" text-[#0A65CC]">
+              <MapPin className="w-5 h-5" />
+            </span>
             <input
               type="text"
               placeholder="City, state or zip code"
               className="outline-none w-full text-base placeholder:text-gray-400"
             />
           </div>
+        </div>
 
+        <div className="flex gap-3 w-full lg:w-auto justify-end">
           {/* Filter button */}
           <button className="flex items-center gap-2 px-4 py-2 border rounded-md text-sm text-gray-600 hover:bg-gray-50">
             <SlidersHorizontal className="w-4 h-4" />
             Filters
           </button>
 
-          {/* Find Job button */}
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm">
             Find Job
           </button>
         </div>
+      </div>
 
       {/* One Job Card */}
       <div className="bg-white shadow-md rounded-xl p-4 w-full max-w-sm">
