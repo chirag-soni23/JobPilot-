@@ -8,6 +8,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
 const jobsData = Array.from({ length: 10 }).map((_, index) => ({
   id: index + 1,
@@ -35,8 +36,19 @@ const FindJob = () => {
     <>
       <div className="w-full py-6 space-y-10 px-6 md:px-16 lg:px-24 xl:px-32">
         {/* Header */}
-        <div className="space-y-6 bg-white p-4 rounded-xl shadow-sm">
-          <h1 className="text-2xl font-bold text-gray-800">Find Job</h1>
+        <div className="bg-white p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Find Job</h1>
+            <p className="text-sm text-gray-500">
+              Search and explore jobs that match your skills and location.
+            </p>
+          </div>
+          <div className="text-sm text-gray-500">
+            <Link className="text-blue-600 hover:underline" to="/">
+              Home
+            </Link>{" "}
+            / <span>Find Job</span>
+          </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
