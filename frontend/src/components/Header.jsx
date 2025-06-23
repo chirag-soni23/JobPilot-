@@ -1,0 +1,45 @@
+import React from "react";
+import { BriefcaseIcon, Search } from "lucide-react";
+
+const Header = () => {
+  return (
+    <div className="bg-[#f9f9f9] px-6 md:px-20 py-4">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="w-full md:w-2/3 flex flex-col md:flex-row items-center gap-4">
+          <h1 className="text-xl font-semibold text-[#0A65CC] whitespace-nowrap flex items-center gap-2 justify-center">
+            <BriefcaseIcon className="w-6 h-6" /> JobPilot
+          </h1>
+
+          <div className="flex flex-col md:flex-row gap-3 w-full">
+            <div className="relative w-full">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0A65CC]">
+                <Search className="w-4 h-4" />
+              </span>
+              <input
+                type="text"
+                placeholder="Job title, keyword, company"
+                className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-[#0A65CC]"
+              />
+            </div>
+
+            <select className="w-full md:w-[140px] py-2 px-3 text-sm border border-gray-300 rounded-md focus:outline-[#0A65CC]">
+              <option value="in">🇮🇳 India</option>
+              <option value="us">🇺🇸 USA</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="w-full md:w-auto flex justify-center items-center gap-3 text-sm">
+          <button className="border-2 border-[#0A65CC] text-[#0A65CC] hover:text-white px-4 py-2 rounded-md hover:bg-[#084d9b] transition">
+            Sign In
+          </button>
+          <button className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition">
+            Post a Job
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Header;
