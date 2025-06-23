@@ -11,7 +11,7 @@ const FindJob = () => {
       <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
         <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
           {/* Job Title Input */}
-          <div className="flex items-center gap-3 px-4 py-3 border rounded-l-lg flex-1 bg-white shadow-sm">
+          <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 rounded-l-lg flex-1 bg-white shadow-sm">
             <span className="text-[#0A65CC]">
               <Search className="w-5 h-5" />
             </span>
@@ -23,7 +23,7 @@ const FindJob = () => {
           </div>
 
           {/* Location Input */}
-          <div className="flex items-center gap-3 px-4 py-3 border rounded-r-lg flex-1 bg-white shadow-sm">
+          <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 rounded-r-lg flex-1 bg-white shadow-sm">
             <span className=" text-[#0A65CC]">
               <MapPin className="w-5 h-5" />
             </span>
