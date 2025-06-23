@@ -23,12 +23,12 @@ const Navbar = () => {
             >
               Find Jobs
             </Link>
-            <a
-              href="#"
+            <Link
+              to={"/contact"}
               className="text-gray-700 hover:text-[#0A65CC] font-medium hover:border-b-2 hover:border-[#0A65CC] pb-1 transition"
             >
               Contact
-            </a>
+            </Link>
           </div>
 
           <div className="hidden md:flex items-center gap-6">
@@ -53,24 +53,24 @@ const Navbar = () => {
 
         {isOpen && (
           <div className="mt-4 flex flex-col gap-4 md:hidden">
-            <a
-              href="#"
-              className="text-[#0A65CC] font-medium border-b-2 border-[#0A65CC] pb-1"
+            <Link
+              to={"/"}
+              className="text-[#0A65CC] w-fit font-medium border-b-2 border-[#0A65CC] pb-1"
             >
               Home
-            </a>
-            <a
-              href="#"
-              className="text-gray-700 hover:text-[#0A65CC] font-medium hover:border-b-2 hover:border-[#0A65CC] pb-1 transition"
+            </Link>
+            <Link
+              to={"/findjob"}
+              className="text-gray-700 w-fit hover:text-[#0A65CC] font-medium hover:border-b-2 hover:border-[#0A65CC] pb-1 transition"
             >
               Find Jobs
-            </a>
-            <a
-              href="#"
-              className="text-gray-700 hover:text-[#0A65CC] font-medium hover:border-b-2 hover:border-[#0A65CC] pb-1 transition"
+            </Link>
+            <Link
+              to={"/contact"}
+              className="text-gray-700 w-fit hover:text-[#0A65CC] font-medium hover:border-b-2 hover:border-[#0A65CC] pb-1 transition"
             >
               Contact
-            </a>
+            </Link>
             <span className="text-gray-700 flex items-center gap-2 font-medium">
               <Phone className="w-5 h-5" /> +91 9876543210
             </span>
