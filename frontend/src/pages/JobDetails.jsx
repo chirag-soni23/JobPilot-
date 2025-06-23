@@ -27,9 +27,7 @@ const JobDetails = () => {
         </div>
 
         <div className="flex flex-col md:flex-row gap-8">
-          {/* Left Panel - Job Description */}
           <div className="flex-1 bg-white rounded-lg p-6 shadow-lg">
-            {/* Job Header */}
             <div className="flex items-start gap-4 mb-6">
               <img
                 src={assets.facebook}
@@ -51,8 +49,8 @@ const JobDetails = () => {
                 </div>
               </div>
               <div className="ml-auto">
-                <button className="border p-2 rounded-md hover:bg-gray-100">
-                  <Bookmark className="w-4 h-4" />
+                <button className="p-2 cursor-pointer rounded-md">
+                  <img src={assets.save} className="w-10 h-10 " alt="save-image" />
                 </button>
               </div>
             </div>
@@ -102,7 +100,6 @@ const JobDetails = () => {
 
           {/* Right Panel - Sidebar */}
           <div className="w-full md:w-80 bg-white rounded-lg p-6 shadow-lg space-y-6">
-            {/* Salary + Location */}
             <div>
               <p className="text-sm text-gray-500">Salary (USD)</p>
               <p className="text-green-600 font-semibold text-lg">

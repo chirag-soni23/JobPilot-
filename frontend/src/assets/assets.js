@@ -28,6 +28,8 @@ import user2 from "./user2.png";
 import user3 from "./user3.png";
 import video from "./video.png";
 import wallet from "./wallet.png";
+import save from "./save.png";
+import saved from "./saved.png";
 
 export const assets = {
   arrow1,
@@ -60,4 +62,6 @@ export const assets = {
   user3,
   video,
   wallet,
+  save,
+  saved,
 };
