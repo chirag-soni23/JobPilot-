@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ReactPaginate from "react-paginate";
 import {
   SlidersHorizontal,
   Search,
@@ -7,7 +8,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-const jobsData = Array.from({ length: 20 }).map((_, index) => ({
+const jobsData = Array.from({ length: 100 }).map((_, index) => ({
   id: index + 1,
   type: "PART-TIME",
   title: "Technical Support Specialist",
@@ -18,18 +19,15 @@ const jobsData = Array.from({ length: 20 }).map((_, index) => ({
 }));
 
 const FindJob = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const jobsPerPage = 8;
+  const pageCount = Math.ceil(jobsData.length / jobsPerPage);
 
-  const totalPages = Math.ceil(jobsData.length / jobsPerPage);
-  const indexOfLastJob = currentPage * jobsPerPage;
-  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = jobsData.slice(indexOfFirstJob, indexOfLastJob);
+  const offset = currentPage * jobsPerPage;
+  const currentJobs = jobsData.slice(offset, offset + jobsPerPage);
 
-  const paginate = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
   };
 
   return (
@@ -80,10 +78,7 @@ const FindJob = () => {
       {/* Job Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {currentJobs.map((job) => (
-          <div
-            key={job.id}
-            className="bg-white shadow-md rounded-xl p-4 w-full"
-          >
+          <div key={job.id} className="bg-white shadow-md rounded-xl p-4 w-full">
             <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600">
               {job.type}
             </span>
@@ -99,43 +94,25 @@ const FindJob = () => {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-center pt-10">
-        <div className="flex items-center justify-between w-full max-w-80 text-gray-500 font-medium">
-          {/* Prev */}
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="rounded-full bg-slate-200/50 p-2 disabled:opacity-50"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-
-          {/* Page Numbers */}
-          <div className="flex items-center gap-2 text-sm font-medium">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-              <button
-                key={num}
-                onClick={() => paginate(num)}
-                className={`h-10 w-10 flex items-center justify-center aspect-square ${
-                  currentPage === num
-                    ? "text-indigo-500 border border-indigo-200 rounded-full"
-                    : ""
-                }`}
-              >
-                {num}
-              </button>
-            ))}
-          </div>
-
-          {/* Next */}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="rounded-full bg-slate-200/50 p-2 disabled:opacity-50"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
+      <div className="flex justify-center pt-10">
+        <ReactPaginate
+          previousLabel={<ChevronLeft className="w-4 h-4" />}
+          nextLabel={<ChevronRight className="w-4 h-4" />}
+          breakLabel={"..."}
+          pageCount={pageCount}
+          onPageChange={handlePageClick}
+          containerClassName="flex items-center gap-3"
+          pageClassName="text-sm text-gray-600"
+          pageLinkClassName="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100"
+          previousClassName="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 text-blue-400"
+          nextClassName="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 text-blue-400"
+          activeLinkClassName="bg-blue-600 text-white font-bold"
+          renderOnZeroPageCount={null}
+          pageRangeDisplayed={5}
+          marginPagesDisplayed={1}
+          activeClassName="rounded-full"
+          forcePage={currentPage}
+        />
       </div>
     </div>
   );
