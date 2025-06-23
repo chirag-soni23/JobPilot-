@@ -1,12 +1,44 @@
-import { Link } from "react-router-dom";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets.js";
 import { BriefcaseIcon } from "lucide-react";
+import { gsap } from "gsap";
 
 const Signin = () => {
+  const formPanelRef = useRef(null);
+  const illustrationRef = useRef(null);
+  const navigate = useNavigate();
+
+  const handleSignupClick = () => {
+    const tl = gsap.timeline({
+      defaults: { ease: "expo.out" },
+      onComplete: () => navigate("/signup"),
+    });
+
+    tl.to(illustrationRef.current, {
+      opacity: 0,
+      duration: 0.5,
+      ease: "power4.out",
+      pointerEvents: "none",
+    }).to(
+      formPanelRef.current,
+      {
+        width: "100%",
+        borderRadius: "0px",
+        scale: 1.02,
+        duration: 1,
+      },
+      "<"
+    );
+  };
+
   return (
     <section className="min-h-screen relative flex bg-white overflow-hidden">
       {/* Left Panel with form */}
-      <div className="w-full md:w-[60%] absolute left-0 top-0 h-full bg-white lg:rounded-br-[100px] lg:rounded-tr-[100px] shadow-2xl md:rounded-br-[100px] md:rounded-tr-[100px] z-20 flex items-center justify-center p-6 sm:p-10">
+      <div
+        ref={formPanelRef}
+        className="w-full md:w-[60%] absolute left-0 top-0 h-full bg-white lg:rounded-br-[100px] lg:rounded-tr-[100px] shadow-2xl md:rounded-br-[100px] md:rounded-tr-[100px] z-20 flex items-center justify-center p-6 sm:p-10"
+      >
         <form className="md:w-96 w-80 flex flex-col items-center justify-center">
           <h2 className="text-4xl text-gray-900 font-medium">Sign In</h2>
           <p className="text-sm text-gray-500/90 mt-3">
@@ -98,9 +130,13 @@ const Signin = () => {
 
           <p className="text-gray-500/90 text-sm mt-4">
             Don’t have an account?{" "}
-            <Link className="text-indigo-400 hover:underline" to="/signup">
+            <button
+              type="button"
+              onClick={handleSignupClick}
+              className="text-indigo-400 hover:underline"
+            >
               Sign up
-            </Link>
+            </button>
           </p>
         </form>
       </div>
@@ -118,6 +154,7 @@ const Signin = () => {
           </h2>
         </div>
         <img
+          ref={illustrationRef}
           src={assets.illustration}
           alt="illustration"
           className="relative z-10 w-[350px] md:w-[400px] lg:w-[450px] hidden md:block"
