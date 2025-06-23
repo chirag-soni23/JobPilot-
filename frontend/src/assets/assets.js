@@ -30,6 +30,8 @@ import video from "./video.png";
 import wallet from "./wallet.png";
 import save from "./save.png";
 import saved from "./saved.png";
+import blob from "./blob.png";
+import illustration from "./illustration.png";
 
 export const assets = {
   arrow1,
@@ -64,4 +66,6 @@ export const assets = {
   wallet,
   save,
   saved,
+  blob,
+  illustration,
 };
