@@ -10,7 +10,12 @@ import {
 import { Link } from "react-router-dom";
 
 import companyLogo from "../assets/facebook.png";
+import calendar from "../assets/calendar.png";
+import timer from "../assets/timer.png";
+import stack from "../assets/stack.png";
 import copylink from "../assets/copylink.png";
+import wallet from "../assets/wallet.png";
+import briefcase from "../assets/briefcase.png";
 import facebook from "../assets/facebookicon.png";
 import linkedin from "../assets/linkedin.png";
 import twitter from "../assets/twitter.png";
@@ -128,19 +133,19 @@ const JobDetails = () => {
               </h4>
               <div className="text-sm text-gray-600 space-y-2">
                 <p className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" /> <span>14 Jun, 2021</span>
+                  <img src={calendar} className="w-4 h-4" alt="" /> <span>14 Jun, 2021</span>
                 </p>
                 <p className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" /> <span>14 Aug, 2021</span>
+                 <img src={timer} className="w-4 h-4" alt="" />  <span>14 Aug, 2021</span>
                 </p>
                 <p className="flex items-center gap-2">
-                  <Briefcase className="w-4 h-4" /> Entry Level
+                  <img src={stack} className="w-4 h-4" alt="" /> Entry Level
                 </p>
                 <p className="flex items-center gap-2">
-                  <Briefcase className="w-4 h-4" /> $50k-80k/month
+                  <img src={wallet} className="w-4 h-4" alt="" /> $50k-80k/month
                 </p>
                 <p className="flex items-center gap-2">
-                  <GraduationCap className="w-4 h-4" /> Graduation
+                  <img src={briefcase} className="w-4 h-4" alt="" />  Graduation
                 </p>
               </div>
             </div>
