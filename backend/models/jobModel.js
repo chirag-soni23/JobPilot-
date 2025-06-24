@@ -12,7 +12,7 @@ const JobSchema = new mongoose.Schema(
     location: { type: String, required: true },
     minSalary: { type: Number, required: true },
     maxSalary: { type: Number, required: true },
-    logoUrl: { type: String, default: "" },
+    logoUrl: { id: String, url: String },
     isFeatured: { type: Boolean, default: false },
 
     description: { type: String, required: true },
@@ -33,9 +33,10 @@ const JobSchema = new mongoose.Schema(
       facebook: { type: String },
       mail: { type: String },
     },
-    isSaved: { type: Boolean, default: false }, 
+    isSaved: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Job", JobSchema);
+
+export const Job = mongoose.model("Job", JobSchema);
