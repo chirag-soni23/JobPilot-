@@ -36,7 +36,6 @@ export const UserProvider = ({ children }) => {
       setUser(data.user);
       setIsAuth(true);
       setBtnLoading(false);
-      window.location.reload();
       navigate("/");
     } catch (error) {
       toast.error(error.response.data.message);

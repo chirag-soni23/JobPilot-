@@ -1,10 +1,19 @@
 import React from "react";
 import { BriefcaseIcon, Search } from "lucide-react";
+import { Link } from "react-router-dom";
+import { UserData } from "../context/UserContext";
 
 const Header = () => {
+  const { user, logout } = UserData();
+
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <div className="bg-[#f9f9f9] px-6 md:px-20 py-4">
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        {/* Left side: logo + search + location */}
         <div className="w-full md:w-2/3 flex flex-col md:flex-row items-center gap-4">
           <h1 className="text-xl font-semibold text-[#0A65CC] whitespace-nowrap flex items-center gap-2 justify-center">
             <BriefcaseIcon className="w-6 h-6" /> JobPilot
@@ -29,10 +38,23 @@ const Header = () => {
           </div>
         </div>
 
+        {/* Right side: Sign in / Logout + Post Job */}
         <div className="w-full md:w-auto flex justify-center items-center gap-3 text-sm">
-          <button className="border-2 border-[#0A65CC] text-[#0A65CC] hover:text-white px-4 py-2 rounded-md hover:bg-[#084d9b] transition">
-            Sign In
-          </button>
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="border-2 border-red-400 text-red-400 hover:text-white px-4 py-2 rounded-md hover:bg-red-400 cursor-pointer transition"
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              to={"/signin"}
+              className="border-2 cursor-pointer border-[#0A65CC] text-[#0A65CC] hover:text-white px-4 py-2 rounded-md hover:bg-[#084d9b] transition"
+            >
+              Sign In
+            </Link>
+          )}
           <button className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition">
             Post a Job
           </button>
