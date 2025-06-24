@@ -1,17 +1,36 @@
 import { BriefcaseIcon, Search } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserData } from "../context/UserContext";
+import toast from "react-hot-toast";
 
 const Header = () => {
   const { user, logout } = UserData();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
   };
 
+  const handleRestrictedRoute = (e, path) => {
+    if (!user) {
+      e.preventDefault();
+      toast.error("Please login to continue.");
+      return;
+    }
+
+    if (path === "/postjob" && user.role !== "admin") {
+      e.preventDefault();
+      toast.error("Only admins can post jobs.");
+      return;
+    }
+
+    navigate(path);
+  };
+
   return (
     <div className="bg-[#f9f9f9] dark:bg-gray-800 px-6 md:px-20 py-4 transition-colors duration-300">
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        {/* Logo and Search */}
         <div className="w-full md:w-2/3 flex flex-col md:flex-row items-center gap-4">
           <h1 className="text-xl font-semibold text-[#0A65CC] dark:text-white whitespace-nowrap flex items-center gap-2 justify-center">
             <BriefcaseIcon className="w-6 h-6" /> JobPilot
@@ -36,7 +55,7 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Right side: Sign in / Logout + Post Job */}
+        {/* Right Side: Auth Buttons + Links */}
         <div className="w-full md:w-auto flex justify-center items-center gap-3 text-sm">
           {user ? (
             <button
@@ -53,12 +72,20 @@ const Header = () => {
               Sign In
             </Link>
           )}
-          <Link
-            to={"/postjob"}
+
+          <button
+            onClick={(e) => handleRestrictedRoute(e, "/postjob")}
             className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition"
           >
             Post a Job
-          </Link>
+          </button>
+
+          <button
+            onClick={(e) => handleRestrictedRoute(e, "/appliedjob")}
+            className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition"
+          >
+            Applied Job
+          </button>
         </div>
       </div>
     </div>
