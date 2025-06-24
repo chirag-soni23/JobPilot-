@@ -7,6 +7,7 @@ import JobDetails from "./pages/Jobdetails";
 import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
 import { UserData } from "./context/UserContext";
+import PostJob from "./pages/PostJob";
 
 const App = () => {
   const { isAuth, loading } = UserData();
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/findjob" element={<FindJob />} />
         <Route path="/jobdetails" element={<JobDetails />} />
+        <Route path="/postjob" element={<PostJob />} />
         <Route path="/signup" element={isAuth ? <Navigate to="/" replace /> : <Signup />} />
         <Route path="/signin" element={isAuth ? <Navigate to="/" replace /> : <Signin />} />
       </Routes>

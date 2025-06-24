@@ -1,4 +1,3 @@
-import React from "react";
 import { BriefcaseIcon, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UserData } from "../context/UserContext";
@@ -54,9 +53,12 @@ const Header = () => {
               Sign In
             </Link>
           )}
-          <button className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition">
+          <Link
+            to={"/postjob"}
+            className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition"
+          >
             Post a Job
-          </button>
+          </Link>
         </div>
       </div>
     </div>
