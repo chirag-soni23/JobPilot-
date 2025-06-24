@@ -1,7 +1,8 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets.js";
-import { BriefcaseIcon } from "lucide-react";
+import { BriefcaseIcon, Eye, EyeOff } from "lucide-react";
+import { UserData } from "../context/UserContext.jsx";
 import { gsap } from "gsap";
 
 const Signup = () => {
@@ -9,36 +10,47 @@ const Signup = () => {
   const illustrationRef = useRef(null);
   const navigate = useNavigate();
 
- const handleLoginClick = () => {
-  const isMobile = window.innerWidth < 768;
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  if (isMobile) {
-    navigate("/signin");
-    return;
-  }
+  const { registerUser, btnLoading } = UserData();
 
-  const tl = gsap.timeline({
-    defaults: { ease: "expo.out" },
-    onComplete: () => navigate("/signin"),
-  });
+  const submitHandler = (e) => {
+    e.preventDefault();
+    registerUser(name, email, password, navigate);
+  };
 
-  tl.to(illustrationRef.current, {
-    opacity: 0,
-    duration: 0.4,
-    ease: "power2.out",
-    pointerEvents: "none",
-  }).to(
-    formPanelRef.current,
-    {
-      width: "100%",
-      borderRadius: "0px",
-      scale: 1.02,
-      duration: 1,
-    },
-    "<"
-  );
-};
+  const handleLoginClick = () => {
+    const isMobile = window.innerWidth < 768;
 
+    if (isMobile) {
+      navigate("/signin");
+      return;
+    }
+
+    const tl = gsap.timeline({
+      defaults: { ease: "expo.out" },
+      onComplete: () => navigate("/signin"),
+    });
+
+    tl.to(illustrationRef.current, {
+      opacity: 0,
+      duration: 0.4,
+      ease: "power2.out",
+      pointerEvents: "none",
+    }).to(
+      formPanelRef.current,
+      {
+        width: "100%",
+        borderRadius: "0px",
+        scale: 1.02,
+        duration: 1,
+      },
+      "<"
+    );
+  };
 
   return (
     <section className="min-h-screen relative flex bg-white overflow-hidden">
@@ -68,7 +80,10 @@ const Signup = () => {
         ref={formPanelRef}
         className="w-full md:w-[60%] absolute right-0 top-0 h-full bg-white lg:rounded-bl-[100px] lg:rounded-tl-[100px] shadow-2xl md:rounded-bl-[100px] md:rounded-tl-[100px] z-20 flex items-center justify-center p-6 sm:p-10"
       >
-        <form className="md:w-96 w-80 flex flex-col items-center justify-center">
+        <form
+          className="md:w-96 w-80 flex flex-col items-center justify-center"
+          onSubmit={submitHandler}
+        >
           <h2 className="text-4xl text-gray-900 font-medium">Sign Up</h2>
           <p className="text-sm text-gray-500/90 mt-3">
             Join us today! Please fill the details to create an account.
@@ -110,6 +125,8 @@ const Signup = () => {
               type="text"
               placeholder="Full Name"
               required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="bg-transparent text-gray-500/80 placeholder-gray-500/80 outline-none text-sm w-full h-full"
             />
           </div>
@@ -134,12 +151,14 @@ const Signup = () => {
               type="email"
               placeholder="Email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="bg-transparent text-gray-500/80 placeholder-gray-500/80 outline-none text-sm w-full h-full"
             />
           </div>
 
           {/* Password */}
-          <div className="flex items-center mt-6 w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2">
+          <div className="flex items-center mt-6 w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2 pr-4">
             <svg
               width="13"
               height="17"
@@ -153,11 +172,20 @@ const Signup = () => {
               />
             </svg>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="bg-transparent text-gray-500/80 placeholder-gray-500/80 outline-none text-sm w-full h-full"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="text-gray-500"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
           <div className="w-full flex items-center justify-between mt-8 text-gray-500/80">
@@ -167,16 +195,14 @@ const Signup = () => {
                 Remember me
               </label>
             </div>
-            <a className="text-sm underline" href="#">
-              Forgot password?
-            </a>
           </div>
 
           <button
             type="submit"
+            disabled={btnLoading}
             className="mt-8 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
           >
-            Sign Up
+            {btnLoading ? "Signing Up..." : "Sign Up"}
           </button>
 
           <p className="text-gray-500/90 text-sm mt-4">

@@ -1,13 +1,25 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets.js";
-import { BriefcaseIcon } from "lucide-react";
+import { BriefcaseIcon, Eye, EyeOff } from "lucide-react";
 import { gsap } from "gsap";
+import { UserData } from "../context/UserContext.jsx";
 
 const Signin = () => {
   const formPanelRef = useRef(null);
   const illustrationRef = useRef(null);
   const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const { loginUser, btnLoading } = UserData();
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    loginUser(email, password, navigate);
+  };
 
   const handleSignupClick = () => {
     const isMobile = window.innerWidth < 768;
@@ -67,7 +79,10 @@ const Signin = () => {
         ref={formPanelRef}
         className="w-full md:w-[60%] absolute left-0 top-0 h-full bg-white lg:rounded-br-[100px] lg:rounded-tr-[100px] shadow-2xl md:rounded-br-[100px] md:rounded-tr-[100px] z-20 flex items-center justify-center p-6 sm:p-10"
       >
-        <form className="md:w-96 w-80 flex flex-col items-center justify-center">
+        <form
+          className="md:w-96 w-80 flex flex-col items-center justify-center"
+          onSubmit={submitHandler}
+        >
           <h2 className="text-4xl text-gray-900 font-medium">Sign In</h2>
           <p className="text-sm text-gray-500/90 mt-3">
             Welcome back! Please login to your account.
@@ -111,12 +126,15 @@ const Signin = () => {
               type="email"
               placeholder="Email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
               className="bg-transparent text-gray-500/80 placeholder-gray-500/80 outline-none text-sm w-full h-full"
             />
           </div>
 
           {/* Password */}
-          <div className="flex items-center w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2">
+          <div className="flex items-center w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2 pr-4">
             <svg
               width="13"
               height="17"
@@ -130,11 +148,21 @@ const Signin = () => {
               />
             </svg>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
               className="bg-transparent text-gray-500/80 placeholder-gray-500/80 outline-none text-sm w-full h-full"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="text-gray-500"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
           <div className="w-full flex items-center justify-between mt-8 text-gray-500/80">
@@ -151,9 +179,10 @@ const Signin = () => {
 
           <button
             type="submit"
+            disabled={btnLoading}
             className="mt-8 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
           >
-            Sign In
+            {btnLoading ? "Signing In..." : "Sign In"}
           </button>
 
           <p className="text-gray-500/90 text-sm mt-4">
