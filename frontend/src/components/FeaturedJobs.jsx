@@ -1,6 +1,6 @@
 import React from "react";
 import { Bookmark, MapPin, ArrowRight } from "lucide-react";
-import { assets } from "../assets/assets.js"
+import { assets } from "../assets/assets.js";
 
 const jobs = [
   {
@@ -56,13 +56,13 @@ const jobs = [
 const getBadgeColor = (type) => {
   switch (type) {
     case "FULL-TIME":
-      return "bg-green-100 text-green-600";
+      return "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300";
     case "PART-TIME":
-      return "bg-yellow-100 text-yellow-600";
+      return "bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300";
     case "INTERNSHIP":
-      return "bg-emerald-100 text-emerald-600";
+      return "bg-emerald-100 text-emerald-600 dark:bg-emerald-900 dark:text-emerald-300";
     default:
-      return "bg-gray-100 text-gray-600";
+      return "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300";
   }
 };
 
@@ -70,7 +70,9 @@ const FeaturedJobs = () => {
   return (
     <section className="px-6 md:px-16 lg:px-24 xl:px-32 py-14">
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-2xl md:text-3xl font-semibold">Featured job</h2>
+        <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
+          Featured job
+        </h2>
         <button className="text-[#0A65CC] text-sm md:text-base flex items-center gap-1 font-medium hover:underline">
           View All <ArrowRight className="w-4 h-4" />
         </button>
@@ -80,9 +82,9 @@ const FeaturedJobs = () => {
         {jobs.map((job) => (
           <div
             key={job.id}
-            className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition"
+            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 shadow-sm hover:shadow-md transition"
           >
-            <h3 className="text-xl font-medium text-gray-900 mb-2">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
               {job.title}
             </h3>
 
@@ -94,7 +96,9 @@ const FeaturedJobs = () => {
               >
                 {job.type}
               </span>
-              <p className="text-xs text-gray-500">Salary: {job.salary}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Salary: {job.salary}
+              </p>
             </div>
 
             <div className="flex items-center gap-3">
@@ -103,15 +107,15 @@ const FeaturedJobs = () => {
                 alt={job.company}
                 className="w-8 h-8 object-contain"
               />
-              <div className="text-sm text-gray-700">
+              <div className="text-sm text-gray-700 dark:text-gray-300">
                 <p className="font-medium">{job.company}</p>
-                <div className="flex items-center text-gray-500 text-xs mt-0.5">
+                <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs mt-0.5">
                   <MapPin className="w-4 h-4 mr-1" />
                   {job.location}
                 </div>
               </div>
               <div className="ml-auto">
-                <Bookmark className="w-4 h-4 text-gray-400 cursor-pointer" />
+                <Bookmark className="w-4 h-4 text-gray-400 dark:text-gray-300 cursor-pointer" />
               </div>
             </div>
           </div>

@@ -1,12 +1,12 @@
-import { Loader2Icon } from 'lucide-react'
-import React from 'react'
+import { Loader2Icon } from 'lucide-react';
+import React from 'react';
 
 const Loading = () => {
   return (
-    <div className='bg-white h-screen flex justify-center items-center'>
-        <Loader2Icon className='w-10 h-10 animate-spin'/>
+    <div className="bg-white dark:bg-gray-900 h-screen flex justify-center items-center">
+      <Loader2Icon className="w-10 h-10 animate-spin text-gray-700 dark:text-white" />
     </div>
-  )
-}
+  );
+};
 
-export default Loading
+export default Loading;

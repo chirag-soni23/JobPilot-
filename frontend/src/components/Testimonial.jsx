@@ -38,8 +38,8 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="bg-[#f8f9fb] px-6 md:px-20 py-16 text-center relative">
-      <h2 className="text-2xl md:text-3xl font-semibold mb-10">
+    <section className="bg-[#f8f9fb] dark:bg-gray-900 px-6 md:px-20 py-16 text-center relative">
+      <h2 className="text-2xl md:text-3xl font-semibold mb-10 text-gray-900 dark:text-white">
         Clients Testimonial
       </h2>
 
@@ -48,7 +48,7 @@ const Testimonials = () => {
         {testimonials.slice(index, index + 3).map((t, i) => (
           <div
             key={t.id}
-            className="bg-white p-6 rounded-lg shadow-sm max-w-sm w-full text-left relative"
+            className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm max-w-sm w-full text-left relative"
           >
             {/* Stars */}
             <div className="flex mb-3 text-yellow-500">
@@ -60,7 +60,9 @@ const Testimonials = () => {
             </div>
 
             {/* Review Text */}
-            <p className="text-sm text-gray-700 mb-5">“{t.text}”</p>
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-5">
+              “{t.text}”
+            </p>
 
             {/* User Info */}
             <div className="flex items-center gap-3">
@@ -70,12 +72,14 @@ const Testimonials = () => {
                 className="w-10 h-10 rounded-full object-cover"
               />
               <div>
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">
                   {t.name}
                 </p>
-                <p className="text-xs text-gray-500">{t.role}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {t.role}
+                </p>
               </div>
-              <Quote className="ml-auto text-gray-200 w-6 h-6" />
+              <Quote className="ml-auto text-gray-200 dark:text-gray-600 w-6 h-6" />
             </div>
           </div>
         ))}
@@ -84,15 +88,15 @@ const Testimonials = () => {
       {/* Arrows */}
       <button
         onClick={handlePrev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white border shadow-sm rounded-full p-2"
+        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 border dark:border-gray-700 shadow-sm rounded-full p-2"
       >
-        <ChevronLeft className="w-5 h-5 text-gray-700" />
+        <ChevronLeft className="w-5 h-5 text-gray-700 dark:text-white" />
       </button>
       <button
         onClick={handleNext}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white border shadow-sm rounded-full p-2"
+        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 border dark:border-gray-700 shadow-sm rounded-full p-2"
       >
-        <ChevronRight className="w-5 h-5 text-gray-700" />
+        <ChevronRight className="w-5 h-5 text-gray-700 dark:text-white" />
       </button>
 
       {/* Pagination Dots */}
@@ -101,7 +105,9 @@ const Testimonials = () => {
           <span
             key={i}
             className={`w-2.5 h-2.5 rounded-full ${
-              i === index ? "bg-[#0A65CC]" : "bg-gray-300"
+              i === index
+                ? "bg-[#0A65CC]"
+                : "bg-gray-300 dark:bg-gray-600"
             }`}
           ></span>
         ))}

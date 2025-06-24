@@ -46,14 +46,16 @@ const FindJob = () => {
     <>
       <div className="w-full py-6 space-y-10 px-6 md:px-16 lg:px-24 xl:px-32">
         {/* Header */}
-        <div className="bg-white p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">Find Job</h1>
-            <p className="text-sm text-gray-500">
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+              Find Job
+            </h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Search and explore jobs that match your skills and location.
             </p>
           </div>
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
             <Link className="text-blue-600 hover:underline" to="/">
               Home
             </Link>{" "}
@@ -61,34 +63,33 @@ const FindJob = () => {
           </div>
         </div>
 
-        {/* Search Inputs */}
         <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
           <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
-            <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 rounded-l-lg flex-1 bg-white shadow-sm">
+            <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-l-lg flex-1 bg-white dark:bg-gray-800 shadow-sm">
               <span className="text-[#0A65CC]">
                 <Search className="w-5 h-5" />
               </span>
               <input
                 type="text"
                 placeholder="Search by Job title, Position, Keyword..."
-                className="outline-none w-full text-base placeholder:text-gray-400"
+                className="outline-none w-full text-base placeholder:text-gray-400 dark:placeholder:text-gray-500 bg-transparent text-gray-900 dark:text-white"
               />
             </div>
 
-            <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 rounded-r-lg flex-1 bg-white shadow-sm">
+            <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-r-lg flex-1 bg-white dark:bg-gray-800 shadow-sm">
               <span className="text-[#0A65CC]">
                 <MapPin className="w-5 h-5" />
               </span>
               <input
                 type="text"
                 placeholder="City, state or zip code"
-                className="outline-none w-full text-base placeholder:text-gray-400"
+                className="outline-none w-full text-base placeholder:text-gray-400 dark:placeholder:text-gray-500 bg-transparent text-gray-900 dark:text-white"
               />
             </div>
           </div>
 
           <div className="flex gap-3 w-full lg:w-auto justify-end">
-            <button className="flex items-center gap-2 px-4 py-2 border rounded-md text-sm text-gray-600 hover:bg-gray-50">
+            <button className="flex items-center gap-2 px-4 py-2 border rounded-md text-sm text-gray-600 dark:text-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
               <SlidersHorizontal className="w-4 h-4" />
               Filters
             </button>
@@ -102,28 +103,34 @@ const FindJob = () => {
           </div>
         </div>
 
-        {/* Job Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {currentJobs.map((job) => (
             <div
               key={job.id}
-              className="bg-white shadow-md rounded-xl p-4 w-full"
+              className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 w-full"
             >
-              <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600">
+              <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400">
                 {job.type}
               </span>
-              <h2 className="text-lg font-semibold mt-2">{job.title}</h2>
-              <p className="text-sm text-gray-500 mt-1">Salary: {job.salary}</p>
+              <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
+                {job.title}
+              </h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Salary: {job.salary}
+              </p>
               <div className="flex items-center gap-2 mt-2">
                 <img src={job.logo} alt="Company" className="w-6 h-6" />
-                <p className="text-sm text-gray-600">{job.company}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  {job.company}
+                </p>
               </div>
-              <p className="text-xs text-gray-400">{job.location}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                {job.location}
+              </p>
             </div>
           ))}
         </div>
 
-        {/* Pagination */}
         <div className="flex justify-center pt-10">
           <ReactPaginate
             previousLabel={<ChevronLeft className="w-4 h-4" />}
@@ -132,12 +139,12 @@ const FindJob = () => {
             pageCount={pageCount}
             onPageChange={handlePageClick}
             containerClassName="flex items-center gap-3"
-            pageClassName="text-sm text-gray-600"
-            pageLinkClassName="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100"
+            pageClassName="text-sm text-gray-600 dark:text-gray-300"
+            pageLinkClassName="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
             previousClassName="text-blue-500"
-            previousLinkClassName="flex items-center justify-center w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300"
+            previousLinkClassName="flex items-center justify-center w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-gray-700 dark:hover:bg-gray-600"
             nextClassName="text-blue-500"
-            nextLinkClassName="flex items-center justify-center w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300"
+            nextLinkClassName="flex items-center justify-center w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-gray-700 dark:hover:bg-gray-600"
             activeLinkClassName="bg-blue-600 text-white font-bold"
             renderOnZeroPageCount={null}
             pageRangeDisplayed={5}

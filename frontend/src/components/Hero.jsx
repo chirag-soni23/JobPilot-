@@ -18,28 +18,30 @@ const Hero = () => {
   };
 
   return (
-    <main className="flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 mt-12 md:mt-24 mb-16">
+    <main className="flex bg-white dark:bg-gray-900 flex-col-reverse md:flex-row items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 mt-12 md:mt-24 mb-16 transition-colors duration-300">
       <div className="max-w-xl w-full">
-        <h1 className="font-semibold text-3xl md:text-4xl text-black leading-snug">
+        <h1 className="font-semibold text-3xl md:text-4xl text-black dark:text-white leading-snug">
           Find a Job that Suits{" "}
-          <span className="text-[#0A65CC]">Your Interests and Skills</span>
+          <span className="text-[#0A65CC] dark:text-[#4f9eff]">
+            Your Interests and Skills
+          </span>
         </h1>
 
-        <p className="mt-4 text-gray-500 text-sm md:text-base">
+        <p className="mt-4 text-gray-500 dark:text-gray-300 text-sm md:text-base">
           Unlock potential with tailored strategies designed for success.
         </p>
 
         <form
-          className="mt-6 w-full flex items-center bg-white border border-gray-300 rounded-md overflow-hidden shadow-sm"
+          className="mt-6 w-full flex items-center bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md overflow-hidden shadow-sm"
           onSubmit={handleSubmit}
         >
-          <span className="pl-4 text-[#0A65CC]">
+          <span className="pl-4 text-[#0A65CC] dark:text-[#4f9eff]">
             <Search className="w-5 h-5" />
           </span>
           <input
             type="text"
             placeholder="Search job, keyword, company"
-            className="w-full h-12 md:h-14 px-3 text-sm md:text-base text-gray-700 outline-none"
+            className="w-full h-12 md:h-14 px-3 text-sm md:text-base text-gray-700 dark:text-white bg-white dark:bg-gray-800 placeholder:text-gray-500 dark:placeholder:text-gray-400 outline-none"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

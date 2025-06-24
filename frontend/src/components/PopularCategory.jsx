@@ -17,11 +17,13 @@ const PopularCategory = () => {
   const [selectedId, setSelectedId] = useState(null);
 
   return (
-    <section className="px-6 md:px-16 lg:px-24 xl:px-32 py-14">
+    <section className="px-6 md:px-16 lg:px-24 xl:px-32 py-14 transition-colors duration-300">
       {/* Header */}
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-2xl md:text-3xl font-semibold">Popular category</h2>
-        <button className="text-[#0A65CC] text-sm md:text-base flex items-center gap-1 font-medium hover:underline">
+        <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
+          Popular category
+        </h2>
+        <button className="text-[#0A65CC] dark:text-blue-400 text-sm md:text-base flex items-center gap-1 font-medium hover:underline">
           View All <ArrowRight className="w-4 h-4" />
         </button>
       </div>
@@ -35,11 +37,12 @@ const PopularCategory = () => {
             <div
               key={cat.id}
               onClick={() => setSelectedId(cat.id)}
-              className={`cursor-pointer flex items-start gap-4 px-5 py-6 rounded-md transition-all duration-200 ${
-                isSelected
-                  ? "bg-[#0A65CC] text-white"
-                  : "bg-[#F3F6FF] text-gray-800 hover:bg-[#E6EEFF]"
-              }`}
+              className={`cursor-pointer flex items-start gap-4 px-5 py-6 rounded-md transition-all duration-200
+                ${
+                  isSelected
+                    ? "bg-[#0A65CC] text-white"
+                    : "bg-[#F3F6FF] dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-[#E6EEFF] dark:hover:bg-gray-700"
+                }`}
             >
               <div className="w-12 h-12 rounded-lg flex items-center justify-center">
                 <img
@@ -51,14 +54,14 @@ const PopularCategory = () => {
               <div>
                 <h4
                   className={`text-sm font-medium ${
-                    isSelected ? "text-white" : "text-gray-800"
+                    isSelected ? "text-white" : "text-gray-800 dark:text-gray-100"
                   }`}
                 >
                   {cat.title}
                 </h4>
                 <p
                   className={`text-xs mt-1 ${
-                    isSelected ? "text-white/80" : "text-gray-500"
+                    isSelected ? "text-white/80" : "text-gray-500 dark:text-gray-400"
                   }`}
                 >
                   {cat.positions} Open position
