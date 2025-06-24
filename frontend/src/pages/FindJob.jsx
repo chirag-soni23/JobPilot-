@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { UserData } from "../context/UserContext";
 
 const jobsData = Array.from({ length: 10 }).map((_, index) => ({
   id: index + 1,
@@ -24,12 +26,20 @@ const FindJob = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const jobsPerPage = 8;
   const pageCount = Math.ceil(jobsData.length / jobsPerPage);
+  const { isAuth } = UserData();
 
   const offset = currentPage * jobsPerPage;
   const currentJobs = jobsData.slice(offset, offset + jobsPerPage);
 
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected);
+  };
+
+  const handleFindJobClick = () => {
+    if (!isAuth) {
+      toast.error("Please login to find jobs");
+      return;
+    }
   };
 
   return (
@@ -51,6 +61,7 @@ const FindJob = () => {
           </div>
         </div>
 
+        {/* Search Inputs */}
         <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
           <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
             <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 rounded-l-lg flex-1 bg-white shadow-sm">
@@ -82,7 +93,10 @@ const FindJob = () => {
               Filters
             </button>
 
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm">
+            <button
+              onClick={handleFindJobClick}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm"
+            >
               Find Job
             </button>
           </div>
@@ -109,6 +123,7 @@ const FindJob = () => {
           ))}
         </div>
 
+        {/* Pagination */}
         <div className="flex justify-center pt-10">
           <ReactPaginate
             previousLabel={<ChevronLeft className="w-4 h-4" />}
