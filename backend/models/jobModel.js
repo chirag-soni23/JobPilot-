@@ -33,6 +33,7 @@ const JobSchema = new mongoose.Schema(
       facebook: { type: String },
       mail: { type: String },
     },
+    isSaved: { type: Boolean, default: false }, 
   },
   { timestamps: true }
 );
