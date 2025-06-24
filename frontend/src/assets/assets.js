@@ -21,6 +21,7 @@ import stack from "./stack.png";
 import tick from "./tick.png";
 import timer from "./timer.png";
 import twitter from "./twitter.png";
+import mail from "./mail.png";
 import upload from "./upload.png";
 import user from "./user.png";
 import user1 from "./user1.png";
@@ -68,4 +69,5 @@ export const assets = {
   saved,
   blob,
   illustration,
+  mail,
 };

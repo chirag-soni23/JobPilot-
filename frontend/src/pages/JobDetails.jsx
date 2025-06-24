@@ -31,7 +31,7 @@ const JobDetails = () => {
           <div className="flex-1 bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg">
             <div className="flex items-start gap-4 mb-6">
               <img
-                src={assets.facebook}
+                src={assets.facebookicon}
                 alt="Company"
                 className="w-14 h-14 rounded-full"
               />
@@ -180,6 +180,7 @@ const JobDetails = () => {
                 <img src={assets.facebook} alt="Facebook" className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
                 <img src={assets.linkedin} alt="LinkedIn" className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
                 <img src={assets.twitter} alt="Twitter" className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
+                <img src={assets.mail} alt="Twitter" className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
               </div>
             </div>
 
