@@ -11,25 +11,16 @@ import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { UserData } from "../context/UserContext";
-
-const jobsData = Array.from({ length: 10 }).map((_, index) => ({
-  id: index + 1,
-  type: "PART-TIME",
-  title: "Technical Support Specialist",
-  salary: "$20,000 – $25,000",
-  company: "Google Inc.",
-  logo: "https://logo.clearbit.com/google.com",
-  location: "Dhaka, Bangladesh",
-}));
+import { JobData } from "../context/JobContext";
 
 const FindJob = () => {
-  const [currentPage, setCurrentPage] = useState(0);
-  const jobsPerPage = 8;
-  const pageCount = Math.ceil(jobsData.length / jobsPerPage);
+  const { jobs } = JobData();
   const { isAuth } = UserData();
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const jobsPerPage = 8;
+  const pageCount = Math.ceil(jobs.length / jobsPerPage);
   const offset = currentPage * jobsPerPage;
-  const currentJobs = jobsData.slice(offset, offset + jobsPerPage);
 
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected);
@@ -63,6 +54,7 @@ const FindJob = () => {
           </div>
         </div>
 
+        {/* Search Bar */}
         <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
           <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
             <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-l-lg flex-1 bg-white dark:bg-gray-800 shadow-sm">
@@ -103,10 +95,11 @@ const FindJob = () => {
           </div>
         </div>
 
+        {/* Job Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {currentJobs.map((job) => (
+          {jobs.slice(offset, offset + jobsPerPage).map((job) => (
             <div
-              key={job.id}
+              key={job._id}
               className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 w-full"
             >
               <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400">
@@ -116,21 +109,27 @@ const FindJob = () => {
                 {job.title}
               </h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                Salary: {job.salary}
+                Salary: ₹{job.minSalary} – ₹{job.maxSalary}
               </p>
               <div className="flex items-center gap-2 mt-2">
-                <img src={job.logo} alt="Company" className="w-6 h-6" />
+                <img
+                  src={job.logoUrl?.url}
+                  alt="Company"
+                  className="w-6 h-6 rounded"
+                />
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   {job.company}
                 </p>
               </div>
-              <p className="text-xs text-gray-400 dark:text-gray-500">
+              <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
+                <MapPin className="w-4 h-4 text-blue-500" />
                 {job.location}
               </p>
             </div>
           ))}
         </div>
 
+        {/* Pagination */}
         <div className="flex justify-center pt-10">
           <ReactPaginate
             previousLabel={<ChevronLeft className="w-4 h-4" />}
