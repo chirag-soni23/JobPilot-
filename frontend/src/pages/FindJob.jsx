@@ -8,7 +8,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { UserData } from "../context/UserContext";
 import { JobData } from "../context/JobContext";
@@ -16,21 +16,27 @@ import { JobData } from "../context/JobContext";
 const FindJob = () => {
   const { jobs } = JobData();
   const { isAuth } = UserData();
+  const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(0);
+  const [keyword, setKeyword] = useState("");
+  const [city, setCity] = useState("");
+
+  const filteredJobs = jobs.filter(
+    (job) =>
+      job.title.toLowerCase().includes(keyword.toLowerCase()) &&
+      job.location.toLowerCase().includes(city.toLowerCase())
+  );
+
   const jobsPerPage = 8;
-  const pageCount = Math.ceil(jobs.length / jobsPerPage);
+  const pageCount = Math.ceil(filteredJobs.length / jobsPerPage);
   const offset = currentPage * jobsPerPage;
 
-  const handlePageClick = ({ selected }) => {
-    setCurrentPage(selected);
-  };
+  const handlePageClick = ({ selected }) => setCurrentPage(selected);
 
-  const handleFindJobClick = () => {
-    if (!isAuth) {
-      toast.error("Please login to find jobs");
-      return;
-    }
+  const navigateJobDetails = (id) => {
+    if (!id || typeof id !== "string") return toast.error("Invalid Job ID");
+    navigate(`/jobdetails/${id}`);
   };
 
   return (
@@ -39,9 +45,7 @@ const FindJob = () => {
         {/* Header */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-              Find Job
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Find Job</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Search and explore jobs that match your skills and location.
             </p>
@@ -64,6 +68,8 @@ const FindJob = () => {
               <input
                 type="text"
                 placeholder="Search by Job title, Position, Keyword..."
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
                 className="outline-none w-full text-base placeholder:text-gray-400 dark:placeholder:text-gray-500 bg-transparent text-gray-900 dark:text-white"
               />
             </div>
@@ -75,6 +81,8 @@ const FindJob = () => {
               <input
                 type="text"
                 placeholder="City, state or zip code"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
                 className="outline-none w-full text-base placeholder:text-gray-400 dark:placeholder:text-gray-500 bg-transparent text-gray-900 dark:text-white"
               />
             </div>
@@ -87,7 +95,7 @@ const FindJob = () => {
             </button>
 
             <button
-              onClick={handleFindJobClick}
+              onClick={() => !isAuth && toast.error("Please login to find jobs")}
               className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm"
             >
               Find Job
@@ -95,62 +103,81 @@ const FindJob = () => {
           </div>
         </div>
 
-        {/* Job Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {jobs.slice(offset, offset + jobsPerPage).map((job) => (
-            <div
-              key={job._id}
-              className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 w-full"
-            >
-              <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400">
-                {job.type}
-              </span>
-              <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
-                {job.title}
-              </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                Salary: ₹{job.minSalary} – ₹{job.maxSalary}
-              </p>
-              <div className="flex items-center gap-2 mt-2">
-                <img
-                  src={job.logoUrl?.url}
-                  alt="Company"
-                  className="w-6 h-6 rounded"
-                />
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  {job.company}
-                </p>
-              </div>
-              <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
-                <MapPin className="w-4 h-4 text-blue-500" />
-                {job.location}
-              </p>
-            </div>
-          ))}
-        </div>
+        {/* Job Cards OR No Result */}
+        {filteredJobs.length === 0 ? (
+          <div className="w-full text-center py-20 text-gray-600 dark:text-gray-300">
+            No job found
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredJobs.slice(offset, offset + jobsPerPage).map((job) => (
+                <div
+                  onClick={() => navigateJobDetails(job._id)}
+                  key={job._id}
+                  className="bg-white cursor-pointer dark:bg-gray-800 
+                    transition-transform duration-300 ease-in-out 
+                    hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400 
+                    dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30
+                    shadow-md rounded-xl p-4 w-full"
+                >
+                  <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400">
+                    {job.type}
+                  </span>
 
-        {/* Pagination */}
-        <div className="flex justify-center pt-10">
-          <ReactPaginate
-            previousLabel={<ChevronLeft className="w-4 h-4" />}
-            nextLabel={<ChevronRight className="w-4 h-4" />}
-            breakLabel={"..."}
-            pageCount={pageCount}
-            onPageChange={handlePageClick}
-            containerClassName="flex items-center gap-3"
-            pageClassName="text-sm text-gray-600 dark:text-gray-300"
-            pageLinkClassName="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-            previousClassName="text-blue-500"
-            previousLinkClassName="flex items-center justify-center w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-gray-700 dark:hover:bg-gray-600"
-            nextClassName="text-blue-500"
-            nextLinkClassName="flex items-center justify-center w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-gray-700 dark:hover:bg-gray-600"
-            activeLinkClassName="bg-blue-600 text-white font-bold"
-            renderOnZeroPageCount={null}
-            pageRangeDisplayed={5}
-            marginPagesDisplayed={1}
-            activeClassName="rounded-full"
-          />
-        </div>
+                  <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
+                    {job.title}
+                  </h2>
+
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Salary: ₹{job.minSalary} – ₹{job.maxSalary}
+                  </p>
+
+                  <div className="flex items-center gap-2 mt-2">
+                    <img
+                      src={job.logoUrl?.url}
+                      alt="Company"
+                      className="w-6 h-6 rounded"
+                    />
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      {job.company}
+                    </p>
+                  </div>
+
+                  <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
+                    <MapPin className="w-4 h-4 text-blue-500" />
+                    {job.location}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {pageCount > 1 && (
+              <div className="flex justify-center pt-10">
+                <ReactPaginate
+                  previousLabel={<ChevronLeft className="w-4 h-4" />}
+                  nextLabel={<ChevronRight className="w-4 h-4" />}
+                  breakLabel={"..."}
+                  pageCount={pageCount}
+                  onPageChange={handlePageClick}
+                  containerClassName="flex items-center gap-3"
+                  pageClassName="text-sm text-gray-600 dark:text-gray-300"
+                  pageLinkClassName="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                  previousClassName="text-blue-500"
+                  previousLinkClassName="flex items-center justify-center w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-gray-700 dark:hover:bg-gray-600"
+                  nextClassName="text-blue-500"
+                  nextLinkClassName="flex items-center justify-center w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-gray-700 dark:hover:bg-gray-600"
+                  activeLinkClassName="bg-blue-600 text-white font-bold"
+                  renderOnZeroPageCount={null}
+                  pageRangeDisplayed={5}
+                  marginPagesDisplayed={1}
+                  activeClassName="rounded-full"
+                />
+              </div>
+            )}
+          </>
+        )}
       </div>
       <Footer />
     </>

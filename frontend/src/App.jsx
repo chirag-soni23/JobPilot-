@@ -24,8 +24,8 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/findjob" element={<FindJob />} />
-        <Route path="/jobdetails" element={<JobDetails />} />
+        <Route path="/findjobs" element={<FindJob />} />
+        <Route path="/jobdetails/:id" element={<JobDetails />} />
         <Route path="/postjob" element={<PostJob />} />
         <Route path="/signup" element={isAuth ? <Navigate to="/" replace /> : <Signup />} />
         <Route path="/signin" element={isAuth ? <Navigate to="/" replace /> : <Signin />} />

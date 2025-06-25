@@ -31,7 +31,7 @@ const Navbar = () => {
             <Link to="/" className={navLinkClass("/")}>
               Home
             </Link>
-            <Link to="/findjob" className={navLinkClass("/findjob")}>
+            <Link to="/findjobs" className={navLinkClass("/findjob")}>
               Find Jobs
             </Link>
             <Link to="/contact" className={navLinkClass("/contact")}>
@@ -90,7 +90,10 @@ const Navbar = () => {
             <Link to="/" className={`${navLinkClass("/")} w-fit`}>
               Home
             </Link>
-            <Link to="/findjob" className={`${navLinkClass("/findjob")} w-fit`}>
+            <Link
+              to="/findjobs"
+              className={`${navLinkClass("/findjob")} w-fit`}
+            >
               Find Jobs
             </Link>
             <Link to="/contact" className={`${navLinkClass("/contact")} w-fit`}>

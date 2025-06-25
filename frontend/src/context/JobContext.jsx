@@ -6,7 +6,9 @@ const JobContext = createContext();
 
 export const JobProvider = ({ children }) => {
   const [jobs, setJobs] = useState([]);
+  const [singleJob, setSingleJob] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingSingleJob, setLoadingSingleJob] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
 
   // Create a job
@@ -35,6 +37,18 @@ export const JobProvider = ({ children }) => {
     }
   };
 
+  // get job by id
+  const getJobById = async (id) =>{
+    try {
+      const { data } = await axios.get(`/api/job/get/${id}`);
+      setSingleJob(data);
+    } catch (error) {
+       console.error("Unable to fetch jobs");
+    }finally {
+      setLoadingSingleJob(false);
+    }
+  }
+
   // Delete job
   const deleteJob = async (id) => {
     try {
@@ -59,6 +73,8 @@ export const JobProvider = ({ children }) => {
         deleteJob,
         loading,
         btnLoading,
+        getJobById,
+        singleJob
       }}
     >
       {children}
