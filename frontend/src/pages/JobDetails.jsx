@@ -1,4 +1,4 @@
-import { Bookmark, ArrowRight, MapPin } from "lucide-react";
+import { Bookmark, ArrowRight, MapPin, CoinsIcon } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import { assets } from "../assets/assets.js";
@@ -143,7 +143,8 @@ const JobDetails = () => {
           {/* Right Sidebar */}
           <div className="w-full md:w-80 bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg space-y-6">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="flex gap-2 items-center text-sm text-gray-500 dark:text-gray-400">
+                <CoinsIcon className="w-6 h-6"/>
                 Salary (INR)
               </p>
               <p className="text-green-600 font-semibold text-lg">
