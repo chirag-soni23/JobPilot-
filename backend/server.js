@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { connectDb } from './database/db.js';
 import userRoutes from './routes/userRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
+import jobApplyRoutes from "./routes/jobApplyRoutes.js";
 import cookieParser from 'cookie-parser'
 import cloudinary from 'cloudinary'
 import cors from 'cors';
@@ -24,9 +25,11 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
+
 // routes
 app.use('/api/user', userRoutes);
 app.use('/api/job',jobRoutes);
+app.use('/api/apply',jobApplyRoutes);
 
 
 // server
