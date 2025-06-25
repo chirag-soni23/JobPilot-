@@ -16,7 +16,7 @@ import { JobData } from "../context/JobContext";
 
 const FindJob = () => {
   const { jobs } = JobData();
-  const { isAuth } = UserData();
+  const { isAuth, user } = UserData();
   const navigate = useNavigate();
   const { search } = useLocation();
 
@@ -126,7 +126,6 @@ const FindJob = () => {
           </div>
         </div>
 
-        {/* Job Cards / No Result */}
         {filteredJobs.length === 0 ? (
           <div className="w-full text-center py-20 text-gray-600 dark:text-gray-300">
             No job found
@@ -144,14 +143,15 @@ const FindJob = () => {
                     dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30
                     shadow-md rounded-xl p-4 w-full"
                 >
-                  {/* pencil icon */}
-                  <Pencil
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      editJob(job._id);
-                    }}
-                    className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-blue-600"
-                  />
+                  {user.role == "admin" && (
+                    <Pencil
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        editJob(job._id);
+                      }}
+                      className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-blue-600"
+                    />
+                  )}
 
                   <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400">
                     {job.type}
