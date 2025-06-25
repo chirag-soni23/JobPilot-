@@ -10,7 +10,6 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
-
   const { user, logoutUser } = UserData();
 
   const navLinkClass = (path) =>
@@ -23,57 +22,39 @@ const Navbar = () => {
     navigate("/signin");
   };
 
+  const UserAvatar = () =>
+    user ? (
+      user.profile?.url ? (
+        <img
+          src={user.profile.url}
+          alt={user.name}
+          title={user.name}
+          className="w-10 h-10 rounded-full object-cover"
+        />
+      ) : (
+        <div
+          title={user.name}
+          className="w-10 h-10 bg-indigo-500 text-white flex items-center justify-center rounded-full font-bold text-sm"
+        >
+          {user.name?.charAt(0)?.toUpperCase()}
+        </div>
+      )
+    ) : (
+      <Link
+        to="/signin"
+        className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9b] transition"
+      >
+        Sign In
+      </Link>
+    );
+
   return (
     <>
       <nav className="bg-white dark:bg-gray-900 shadow-md px-6 md:px-20 py-4 transition-colors duration-300">
-        <div className="flex justify-between items-center">
-          <div className="hidden md:flex items-center gap-6">
-            <Link to="/" className={navLinkClass("/")}>
-              Home
-            </Link>
-            <Link to="/findjobs" className={navLinkClass("/findjob")}>
-              Find Jobs
-            </Link>
-            <Link to="/contact" className={navLinkClass("/contact")}>
-              Contact
-            </Link>
-          </div>
-
-          <div className="hidden md:flex items-center gap-6">
-            <span className="text-gray-700 dark:text-gray-200 flex items-center gap-2 font-medium">
-              <Phone className="w-5 h-5" /> +91 9876543210
-            </span>
-
-            <ThemeToggle />
-
-            {user ? (
-              user.profile?.url ? (
-                <img
-                  src={user.profile.url}
-                  alt={user.name}
-                  title={user.name}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-              ) : (
-                <div
-                  title={user.name}
-                  className="w-10 h-10 bg-indigo-500 text-white flex items-center justify-center rounded-full font-bold text-sm"
-                >
-                  {user.name?.charAt(0)?.toUpperCase()}
-                </div>
-              )
-            ) : (
-              <Link
-                to="/signin"
-                className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9b] transition"
-              >
-                Sign In
-              </Link>
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
+        <div className="flex items-center justify-between">
+          {/* ---------- Mobile Top Bar ---------- */}
+          <div className="md:hidden flex items-center w-full">
+            {/* Hamburger – left */}
             <button onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? (
                 <X className="w-6 h-6 text-gray-800 dark:text-white" />
@@ -81,22 +62,64 @@ const Navbar = () => {
                 <Menu className="w-6 h-6 text-gray-800 dark:text-white" />
               )}
             </button>
+
+            {/* Theme + Avatar – right */}
+            <div className="ml-auto flex items-center gap-4">
+              <ThemeToggle />
+              <UserAvatar />
+            </div>
+          </div>
+
+          {/* ---------- Desktop Links ---------- */}
+          <div className="hidden md:flex items-center gap-6">
+            <Link to="/" className={navLinkClass("/")}>
+              Home
+            </Link>
+            <Link to="/findjobs" className={navLinkClass("/findjobs")}>
+              Find Jobs
+            </Link>
+            <Link to="/contact" className={navLinkClass("/contact")}>
+              Contact
+            </Link>
+          </div>
+
+          {/* ---------- Desktop Right Section ---------- */}
+          <div className="hidden md:flex items-center gap-6">
+            <span className="text-gray-700 dark:text-gray-200 flex items-center gap-2 font-medium">
+              <Phone className="w-5 h-5" /> +91 9876543210
+            </span>
+
+            <ThemeToggle />
+            <UserAvatar />
           </div>
         </div>
 
-        {/* Mobile */}
-        {isOpen && (
-          <div className="mt-4 flex flex-col gap-4 md:hidden">
-            <Link to="/" className={`${navLinkClass("/")} w-fit`}>
+        {/* ---------- Mobile Menu ---------- */}
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            isOpen ? "max-h-96 mt-4" : "max-h-0"
+          }`}
+        >
+          <div className="flex flex-col gap-4">
+            <Link
+              to="/"
+              className={`${navLinkClass("/")} w-fit`}
+              onClick={() => setIsOpen(false)}
+            >
               Home
             </Link>
             <Link
               to="/findjobs"
-              className={`${navLinkClass("/findjob")} w-fit`}
+              className={`${navLinkClass("/findjobs")} w-fit`}
+              onClick={() => setIsOpen(false)}
             >
               Find Jobs
             </Link>
-            <Link to="/contact" className={`${navLinkClass("/contact")} w-fit`}>
+            <Link
+              to="/contact"
+              className={`${navLinkClass("/contact")} w-fit`}
+              onClick={() => setIsOpen(false)}
+            >
               Contact
             </Link>
 
@@ -104,40 +127,16 @@ const Navbar = () => {
               <Phone className="w-5 h-5" /> +91 9876543210
             </span>
 
-            {user ? (
-              <div className="flex items-center gap-4">
-                {user.profile?.url ? (
-                  <img
-                    src={user.profile.url}
-                    alt={user.name}
-                    title={user.name}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                ) : (
-                  <div
-                    title={user.name}
-                    className="w-10 h-10 bg-indigo-500 text-white flex items-center justify-center rounded-full font-bold text-sm"
-                  >
-                    {user.name?.charAt(0)?.toUpperCase()}
-                  </div>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
-                >
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <Link
-                to="/signin"
-                className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9b] transition"
+            {/* {user && (
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition w-fit"
               >
-                Sign In
-              </Link>
-            )}
+                Logout
+              </button>
+            )} */}
           </div>
-        )}
+        </div>
       </nav>
 
       <Header />
