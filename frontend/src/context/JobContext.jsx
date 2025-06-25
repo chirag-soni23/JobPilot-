@@ -9,6 +9,7 @@ export const JobProvider = ({ children }) => {
   const [singleJob, setSingleJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadingSingleJob, setLoadingSingleJob] = useState(false);
+  const [savedLoading,setSavedLoading] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
 
   // Create a job
@@ -34,6 +35,29 @@ export const JobProvider = ({ children }) => {
       console.error("Unable to fetch jobs");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // toogle saved job
+   const toggleSaveJob = async (jobId) => {
+    setSavedLoading(true);
+    try {
+      const { data } = await axios.put(`/api/job/savedJob/${jobId}`);
+      toast.success(data.message);
+
+      if (singleJob?._id === jobId) {
+        setSingleJob({ ...singleJob, isSaved: data.isSaved });
+      }
+
+      setJobs((prev) =>
+        prev.map((job) =>
+          job._id === jobId ? { ...job, isSaved: data.isSaved } : job
+        )
+      );
+      setSavedLoading(false);
+    } catch (err) {
+      toast.error("Unable to save / unsave job");
+      setSavedLoading(false);
     }
   };
 
@@ -74,7 +98,9 @@ export const JobProvider = ({ children }) => {
         loading,
         btnLoading,
         getJobById,
-        singleJob
+        singleJob,
+        toggleSaveJob,
+        savedLoading
       }}
     >
       {children}

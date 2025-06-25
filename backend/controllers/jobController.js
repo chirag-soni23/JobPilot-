@@ -102,3 +102,18 @@ export const deleteJob = TryCatch(async (req, res) => {
   await job.deleteOne();
   res.json({ message: "Job deleted successfully" });
 });
+
+// Toggle saved job
+export const toggleSavedJob = TryCatch(async (req, res) => {
+  const job = await Job.findById(req.params.id);
+  if (!job) return res.status(404).json({ message: "Job not found" });
+
+  job.isSaved = !job.isSaved;     
+  await job.save();
+
+  res.json({
+    message: job.isSaved ? "Job saved" : "Job unsaved",
+    job,
+  });
+});
+
