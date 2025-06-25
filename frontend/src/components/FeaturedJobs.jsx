@@ -1,57 +1,5 @@
-import React from "react";
 import { Bookmark, MapPin, ArrowRight } from "lucide-react";
-import { assets } from "../assets/assets.js";
-
-const jobs = [
-  {
-    id: 1,
-    title: "Technical Support Specialist",
-    type: "PART-TIME",
-    salary: "$20,000 - $25,000",
-    company: "Google Inc.",
-    location: "Dhaka, Bangladesh",
-  },
-  {
-    id: 2,
-    title: "Senior UX Designer",
-    type: "FULL-TIME",
-    salary: "$20,000 - $25,000",
-    company: "Google Inc.",
-    location: "Dhaka, Bangladesh",
-  },
-  {
-    id: 3,
-    title: "Marketing Officer",
-    type: "INTERNSHIP",
-    salary: "$20,000 - $25,000",
-    company: "Google Inc.",
-    location: "Dhaka, Bangladesh",
-  },
-  {
-    id: 4,
-    title: "Junior Graphic Designer",
-    type: "INTERNSHIP",
-    salary: "$20,000 - $25,000",
-    company: "Google Inc.",
-    location: "Dhaka, Bangladesh",
-  },
-  {
-    id: 5,
-    title: "Project Manager",
-    type: "FULL-TIME",
-    salary: "$20,000 - $25,000",
-    company: "Google Inc.",
-    location: "Dhaka, Bangladesh",
-  },
-  {
-    id: 6,
-    title: "Front End Developer",
-    type: "PART-TIME",
-    salary: "$20,000 - $25,000",
-    company: "Google Inc.",
-    location: "Dhaka, Bangladesh",
-  },
-];
+import { JobData } from "../context/JobContext.jsx";
 
 const getBadgeColor = (type) => {
   switch (type) {
@@ -67,6 +15,9 @@ const getBadgeColor = (type) => {
 };
 
 const FeaturedJobs = () => {
+  const { jobs } = JobData();
+  const featuredJobs = jobs.filter((job) => job.isFeatured); // only featured jobs
+
   return (
     <section className="px-6 md:px-16 lg:px-24 xl:px-32 py-14">
       <div className="flex justify-between items-center mb-10">
@@ -79,7 +30,7 @@ const FeaturedJobs = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {jobs.map((job) => (
+        {featuredJobs.map((job) => (
           <div
             key={job.id}
             className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 shadow-sm hover:shadow-md transition"
@@ -97,13 +48,13 @@ const FeaturedJobs = () => {
                 {job.type}
               </span>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Salary: {job.salary}
+                ₹ Salary:  {job.minSalary}-{job.maxSalary}
               </p>
             </div>
 
             <div className="flex items-center gap-3">
               <img
-                src={assets.google}
+                src={job.logoUrl.url}
                 alt={job.company}
                 className="w-8 h-8 object-contain"
               />
