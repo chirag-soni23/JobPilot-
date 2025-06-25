@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import {
   SlidersHorizontal,
@@ -8,7 +8,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Footer from "../components/Footer";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { UserData } from "../context/UserContext";
 import { JobData } from "../context/JobContext";
@@ -17,10 +17,17 @@ const FindJob = () => {
   const { jobs } = JobData();
   const { isAuth } = UserData();
   const navigate = useNavigate();
+  const { search } = useLocation();
 
   const [currentPage, setCurrentPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [city, setCity] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(search);
+    const q = params.get("keyword") || "";
+    setKeyword(q);
+  }, [search]);
 
   const filteredJobs = jobs.filter(
     (job) =>
@@ -45,7 +52,9 @@ const FindJob = () => {
         {/* Header */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Find Job</h1>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+              Find Job
+            </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Search and explore jobs that match your skills and location.
             </p>
@@ -61,6 +70,7 @@ const FindJob = () => {
         {/* Search Bar */}
         <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
           <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
+            {/* keyword */}
             <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-l-lg flex-1 bg-white dark:bg-gray-800 shadow-sm">
               <span className="text-[#0A65CC]">
                 <Search className="w-5 h-5" />
@@ -69,11 +79,14 @@ const FindJob = () => {
                 type="text"
                 placeholder="Search by Job title, Position, Keyword..."
                 value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
+                onChange={(e) => {
+                  setKeyword(e.target.value);
+                  setCurrentPage(0);
+                }}
                 className="outline-none w-full text-base placeholder:text-gray-400 dark:placeholder:text-gray-500 bg-transparent text-gray-900 dark:text-white"
               />
             </div>
-
+            {/* city */}
             <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-r-lg flex-1 bg-white dark:bg-gray-800 shadow-sm">
               <span className="text-[#0A65CC]">
                 <MapPin className="w-5 h-5" />
@@ -82,7 +95,10 @@ const FindJob = () => {
                 type="text"
                 placeholder="City, state or zip code"
                 value={city}
-                onChange={(e) => setCity(e.target.value)}
+                onChange={(e) => {
+                  setCity(e.target.value);
+                  setCurrentPage(0);
+                }}
                 className="outline-none w-full text-base placeholder:text-gray-400 dark:placeholder:text-gray-500 bg-transparent text-gray-900 dark:text-white"
               />
             </div>
@@ -95,7 +111,9 @@ const FindJob = () => {
             </button>
 
             <button
-              onClick={() => !isAuth && toast.error("Please login to find jobs")}
+              onClick={() =>
+                !isAuth && toast.error("Please login to find jobs")
+              }
               className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm"
             >
               Find Job
@@ -103,7 +121,7 @@ const FindJob = () => {
           </div>
         </div>
 
-        {/* Job Cards OR No Result */}
+        {/* Job Cards / No Result */}
         {filteredJobs.length === 0 ? (
           <div className="w-full text-center py-20 text-gray-600 dark:text-gray-300">
             No job found
@@ -152,7 +170,6 @@ const FindJob = () => {
               ))}
             </div>
 
-            {/* Pagination */}
             {pageCount > 1 && (
               <div className="flex justify-center pt-10">
                 <ReactPaginate

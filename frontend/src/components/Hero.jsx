@@ -3,17 +3,21 @@ import { Search } from "lucide-react";
 import { assets } from "../assets/assets";
 import { UserData } from "../context/UserContext";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
   const { user } = UserData();
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (!user) {
       toast.error("Please login to search jobs.");
       return;
+    }
+    if (searchTerm.trim()) {
+      navigate(`/findjobs?keyword=${encodeURIComponent(searchTerm.trim())}`);
     }
   };
 
