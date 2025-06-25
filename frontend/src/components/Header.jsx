@@ -28,16 +28,22 @@ const Header = () => {
   };
 
   return (
-    <div className="bg-[#f9f9f9] dark:bg-gray-800 px-6 md:px-20 py-4 transition-colors duration-300">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-        {/* Logo and Search */}
-        <div className="w-full md:w-2/3 flex flex-col md:flex-row items-center gap-4">
-          <h1 className="text-xl font-semibold text-[#0A65CC] dark:text-white whitespace-nowrap flex items-center gap-2 justify-center">
-            <BriefcaseIcon className="w-6 h-6" /> JobPilot
-          </h1>
+    <header className="bg-[#f9f9f9] dark:bg-gray-800 px-4 md:px-20 py-4 transition-colors duration-300">
+      <div className="flex flex-col gap-6 md:gap-4 lg:flex-row lg:items-center lg:justify-between">
+        {/* Left : Logo + Search */}
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:flex-1">
+          {/* Logo */}
+          <Link
+            to="/"
+            className="text-xl font-semibold text-[#0A65CC] dark:text-white flex items-center gap-2 justify-center lg:justify-start"
+          >
+            <BriefcaseIcon className="w-6 h-6" />
+            JobPilot
+          </Link>
 
-          <div className="flex flex-col md:flex-row gap-3 w-full">
-            <div className="relative w-full">
+          {/* Search + Country */}
+          <div className="flex flex-col gap-3 w-full sm:flex-row sm:items-center">
+            <div className="relative flex-1">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0A65CC]">
                 <Search className="w-4 h-4" />
               </span>
@@ -48,26 +54,26 @@ const Header = () => {
               />
             </div>
 
-            <select className="w-full md:w-[140px] py-2 px-3 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-[#0A65CC] bg-white dark:bg-gray-800 text-black dark:text-white">
+            <select className="w-full sm:w-40 py-2 px-3 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-[#0A65CC] bg-white dark:bg-gray-800 text-black dark:text-white">
               <option value="in">🇮🇳 India</option>
               <option value="us">🇺🇸 USA</option>
             </select>
           </div>
         </div>
 
-        {/* Right Side: Auth Buttons + Links */}
-        <div className="w-full md:w-auto flex justify-center items-center gap-3 text-sm">
+        {/* Right : Buttons */}
+        <div className="flex flex-wrap justify-center gap-3 lg:flex-nowrap">
           {user ? (
             <button
               onClick={handleLogout}
-              className="border-2 border-red-400 text-red-400 hover:text-white px-4 py-2 rounded-md hover:bg-red-400 cursor-pointer transition"
+              className="border-2 border-red-400 text-red-400 hover:text-white px-4 py-2 rounded-md hover:bg-red-400 transition whitespace-nowrap"
             >
               Logout
             </button>
           ) : (
             <Link
-              to={"/signin"}
-              className="border-2 cursor-pointer border-[#0A65CC] text-[#0A65CC] hover:text-white px-4 py-2 rounded-md hover:bg-[#084d9b] transition"
+              to="/signin"
+              className="border-2 border-[#0A65CC] text-[#0A65CC] hover:text-white px-4 py-2 rounded-md hover:bg-[#084d9b] transition whitespace-nowrap"
             >
               Sign In
             </Link>
@@ -75,20 +81,27 @@ const Header = () => {
 
           <button
             onClick={(e) => handleRestrictedRoute(e, "/postjob")}
-            className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition"
+            className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition whitespace-nowrap"
           >
             Post a Job
           </button>
 
           <button
             onClick={(e) => handleRestrictedRoute(e, "/appliedjob")}
-            className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition"
+            className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition whitespace-nowrap"
           >
             Applied Job
           </button>
+
+          <button
+            onClick={(e) => handleRestrictedRoute(e, "/savedjob")}
+            className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition whitespace-nowrap"
+          >
+            Saved Job
+          </button>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 
