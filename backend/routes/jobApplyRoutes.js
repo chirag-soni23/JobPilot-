@@ -4,6 +4,6 @@ import { createApplication } from "../controllers/jobApplyController.js";
 
 const router = express.Router();
 
-router.post("/apply/:id", uploadApplicationFiles, createApplication);
+router.post("/apply/:jobId", uploadApplicationFiles, createApplication);
 
 export default router;
