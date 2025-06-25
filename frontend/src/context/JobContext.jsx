@@ -9,7 +9,7 @@ export const JobProvider = ({ children }) => {
   const [singleJob, setSingleJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadingSingleJob, setLoadingSingleJob] = useState(false);
-  const [savedLoading,setSavedLoading] = useState(false);
+  const [savedLoading, setSavedLoading] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
 
   // Create a job
@@ -18,9 +18,25 @@ export const JobProvider = ({ children }) => {
     try {
       const { data } = await axios.post("/api/job/createjob", formData);
       toast.success(data.message);
-      getMyJobs();
-    } catch (error) {
-      console.error(error?.response?.data?.message || "Failed to post job");
+      getAllJobs();
+    } finally {
+      setBtnLoading(false);
+    }
+  };
+
+  // Update a job
+  const updateJob = async (id, formData) => {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.put(`/api/job/update/${id}`, formData);
+      toast.success(data.message);
+
+      setJobs((prev) =>
+        prev.map((job) => (job._id === id ? data.job : job))
+      );
+      if (singleJob?._id === id) setSingleJob(data.job);
+    } catch {
+      toast.error("Unable to update job");
     } finally {
       setBtnLoading(false);
     }
@@ -31,15 +47,13 @@ export const JobProvider = ({ children }) => {
     try {
       const { data } = await axios.get("/api/job/getall");
       setJobs(data);
-    } catch (error) {
-      console.error("Unable to fetch jobs");
     } finally {
       setLoading(false);
     }
   };
 
-  // toogle saved job
-   const toggleSaveJob = async (jobId) => {
+  // Toggle saved job
+  const toggleSaveJob = async (jobId) => {
     setSavedLoading(true);
     try {
       const { data } = await axios.put(`/api/job/savedJob/${jobId}`);
@@ -54,32 +68,31 @@ export const JobProvider = ({ children }) => {
           job._id === jobId ? { ...job, isSaved: data.isSaved } : job
         )
       );
-      setSavedLoading(false);
-    } catch (err) {
+    } catch {
       toast.error("Unable to save / unsave job");
+    } finally {
       setSavedLoading(false);
     }
   };
 
-  // get job by id
-  const getJobById = async (id) =>{
+  // Get job by id
+  const getJobById = async (id) => {
+    setLoadingSingleJob(true);
     try {
       const { data } = await axios.get(`/api/job/get/${id}`);
       setSingleJob(data);
-    } catch (error) {
-       console.error("Unable to fetch jobs");
-    }finally {
+    } finally {
       setLoadingSingleJob(false);
     }
-  }
+  };
 
   // Delete job
   const deleteJob = async (id) => {
     try {
       const { data } = await axios.delete(`/api/job/delete/${id}`);
       toast.success(data.message);
-      getMyJobs();
-    } catch (error) {
+      getAllJobs();
+    } catch {
       toast.error("Unable to delete job");
     }
   };
@@ -93,6 +106,7 @@ export const JobProvider = ({ children }) => {
       value={{
         jobs,
         postJob,
+        updateJob,
         getAllJobs,
         deleteJob,
         loading,
@@ -100,7 +114,7 @@ export const JobProvider = ({ children }) => {
         getJobById,
         singleJob,
         toggleSaveJob,
-        savedLoading
+        savedLoading,
       }}
     >
       {children}

@@ -75,25 +75,52 @@ export const updateJob = TryCatch(async (req, res) => {
   const job = await Job.findById(req.params.id);
   if (!job) return res.status(404).json({ message: "Job not found" });
 
-  const updates = req.body;
-
   if (req.file) {
-    if (job.logoUrl?.id) {
-      await imagekit.deleteFile(job.logoUrl.id);
-    }
+    if (job.logoUrl?.id) await imagekit.deleteFile(job.logoUrl.id);
     const fileUri = getDataUri(req.file);
-    const uploadResponse = await imagekit.upload({
+    const { fileId, url } = await imagekit.upload({
       file: fileUri.content,
       fileName: req.file.originalname,
     });
-    updates.logoUrl = { id: uploadResponse.fileId, url: uploadResponse.url };
+    job.logoUrl = { id: fileId, url };
   }
 
-  Object.assign(job, updates);
-  await job.save();
+  const fields = [
+    "title",
+    "type",
+    "company",
+    "location",
+    "minSalary",
+    "maxSalary",
+    "description",
+    "education",
+    "jobLevel",
+    "experience",
+    "expireDate",
+    "isFeatured",
+  ];
+  fields.forEach((f) => {
+    if (req.body[f] !== undefined) job[f] = req.body[f];
+  });
 
+  const arrFields = ["requirements", "desirable", "benefits"];
+  arrFields.forEach((f) => {
+    if (req.body[f] !== undefined) {
+      job[f] =
+        typeof req.body[f] === "string"
+          ? req.body[f].split(",").map((v) => v.trim()).filter(Boolean)
+          : req.body[f];
+    }
+  });
+
+  if (req.body.shareLinks) {
+    job.shareLinks = { ...job.shareLinks, ...req.body.shareLinks };
+  }
+
+  await job.save();
   res.json({ message: "Job updated successfully", job });
 });
+
 
 // Delete Job
 export const deleteJob = TryCatch(async (req, res) => {

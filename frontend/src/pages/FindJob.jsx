@@ -6,6 +6,7 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
+  Pencil,
 } from "lucide-react";
 import Footer from "../components/Footer";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -44,6 +45,10 @@ const FindJob = () => {
   const navigateJobDetails = (id) => {
     if (!id || typeof id !== "string") return toast.error("Invalid Job ID");
     navigate(`/jobdetails/${id}`);
+  };
+  const editJob = (id) => {
+    if (!id || typeof id !== "string") return toast.error("Invalid Job ID");
+    navigate(`/editjob/${id}`);
   };
 
   return (
@@ -133,12 +138,21 @@ const FindJob = () => {
                 <div
                   onClick={() => navigateJobDetails(job._id)}
                   key={job._id}
-                  className="bg-white cursor-pointer dark:bg-gray-800 
+                  className="relative bg-white cursor-pointer dark:bg-gray-800 
                     transition-transform duration-300 ease-in-out 
                     hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400 
                     dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30
                     shadow-md rounded-xl p-4 w-full"
                 >
+                  {/* pencil icon */}
+                  <Pencil
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      editJob(job._id);
+                    }}
+                    className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-blue-600"
+                  />
+
                   <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400">
                     {job.type}
                   </span>
