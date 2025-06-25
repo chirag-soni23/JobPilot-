@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { JobData } from "../context/JobContext";
 
-const PostJob = ({ postJob }) => {
+const PostJob = () => {
+  const { postJob, btnLoading } = JobData();
+
   const [form, setForm] = useState({
     title: "",
     type: "FULL-TIME",
@@ -27,7 +30,10 @@ const PostJob = ({ postJob }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleArrayChange = (e, key) => {
@@ -39,7 +45,7 @@ const PostJob = ({ postJob }) => {
     e.preventDefault();
     const formData = new FormData();
 
-    for (const key in form) {
+    Object.keys(form).forEach((key) => {
       if (["requirements", "desirable", "benefits"].includes(key)) {
         form[key].forEach((item) => formData.append(key, item));
       } else if (["linkedin", "twitter", "facebook", "mail"].includes(key)) {
@@ -47,44 +53,61 @@ const PostJob = ({ postJob }) => {
       } else {
         formData.append(key, form[key]);
       }
-    }
+    });
 
-    if (logo) formData.append("logo", logo);
+    if (logo) formData.append("file", logo); // 🔑 backend expects "file"
 
     postJob(formData);
   };
 
   return (
     <section className="max-w-5xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-semibold text-gray-800 dark:text-white mb-6">Post a New Job</h1>
+      <h1 className="text-3xl font-semibold text-gray-800 dark:text-white mb-6">
+        Post a New Job
+      </h1>
 
       <form
         onSubmit={handleSubmit}
         className="grid md:grid-cols-2 gap-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6"
       >
-        {/* Common Input Field Style */}
         {[
-          "title", "company", "location", "minSalary", "maxSalary",
-          "education", "jobLevel", "experience"
+          "title",
+          "company",
+          "location",
+          "minSalary",
+          "maxSalary",
+          "education",
+          "jobLevel",
+          "experience",
         ].map((field) => (
           <div className="form-group" key={field}>
             <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2 capitalize">
               {field.replace(/([A-Z])/g, " $1")}
             </label>
             <input
-              type={["minSalary", "maxSalary"].includes(field) ? "number" : "text"}
+              type={
+                ["minSalary", "maxSalary"].includes(field) ? "number" : "text"
+              }
               name={field}
               value={form[field]}
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-black dark:text-white"
               placeholder={`Enter ${field}`}
-              required={["title", "company", "location", "minSalary", "maxSalary"].includes(field)}
+              required={[
+                "title",
+                "company",
+                "location",
+                "minSalary",
+                "maxSalary",
+              ].includes(field)}
             />
           </div>
         ))}
 
         <div className="form-group">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">Job Type</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
+            Job Type
+          </label>
           <select
             name="type"
             value={form.type}
@@ -98,7 +121,9 @@ const PostJob = ({ postJob }) => {
         </div>
 
         <div className="form-group col-span-2">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">Job Description</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
+            Job Description
+          </label>
           <textarea
             name="description"
             value={form.description}
@@ -107,7 +132,7 @@ const PostJob = ({ postJob }) => {
             className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-black dark:text-white"
             placeholder="Enter job description"
             required
-          ></textarea>
+          />
         </div>
 
         {["requirements", "desirable", "benefits"].map((field) => (
@@ -125,7 +150,9 @@ const PostJob = ({ postJob }) => {
         ))}
 
         <div className="form-group col-span-2">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">Expire Date</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
+            Expire Date
+          </label>
           <input
             type="date"
             name="expireDate"
@@ -144,13 +171,34 @@ const PostJob = ({ postJob }) => {
             onChange={handleChange}
             className="h-5 w-5"
           />
-          <label htmlFor="isFeatured" className="text-sm text-gray-700 dark:text-white">
+          <label
+            htmlFor="isFeatured"
+            className="text-sm text-gray-700 dark:text-white"
+          >
             Mark as Featured
           </label>
         </div>
 
+        {["linkedin", "twitter", "facebook", "mail"].map((field) => (
+          <div className="form-group" key={field}>
+            <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2 capitalize">
+              {field}
+            </label>
+            <input
+              type="text"
+              name={field}
+              value={form[field]}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-black dark:text-white"
+              placeholder={`Enter ${field} url`}
+            />
+          </div>
+        ))}
+
         <div className="col-span-2">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">Company Logo</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
+            Company Logo
+          </label>
           <input
             type="file"
             accept="image/*"
@@ -161,9 +209,12 @@ const PostJob = ({ postJob }) => {
 
         <button
           type="submit"
-          className="col-span-2 bg-indigo-600 text-white font-medium py-3 rounded hover:bg-indigo-700 transition"
+          disabled={btnLoading}
+          className={`col-span-2 bg-indigo-600 text-white font-medium py-3 rounded transition ${
+            btnLoading ? "opacity-60 cursor-not-allowed" : "hover:bg-indigo-700"
+          }`}
         >
-          Post Job
+          {btnLoading ? "Posting..." : "Post Job"}
         </button>
       </form>
     </section>
