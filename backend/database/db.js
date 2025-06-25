@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
-export const connectDb = async() =>{
-    try {
-        await mongoose.connect(process.env.MONGO_URL,{
-            dbName:"jobpilot"
-        });   
-        console.log(`Mongodb connected`);     
-    } catch (error) {
-        console.log(`Error -> ${error}`);
-        process.exit(1);      
-    }
-}
+export const connectDb = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URL, {
+      dbName: "jobpilot",
+    });
+    console.log(`Mongodb connected`);
+  } catch (error) {
+    console.log(`Error -> ${error}`);
+    process.exit(1);
+  }
+};

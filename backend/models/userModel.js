@@ -19,8 +19,8 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     profile: {
-        id: String,
-        url: String
+      id: String,
+      url: String,
     },
     role: {
       type: String,

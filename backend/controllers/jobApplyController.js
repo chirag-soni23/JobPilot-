@@ -3,6 +3,7 @@ import { TryCatch } from "../utils/TryCatch.js";
 import imagekit from "../utils/imagekit.js";
 import getDataUri from "../utils/urlGenerator.js";
 
+// create application
 export const createApplication = TryCatch(async (req, res) => {
   const { jobId } = req.params;
   const {
