@@ -9,7 +9,7 @@ import Signin from "./pages/Signin";
 import { UserData } from "./context/UserContext";
 import PostJob from "./pages/PostJob";
 import SavedJob from "./pages/SavedJob";
-import EditJob from "./pages/EditJob";
+// import EditJob from "./pages/EditJob";
 
 const App = () => {
   const { isAuth, loading } = UserData();
@@ -28,7 +28,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/findjobs" element={<FindJob />} />
         <Route path="/jobdetails/:id" element={<JobDetails />} />
-        <Route path="/editjob/:id" element={<EditJob/>}/>
+        {/* <Route path="/editjob/:id" element={<EditJob/>}/> */}
         <Route path="/postjob" element={<PostJob />} />
         <Route path="/savedjob" element={<SavedJob />} />
         <Route path="/signup" element={isAuth ? <Navigate to="/" replace /> : <Signup />} />

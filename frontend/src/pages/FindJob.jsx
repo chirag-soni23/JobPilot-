@@ -6,7 +6,7 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
-  Pencil,
+  // Pencil,
 } from "lucide-react";
 import Footer from "../components/Footer";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -143,7 +143,7 @@ const FindJob = () => {
                     dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30
                     shadow-md rounded-xl p-4 w-full"
                 >
-                  {user.role == "admin" && (
+                  {/* {user.role == "admin" && (
                     <Pencil
                       onClick={(e) => {
                         e.stopPropagation();
@@ -151,7 +151,7 @@ const FindJob = () => {
                       }}
                       className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-blue-600"
                     />
-                  )}
+                  )} */}
 
                   <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400">
                     {job.type}
