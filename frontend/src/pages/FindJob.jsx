@@ -6,7 +6,8 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
-  Pencil,
+  Pencil, // future admin edit – ab bhi comment me rakha hai
+  BanIcon,
 } from "lucide-react";
 import Footer from "../components/Footer";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -26,10 +27,11 @@ const getBadgeColor = (type) => {
       return "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300";
   }
 };
+const isExpired = (dateStr) => new Date(dateStr).getTime() < Date.now();
 
 const FindJob = () => {
   const { jobs } = JobData();
-  const { isAuth, user } = UserData();
+  const { isAuth } = UserData();
   const navigate = useNavigate();
   const { search } = useLocation();
 
@@ -39,36 +41,25 @@ const FindJob = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(search);
-    const q = params.get("keyword") || "";
-    setKeyword(q);
+    setKeyword(params.get("keyword") || "");
   }, [search]);
 
   const filteredJobs = jobs.filter(
-    (job) =>
-      job.title.toLowerCase().includes(keyword.toLowerCase()) &&
-      job.location.toLowerCase().includes(city.toLowerCase())
+    (j) =>
+      j.title.toLowerCase().includes(keyword.toLowerCase()) &&
+      j.location.toLowerCase().includes(city.toLowerCase())
   );
 
   const jobsPerPage = 8;
   const pageCount = Math.ceil(filteredJobs.length / jobsPerPage);
   const offset = currentPage * jobsPerPage;
-
   const handlePageClick = ({ selected }) => setCurrentPage(selected);
 
-  const navigateJobDetails = (id) => {
-    if (!id || typeof id !== "string") return toast.error("Invalid Job ID");
-    navigate(`/jobdetails/${id}`);
-  };
-
-  const editJob = (id) => {
-    if (!id || typeof id !== "string") return toast.error("Invalid Job ID");
-    navigate(`/editjob/${id}`);
-  };
+  const navigateJobDetails = (id) => navigate(`/jobdetails/${id}`);
 
   return (
     <>
       <div className="w-full py-6 space-y-10 px-6 md:px-16 lg:px-24 xl:px-32">
-        {/* Header */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -86,14 +77,10 @@ const FindJob = () => {
           </div>
         </div>
 
-        {/* Search Bar */}
         <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
           <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
-            {/* keyword */}
             <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-l-lg flex-1 bg-white dark:bg-gray-800 shadow-sm">
-              <span className="text-[#0A65CC]">
-                <Search className="w-5 h-5" />
-              </span>
+              <Search className="w-5 h-5 text-[#0A65CC]" />
               <input
                 type="text"
                 placeholder="Search by Job title, Position, Keyword..."
@@ -102,14 +89,11 @@ const FindJob = () => {
                   setKeyword(e.target.value);
                   setCurrentPage(0);
                 }}
-                className="outline-none w-full text-base placeholder:text-gray-400 dark:placeholder:text-gray-500 bg-transparent text-gray-900 dark:text-white"
+                className="outline-none w-full bg-transparent text-base text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
               />
             </div>
-            {/* city */}
             <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-r-lg flex-1 bg-white dark:bg-gray-800 shadow-sm">
-              <span className="text-[#0A65CC]">
-                <MapPin className="w-5 h-5" />
-              </span>
+              <MapPin className="w-5 h-5 text-[#0A65CC]" />
               <input
                 type="text"
                 placeholder="City, state or zip code"
@@ -118,7 +102,7 @@ const FindJob = () => {
                   setCity(e.target.value);
                   setCurrentPage(0);
                 }}
-                className="outline-none w-full text-base placeholder:text-gray-400 dark:placeholder:text-gray-500 bg-transparent text-gray-900 dark:text-white"
+                className="outline-none w-full bg-transparent text-base text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
               />
             </div>
           </div>
@@ -147,58 +131,76 @@ const FindJob = () => {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredJobs.slice(offset, offset + jobsPerPage).map((job) => (
-                <div
-                  onClick={() => navigateJobDetails(job._id)}
-                  key={job._id}
-                  className="relative bg-white cursor-pointer dark:bg-gray-800 
-                    transition-transform duration-300 ease-in-out 
-                    hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400 
-                    dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30
-                    shadow-md rounded-xl p-4 w-full"
-                >
-                  {/* Admin Edit Button */}
-                  {/*
-                  {user.role === "admin" && (
-                    <Pencil
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        editJob(job._id);
-                      }}
-                      className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-blue-600"
-                    />
-                  )}
-                  */}
+              {filteredJobs.slice(offset, offset + jobsPerPage).map((job) => {
+                const expired = isExpired(job.expireDate);
 
-                  <span className={`text-xs font-bold px-2 py-1 rounded-full ${getBadgeColor(job.type)}`}>
-                    {job.type}
-                  </span>
+                return (
+                  <div
+                    key={job._id}
+                    onClick={() => {
+                      if (expired) {
+                        toast.error("This job listing has expired");
+                        return;
+                      }
+                      navigateJobDetails(job._id);
+                    }}
+                    className="relative bg-white dark:bg-gray-800 cursor-pointer
+                      shadow-md rounded-xl p-4 w-full
+                      transition-transform duration-300 ease-in-out
+                      hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400
+                      dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30"
+                  >
+                    {/* Admin Edit Button (commented) */}
+                    {/*
+                    {user.role === "admin" && (
+                      <Pencil
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          editJob(job._id);
+                        }}
+                        className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-blue-600"
+                      />
+                    )}
+                    */}
 
-                  <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
-                    {job.title}
-                  </h2>
+                    {expired && (
+                      <BanIcon className="absolute top-3 right-3 w-4 h-4 text-red-400 dark:text-red-500" />
+                    )}
 
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    Salary: ₹{job.minSalary} – ₹{job.maxSalary}
-                  </p>
+                    <span
+                      className={`text-xs font-bold px-2 py-1 rounded-full ${getBadgeColor(
+                        job.type
+                      )}`}
+                    >
+                      {job.type}
+                    </span>
 
-                  <div className="flex items-center gap-2 mt-2">
-                    <img
-                      src={job.logoUrl?.url}
-                      alt="Company"
-                      className="w-6 h-6 rounded"
-                    />
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      {job.company}
+                    <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
+                      {job.title}
+                    </h2>
+
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Salary: ₹{job.minSalary} – ₹{job.maxSalary}
+                    </p>
+
+                    <div className="flex items-center gap-2 mt-2">
+                      <img
+                        src={job.logoUrl?.url}
+                        alt="Company"
+                        className="w-6 h-6 rounded"
+                      />
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        {job.company}
+                      </p>
+                    </div>
+
+                    <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
+                      <MapPin className="w-4 h-4 text-blue-500" />
+                      {job.location}
                     </p>
                   </div>
-
-                  <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
-                    <MapPin className="w-4 h-4 text-blue-500" />
-                    {job.location}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {pageCount > 1 && (
