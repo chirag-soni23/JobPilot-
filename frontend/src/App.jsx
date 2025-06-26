@@ -9,6 +9,7 @@ import Signin from "./pages/Signin";
 import { UserData } from "./context/UserContext";
 import PostJob from "./pages/PostJob";
 import SavedJob from "./pages/SavedJob";
+import Contact from "./pages/Contact";
 // import EditJob from "./pages/EditJob";
 
 const App = () => {
@@ -27,6 +28,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/findjobs" element={<FindJob />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/jobdetails/:id" element={<JobDetails />} />
         {/* <Route path="/editjob/:id" element={<EditJob/>}/> */}
         <Route path="/postjob" element={<PostJob />} />

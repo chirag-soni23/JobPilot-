@@ -33,6 +33,7 @@ import save from "./save.png";
 import saved from "./saved.png";
 import blob from "./blob.png";
 import illustration from "./illustration.png";
+import send from "./send.png";
 
 export const assets = {
   arrow1,
@@ -70,4 +71,5 @@ export const assets = {
   blob,
   illustration,
   mail,
+  send,
 };
