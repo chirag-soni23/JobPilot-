@@ -1,10 +1,9 @@
-import { Bookmark, ArrowRight, MapPin, CoinsIcon } from "lucide-react";
+import { ArrowRight, MapPin, Coins } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import { assets } from "../assets/assets.js";
 import { JobData } from "../context/JobContext.jsx";
 import { useEffect, useState, useCallback } from "react";
-import toast from "react-hot-toast";
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -22,15 +21,13 @@ const JobDetails = () => {
   const handleSavedJob = useCallback(() => {
     if (!singleJob) return;
     toggleSaveJob(singleJob._id);
-    setIsSaved((prev) => {
-      const next = !prev;
-      return next;
-    });
+    setIsSaved((prev) => !prev);
   }, [singleJob, toggleSaveJob]);
 
   if (!singleJob) return null;
 
-  const scrollTopSmooth = () => window.scrollTo({ top: 0, behavior: "smooth" });
+  const scrollTopSmooth = () =>
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
   const {
     title = "",
@@ -183,7 +180,7 @@ const JobDetails = () => {
           <div className="w-full md:w-80 bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg space-y-6">
             <div>
               <p className="flex gap-2 items-center text-sm text-gray-500 dark:text-gray-400">
-                <CoinsIcon className="w-6 h-6" /> Salary (INR)
+                <Coins className="w-6 h-6" /> Salary (INR)
               </p>
               <p className="text-green-600 font-semibold text-lg">
                 ₹{minSalary.toLocaleString()} - ₹{maxSalary.toLocaleString()}
@@ -230,77 +227,13 @@ const JobDetails = () => {
               </div>
             </div>
 
-            <div>
-              <h4 className="text-base font-semibold mb-2 dark:text-white">
-                Share this job:
-              </h4>
-              <div className="flex items-center gap-3">
-                <img
-                  src={assets.copylink}
-                  alt="Copy Link"
-                  className="w-28 cursor-pointer hover:scale-105 transition-transform"
-                  onClick={() =>
-                    navigator.clipboard.writeText(window.location.href)
-                  }
-                />
-                {shareLinks?.facebook && (
-                  <a
-                    href={shareLinks.facebook}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <img
-                      src={assets.facebook}
-                      alt="Facebook"
-                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
-                    />
-                  </a>
-                )}
-                {shareLinks?.linkedin && (
-                  <a
-                    href={shareLinks.linkedin}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <img
-                      src={assets.linkedin}
-                      alt="LinkedIn"
-                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
-                    />
-                  </a>
-                )}
-                {shareLinks?.twitter && (
-                  <a href={shareLinks.twitter} target="_blank" rel="noreferrer">
-                    <img
-                      src={assets.twitter}
-                      alt="Twitter"
-                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
-                    />
-                  </a>
-                )}
-                {shareLinks?.mail && (
-                  <a
-                    href={
-                      shareLinks.mail.startsWith("mailto:")
-                        ? shareLinks.mail
-                        : `mailto:${shareLinks.mail}`
-                    }
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <img
-                      src={assets.mail}
-                      alt="Mail"
-                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
-                    />
-                  </a>
-                )}
-              </div>
-            </div>
-
-            <button className="bg-[#0A65CC] hover:bg-blue-700 text-white w-full py-3 rounded-md font-medium flex justify-center items-center gap-2 transition">
+            <Link
+              to={`/applyjob/${singleJob._id}`}
+              className="bg-[#0A65CC] hover:bg-blue-700 text-white w-full py-3 rounded-md font-medium flex justify-center items-center gap-2 transition"
+              onClick={scrollTopSmooth}
+            >
               Apply Now <ArrowRight className="w-4 h-4" />
-            </button>
+            </Link>
           </div>
         </div>
       </section>

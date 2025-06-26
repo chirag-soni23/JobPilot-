@@ -3,13 +3,14 @@ import Navbar from "./components/Navbar";
 import Loading from "./components/Loading";
 import Home from "./pages/Home";
 import FindJob from "./pages/FindJob";
-import JobDetails from "./pages/Jobdetails";
+import JobDetails from "./pages/JobDetails";
 import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
 import { UserData } from "./context/UserContext";
 import PostJob from "./pages/PostJob";
 import SavedJob from "./pages/SavedJob";
 import Contact from "./pages/Contact";
+import ApplyJob from "./pages/ApplyJob";
 // import EditJob from "./pages/EditJob";
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
         <Route path="/findjobs" element={<FindJob />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/jobdetails/:id" element={<JobDetails />} />
+        <Route path="/applyjob/:id" element={<ApplyJob />} />
         {/* <Route path="/editjob/:id" element={<EditJob/>}/> */}
         <Route path="/postjob" element={<PostJob />} />
         <Route path="/savedjob" element={<SavedJob />} />
