@@ -9,7 +9,7 @@ export const JobApplyProvider = ({ children }) => {
   const [application, setApplication] = useState(null);
   const [applying, setApplying] = useState(false);
   const [loadingApplications, setLoadingApplications] = useState(false);
-  console.log(applications)
+  console.log(applications);
 
   // Apply for a job
   const applyJob = async (jobId, formData) => {
@@ -51,9 +51,9 @@ export const JobApplyProvider = ({ children }) => {
     }
   };
 
-  useEffect(() =>{
+  useEffect(() => {
     getAllApplications();
-  },[]);
+  }, []);
 
   return (
     <JobApplyContext.Provider
