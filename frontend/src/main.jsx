@@ -5,13 +5,16 @@ import "./index.css";
 import App from "./App.jsx";
 import { UserProvider } from "./context/UserContext.jsx";
 import { JobProvider } from "./context/JobContext.jsx";
+import { MailerProvider } from "./context/NodeMailerContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <UserProvider>
         <JobProvider>
-        <App />
+          <MailerProvider>
+            <App />
+          </MailerProvider>
         </JobProvider>
       </UserProvider>
     </BrowserRouter>
