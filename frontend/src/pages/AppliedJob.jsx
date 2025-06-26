@@ -19,7 +19,7 @@ const AppliedJob = () => {
 
   const appliedJobs = useMemo(() => {
     return applications
-      .map((app) => app.job) // extract job from each application
+      .map((app) => app.job) 
       .filter(
         (job) =>
           job.title.toLowerCase().includes(keyword.toLowerCase()) &&
