@@ -30,6 +30,8 @@ const JobDetails = () => {
 
   if (!singleJob) return null;
 
+  const scrollTopSmooth = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
   const {
     title = "",
     company = "",
@@ -56,12 +58,30 @@ const JobDetails = () => {
       <section className="px-6 md:px-16 lg:px-24 xl:px-32 py-10 w-full mx-auto h-auto">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Job Details</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Learn more about the role and its requirements.</p>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+              Job Details
+            </h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Learn more about the role and its requirements.
+            </p>
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">
-            <Link className="text-blue-600 hover:underline" to="/">Home</Link> /{" "}
-            <Link className="text-blue-600 hover:underline" to="/findjobs">Find Job</Link> / {title} / jobdetails
+            <Link
+              onClick={scrollTopSmooth}
+              className="text-blue-600 hover:underline"
+              to="/"
+            >
+              Home
+            </Link>{" "}
+            /{" "}
+            <Link
+              onClick={scrollTopSmooth}
+              className="text-blue-600 hover:underline"
+              to="/findjobs"
+            >
+              Find Job
+            </Link>{" "}
+            / {title} / jobdetails
           </div>
         </div>
 
@@ -74,9 +94,14 @@ const JobDetails = () => {
                 className="w-14 h-14 rounded-full object-cover"
               />
               <div>
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{title}</h2>
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+                  {title}
+                </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  at <span className="text-gray-800 dark:text-white font-medium">{company}</span>
+                  at{" "}
+                  <span className="text-gray-800 dark:text-white font-medium">
+                    {company}
+                  </span>
                 </p>
                 <div className="flex gap-2 mt-2 text-xs font-medium">
                   {type && (
@@ -96,41 +121,59 @@ const JobDetails = () => {
                 className="ml-auto p-2 cursor-pointer rounded-md disabled:opacity-60"
                 disabled={savedLoading}
               >
-                <img className="w-10 h-10" src={isSaved ? assets.saved : assets.save} alt="save" />
+                <img
+                  className="w-10 h-10"
+                  src={isSaved ? assets.saved : assets.save}
+                  alt="save"
+                />
               </button>
             </div>
 
             <div className="space-y-6 text-sm text-gray-700 dark:text-gray-300">
               {description && (
                 <div>
-                  <h3 className="text-base font-semibold mb-1 dark:text-white">Job Description</h3>
+                  <h3 className="text-base font-semibold mb-1 dark:text-white">
+                    Job Description
+                  </h3>
                   <p>{description}</p>
                 </div>
               )}
 
               {!!requirements.length && (
                 <div>
-                  <h3 className="text-base font-semibold mb-1 dark:text-white">Requirements</h3>
+                  <h3 className="text-base font-semibold mb-1 dark:text-white">
+                    Requirements
+                  </h3>
                   <ul className="list-disc list-inside space-y-1">
-                    {requirements.map((req, idx) => <li key={idx}>{req}</li>)}
+                    {requirements.map((req, idx) => (
+                      <li key={idx}>{req}</li>
+                    ))}
                   </ul>
                 </div>
               )}
 
               {!!desirable.length && (
                 <div>
-                  <h3 className="text-base font-semibold mb-1 dark:text-white">Desirable</h3>
+                  <h3 className="text-base font-semibold mb-1 dark:text-white">
+                    Desirable
+                  </h3>
                   <ul className="list-disc list-inside space-y-1">
-                    {desirable.map((des, idx) => <li key={idx}>{des}</li>)}
+                    {desirable.map((des, idx) => (
+                      <li key={idx}>{des}</li>
+                    ))}
                   </ul>
                 </div>
               )}
 
               {!!benefits.length && (
                 <div>
-                  <h3 className="text-base font-semibold mb-1 dark:text-white">Benefits</h3>
+                  <h3 className="text-base font-semibold mb-1 dark:text-white">
+                    Benefits
+                  </h3>
                   <ul className="list-disc list-inside space-y-1">
-                    {benefits.map((ben, idx) => <li key={idx}>{ben}</li>)}
+                    {benefits.map((ben, idx) => (
+                      <li key={idx}>{ben}</li>
+                    ))}
                   </ul>
                 </div>
               )}
@@ -151,43 +194,97 @@ const JobDetails = () => {
             </div>
 
             <div>
-              <h4 className="text-base font-semibold text-gray-800 dark:text-white mb-4">Job Overview</h4>
+              <h4 className="text-base font-semibold text-gray-800 dark:text-white mb-4">
+                Job Overview
+              </h4>
               <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-300">
-                <OverviewItem icon={assets.calendar} label="JOB POSTED" value={postedDate ? new Date(postedDate).toLocaleDateString() : "-"} />
-                <OverviewItem icon={assets.timer} label="JOB EXPIRE" value={expireDate ? new Date(expireDate).toLocaleDateString() : "-"} />
-                <OverviewItem icon={assets.stack} label="JOB LEVEL" value={jobLevel || "-"} />
-                <OverviewItem icon={assets.wallet} label="EXPERIENCE" value={experience || "-"} />
-                <OverviewItem icon={assets.briefcase} label="EDUCATION" value={education || "-"} />
+                <OverviewItem
+                  icon={assets.calendar}
+                  label="JOB POSTED"
+                  value={
+                    postedDate ? new Date(postedDate).toLocaleDateString() : "-"
+                  }
+                />
+                <OverviewItem
+                  icon={assets.timer}
+                  label="JOB EXPIRE"
+                  value={
+                    expireDate ? new Date(expireDate).toLocaleDateString() : "-"
+                  }
+                />
+                <OverviewItem
+                  icon={assets.stack}
+                  label="JOB LEVEL"
+                  value={jobLevel || "-"}
+                />
+                <OverviewItem
+                  icon={assets.wallet}
+                  label="EXPERIENCE"
+                  value={experience || "-"}
+                />
+                <OverviewItem
+                  icon={assets.briefcase}
+                  label="EDUCATION"
+                  value={education || "-"}
+                />
               </div>
             </div>
 
             <div>
-              <h4 className="text-base font-semibold mb-2 dark:text-white">Share this job:</h4>
+              <h4 className="text-base font-semibold mb-2 dark:text-white">
+                Share this job:
+              </h4>
               <div className="flex items-center gap-3">
                 <img
                   src={assets.copylink}
                   alt="Copy Link"
                   className="w-28 cursor-pointer hover:scale-105 transition-transform"
-                  onClick={() => navigator.clipboard.writeText(window.location.href)}
+                  onClick={() =>
+                    navigator.clipboard.writeText(window.location.href)
+                  }
                 />
                 {shareLinks?.facebook && (
-                  <a href={shareLinks.facebook} target="_blank" rel="noreferrer">
-                    <img src={assets.facebook} alt="Facebook" className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
+                  <a
+                    href={shareLinks.facebook}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <img
+                      src={assets.facebook}
+                      alt="Facebook"
+                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
+                    />
                   </a>
                 )}
                 {shareLinks?.linkedin && (
-                  <a href={shareLinks.linkedin} target="_blank" rel="noreferrer">
-                    <img src={assets.linkedin} alt="LinkedIn" className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
+                  <a
+                    href={shareLinks.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <img
+                      src={assets.linkedin}
+                      alt="LinkedIn"
+                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
+                    />
                   </a>
                 )}
                 {shareLinks?.twitter && (
                   <a href={shareLinks.twitter} target="_blank" rel="noreferrer">
-                    <img src={assets.twitter} alt="Twitter" className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
+                    <img
+                      src={assets.twitter}
+                      alt="Twitter"
+                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
+                    />
                   </a>
                 )}
                 {shareLinks?.mail && (
                   <a href={shareLinks.mail}>
-                    <img src={assets.mail} alt="Mail" className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
+                    <img
+                      src={assets.mail}
+                      alt="Mail"
+                      className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"
+                    />
                   </a>
                 )}
               </div>
@@ -209,7 +306,9 @@ const OverviewItem = ({ icon, label, value }) => (
     <img src={icon} className="w-5 h-5 mt-1" alt={label} />
     <div>
       <p className="text-xs text-gray-400 dark:text-gray-500">{label}</p>
-      <p className="text-sm font-medium text-gray-800 dark:text-white">{value}</p>
+      <p className="text-sm font-medium text-gray-800 dark:text-white">
+        {value}
+      </p>
     </div>
   </div>
 );

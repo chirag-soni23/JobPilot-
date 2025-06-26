@@ -6,7 +6,7 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
-  Pencil, 
+  Pencil,
   BanIcon,
 } from "lucide-react";
 import Footer from "../components/Footer";
@@ -57,6 +57,8 @@ const FindJob = () => {
 
   const navigateJobDetails = (id) => navigate(`/jobdetails/${id}`);
 
+  const scrollTopSmooth = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
   return (
     <>
       <div className="w-full py-6 space-y-10 px-6 md:px-16 lg:px-24 xl:px-32">
@@ -70,7 +72,11 @@ const FindJob = () => {
             </p>
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">
-            <Link className="text-blue-600 hover:underline" to="/">
+            <Link
+              onClick={scrollTopSmooth}
+              className="text-blue-600 hover:underline"
+              to="/"
+            >
               Home
             </Link>{" "}
             / <span>Find Job</span>
