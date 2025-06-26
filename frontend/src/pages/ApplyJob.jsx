@@ -4,18 +4,20 @@ import { useDropzone } from "react-dropzone";
 import { UserData } from "../context/UserContext";
 import { useParams } from "react-router-dom";
 import ApplyJobHeader from "../components/ApplyJobHeader";
+import { UseJobApply } from "../context/JobApplyContext";
 
 const ApplyJob = () => {
   const { user } = UserData();
   const { id } = useParams();
+  const { applyJob, applying } = UseJobApply();
+
   const [data, setData] = useState({
     fullName: user.name,
     email: user.email,
     mobileNumber: "",
-    education:
-      "Bachelor of Computer Applications (BCA), Computer Science\nGLA University, Mathura\n2024 - 2027",
-    experience:
-      "Full Stack Development - Skill Academy by Testbook\nOct 2023 - Nov 2023 (1 month)",
+    summary: "",
+    education: "",
+    experience: "",
     linkedinUrl: "",
     portfolioUrl: "",
     resume: null,
@@ -40,6 +42,15 @@ const ApplyJob = () => {
     onDrop: onDrop("profilePic"),
     accept: { "image/*": [] },
   });
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value) formData.append(key, value);
+    });
+
+    await applyJob(id, formData);
+  };
 
   return (
     <>
@@ -74,28 +85,52 @@ const ApplyJob = () => {
           </Section>
 
           <Section title="Career Objective">
-            <EditableText value="Aspiring Full Stack Developer with expertise in the MERN stack..." />
+            <textarea
+              name="summary"
+              value={data.summary}
+              onChange={handleChange}
+              className="w-full bg-transparent outline-none resize-none text-sm"
+              placeholder="Write your objective..."
+            />
           </Section>
 
           <Section title="Education">
-            <EditableText value={data.education} />
+            <textarea
+              name="education"
+              value={data.education}
+              onChange={handleChange}
+              className="w-full bg-transparent outline-none resize-none text-sm"
+            />
           </Section>
 
           <Section title="Work Experience">
-            <EditableText value={data.experience} />
+            <textarea
+              name="experience"
+              value={data.experience}
+              onChange={handleChange}
+              className="w-full bg-transparent outline-none resize-none text-sm"
+            />
           </Section>
 
           <Section title="LinkedIn Profile">
-            <EditableText
+            <input
+              type="url"
+              name="linkedinUrl"
               value={data.linkedinUrl}
+              onChange={handleChange}
               placeholder="https://linkedin.com/in/your-profile"
+              className="w-full bg-transparent outline-none text-sm"
             />
           </Section>
 
           <Section title="Portfolio URL">
-            <EditableText
+            <input
+              type="url"
+              name="portfolioUrl"
               value={data.portfolioUrl}
+              onChange={handleChange}
               placeholder="https://your-portfolio.com"
+              className="w-full bg-transparent outline-none text-sm"
             />
           </Section>
 
@@ -117,8 +152,12 @@ const ApplyJob = () => {
             </div>
           </Section>
 
-          <button className="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700">
-            Submit Application
+          <button
+            onClick={handleSubmit}
+            disabled={applying}
+            className="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60"
+          >
+            {applying ? "Submitting..." : "Submit Application"}
           </button>
         </div>
       </div>
@@ -135,14 +174,6 @@ const Section = ({ title, children }) => (
       {children}
     </div>
   </div>
-);
-
-const EditableText = ({ value, placeholder = "" }) => (
-  <textarea
-    className="w-full bg-transparent outline-none resize-none text-sm"
-    defaultValue={value}
-    placeholder={placeholder}
-  />
 );
 
 export default ApplyJob;
