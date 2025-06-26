@@ -20,6 +20,7 @@ export const createApplication = TryCatch(async (req, res) => {
     experience,
     linkedinUrl,
     portfolioUrl,
+    summary,                
   } = req.body;
 
   let resume = { id: "", url: "" };
@@ -56,12 +57,14 @@ export const createApplication = TryCatch(async (req, res) => {
     fullName: fullName?.trim(),
     email: email?.trim(),
     mobileNumber: mobileNumber?.trim(),
+    summary: summary?.trim(),        
     resume,
     profilePic,
     education: education?.trim(),
     experience: experience?.trim(),
     linkedinUrl: linkedinUrl?.trim(),
     portfolioUrl: portfolioUrl?.trim(),
+    isApplied: true,                
   });
 
   res.status(201).json({ message: "Application submitted", application });

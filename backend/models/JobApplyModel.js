@@ -6,6 +6,7 @@ const applicationSchema = new mongoose.Schema(
     fullName: String,
     email: String,
     mobileNumber: String,
+    summary: String,
     resume: { id: String, url: String },
     profilePic: { id: String, url: String },
     education: String,
@@ -19,6 +20,7 @@ const applicationSchema = new mongoose.Schema(
       },
     },
     portfolioUrl: String,
+    isApplied: { type: Boolean, default: false }, 
   },
   { timestamps: true }
 );
