@@ -94,7 +94,7 @@ export const getAllJobApplication = TryCatch(async (req, res) => {
 
   const applications = await Application.find(filter)
     .populate("applicant", "name email role")
-    .populate("job", "title company location")
+    .populate("job", "title company location type minSalary maxSalary logoUrl")
     .sort({ createdAt: -1 });
 
   res.json(applications);
