@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Upload } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { UserData } from "../context/UserContext";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ApplyJobHeader from "../components/ApplyJobHeader";
 
 const ApplyJob = () => {
