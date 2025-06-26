@@ -34,6 +34,7 @@ const JobSchema = new mongoose.Schema(
       mail: { type: String },
     },
     isSaved: { type: Boolean, default: false },
+    applications: [{ type: mongoose.Schema.Types.ObjectId, ref: "Application" }],
   },
   { timestamps: true }
 );

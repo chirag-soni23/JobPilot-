@@ -3,11 +3,16 @@ import { Link, useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import { assets } from "../assets/assets.js";
 import { JobData } from "../context/JobContext.jsx";
+import { UseJobApply } from "../context/JobApplyContext";
 import { useEffect, useState, useCallback } from "react";
+import { UserData } from "../context/UserContext.jsx";
 
 const JobDetails = () => {
   const { id } = useParams();
   const { getJobById, singleJob, toggleSaveJob, savedLoading } = JobData();
+  const { applications } = UseJobApply();
+  const { user } = UserData();
+
   const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
@@ -26,8 +31,11 @@ const JobDetails = () => {
 
   if (!singleJob) return null;
 
-  const scrollTopSmooth = () =>
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const isApplied =
+    user?.role !== "admin" &&
+    applications.some((app) => app.job?._id?.toString() === id?.toString());
+
+  const scrollTopSmooth = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const {
     title = "",
@@ -47,7 +55,6 @@ const JobDetails = () => {
     jobLevel = "",
     experience = "",
     education = "",
-    shareLinks = {},
   } = singleJob;
 
   return (
@@ -227,13 +234,22 @@ const JobDetails = () => {
               </div>
             </div>
 
-            <Link
-              to={`/applyjob/${singleJob._id}`}
-              className="bg-[#0A65CC] hover:bg-blue-700 text-white w-full py-3 rounded-md font-medium flex justify-center items-center gap-2 transition"
-              onClick={scrollTopSmooth}
-            >
-              Apply Now <ArrowRight className="w-4 h-4" />
-            </Link>
+            {isApplied ? (
+              <button
+                disabled
+                className="bg-gray-400 cursor-not-allowed text-white w-full py-3 rounded-md font-medium flex justify-center items-center gap-2 transition"
+              >
+                Applied <ArrowRight className="w-4 h-4" />
+              </button>
+            ) : (
+              <Link
+                to={`/applyjob/${singleJob._id}`}
+                className="bg-[#0A65CC] hover:bg-blue-700 text-white w-full py-3 rounded-md font-medium flex justify-center items-center gap-2 transition"
+                onClick={scrollTopSmooth}
+              >
+                Apply Now <ArrowRight className="w-4 h-4" />
+              </Link>
+            )}
           </div>
         </div>
       </section>

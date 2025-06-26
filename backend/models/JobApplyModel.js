@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const applicationSchema = new mongoose.Schema(
   {
+    applicant: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     job: { type: mongoose.Schema.Types.ObjectId, ref: "Job" },
     fullName: String,
     email: String,
@@ -20,7 +25,7 @@ const applicationSchema = new mongoose.Schema(
       },
     },
     portfolioUrl: String,
-    isApplied: { type: Boolean, default: false }, 
+    isApplied: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

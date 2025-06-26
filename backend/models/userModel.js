@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema(
       enum: ["candidate", "employer", "admin"],
       default: "candidate",
     },
+    appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Application" }],
   },
   { timestamps: true }
 );

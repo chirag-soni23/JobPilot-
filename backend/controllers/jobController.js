@@ -57,15 +57,23 @@ export const createJob = TryCatch(async (req, res) => {
   res.status(201).json({ message: "Job created successfully", job });
 });
 
-// Get all Jobs
+// Get all Jobs with populated applications
 export const getAllJobs = TryCatch(async (req, res) => {
-  const jobs = await Job.find().sort({ createdAt: -1 });
+  const jobs = await Job.find()
+    .populate({
+      path: "applications",
+      populate: { path: "applicant", select: "name email" },
+    })
+    .sort({ createdAt: -1 });
   res.json(jobs);
 });
 
-// Get single Job
+// Get single Job with populated applications
 export const getJobById = TryCatch(async (req, res) => {
-  const job = await Job.findById(req.params.id);
+  const job = await Job.findById(req.params.id).populate({
+    path: "applications",
+    populate: { path: "applicant", select: "name email" },
+  });
   if (!job) return res.status(404).json({ message: "Job not found" });
   res.json(job);
 });
@@ -120,7 +128,6 @@ export const updateJob = TryCatch(async (req, res) => {
   await job.save();
   res.json({ message: "Job updated successfully", job });
 });
-
 
 // Delete Job
 export const deleteJob = TryCatch(async (req, res) => {
