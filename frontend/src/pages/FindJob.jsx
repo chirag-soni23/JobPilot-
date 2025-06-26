@@ -6,13 +6,26 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
-  // Pencil,
+  Pencil,
 } from "lucide-react";
 import Footer from "../components/Footer";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { UserData } from "../context/UserContext";
 import { JobData } from "../context/JobContext";
+
+const getBadgeColor = (type) => {
+  switch (type) {
+    case "FULL-TIME":
+      return "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300";
+    case "PART-TIME":
+      return "bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300";
+    case "INTERNSHIP":
+      return "bg-emerald-100 text-emerald-600 dark:bg-emerald-900 dark:text-emerald-300";
+    default:
+      return "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300";
+  }
+};
 
 const FindJob = () => {
   const { jobs } = JobData();
@@ -46,6 +59,7 @@ const FindJob = () => {
     if (!id || typeof id !== "string") return toast.error("Invalid Job ID");
     navigate(`/jobdetails/${id}`);
   };
+
   const editJob = (id) => {
     if (!id || typeof id !== "string") return toast.error("Invalid Job ID");
     navigate(`/editjob/${id}`);
@@ -143,7 +157,9 @@ const FindJob = () => {
                     dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30
                     shadow-md rounded-xl p-4 w-full"
                 >
-                  {/* {user.role == "admin" && (
+                  {/* Admin Edit Button */}
+                  {/*
+                  {user.role === "admin" && (
                     <Pencil
                       onClick={(e) => {
                         e.stopPropagation();
@@ -151,9 +167,10 @@ const FindJob = () => {
                       }}
                       className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-blue-600"
                     />
-                  )} */}
+                  )}
+                  */}
 
-                  <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400">
+                  <span className={`text-xs font-bold px-2 py-1 rounded-full ${getBadgeColor(job.type)}`}>
                     {job.type}
                   </span>
 
