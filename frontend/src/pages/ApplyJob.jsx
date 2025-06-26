@@ -2,9 +2,12 @@ import { useState } from "react";
 import { Upload } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { UserData } from "../context/UserContext";
+import { Link, useParams } from "react-router-dom";
+import ApplyJobHeader from "../components/ApplyJobHeader";
 
 const ApplyJob = () => {
   const { user } = UserData();
+  const { id } = useParams();
   const [data, setData] = useState({
     fullName: user.name,
     email: user.email,
@@ -39,81 +42,87 @@ const ApplyJob = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-      <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 space-y-6">
-        <div className="flex justify-between items-start">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {data.fullName}
-            </h2>
-            <p className="text-gray-500 dark:text-gray-300">{data.email}</p>
+    <>
+      {/* header */}
+      <ApplyJobHeader id={id} />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
+        <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 space-y-6">
+          <div className="flex justify-between items-start">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {data.fullName}
+              </h2>
+              <p className="text-gray-500 dark:text-gray-300">{data.email}</p>
+            </div>
+            <button className="text-blue-600 hover:underline text-sm font-medium">
+              <Upload className="inline w-4 h-4 mr-1" /> Download
+            </button>
           </div>
-          <button className="text-blue-600 hover:underline text-sm font-medium">
-            <Upload className="inline w-4 h-4 mr-1" /> Download
+
+          <Section title="Mobile Number">
+            <input
+              type="tel"
+              name="mobileNumber"
+              value={data.mobileNumber}
+              onChange={handleChange}
+              placeholder="Enter mobile number"
+              pattern="[0-9]{10}"
+              maxLength={10}
+              className="w-full bg-transparent outline-none text-sm"
+              required
+            />
+          </Section>
+
+          <Section title="Career Objective">
+            <EditableText value="Aspiring Full Stack Developer with expertise in the MERN stack..." />
+          </Section>
+
+          <Section title="Education">
+            <EditableText value={data.education} />
+          </Section>
+
+          <Section title="Work Experience">
+            <EditableText value={data.experience} />
+          </Section>
+
+          <Section title="LinkedIn Profile">
+            <EditableText
+              value={data.linkedinUrl}
+              placeholder="https://linkedin.com/in/your-profile"
+            />
+          </Section>
+
+          <Section title="Portfolio URL">
+            <EditableText
+              value={data.portfolioUrl}
+              placeholder="https://your-portfolio.com"
+            />
+          </Section>
+
+          <Section title="Resume">
+            <div {...resRoot()} className="dropzone">
+              <input {...resInput()} />
+              {data.resume
+                ? data.resume.name
+                : "Click or drag to upload resume"}
+            </div>
+          </Section>
+
+          <Section title="Profile Picture">
+            <div {...picRoot()} className="dropzone">
+              <input {...picInput()} />
+              {data.profilePic
+                ? data.profilePic.name
+                : "Click or drag to upload profile picture"}
+            </div>
+          </Section>
+
+          <button className="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700">
+            Submit Application
           </button>
         </div>
-
-        <Section title="Mobile Number">
-          <input
-            type="tel"
-            name="mobileNumber"
-            value={data.mobileNumber}
-            onChange={handleChange}
-            placeholder="Enter mobile number"
-            pattern="[0-9]{10}"
-            maxLength={10}
-            className="w-full bg-transparent outline-none text-sm"
-            required
-          />
-        </Section>
-
-        <Section title="Career Objective">
-          <EditableText value="Aspiring Full Stack Developer with expertise in the MERN stack..." />
-        </Section>
-
-        <Section title="Education">
-          <EditableText value={data.education} />
-        </Section>
-
-        <Section title="Work Experience">
-          <EditableText value={data.experience} />
-        </Section>
-
-        <Section title="LinkedIn Profile">
-          <EditableText
-            value={data.linkedinUrl}
-            placeholder="https://linkedin.com/in/your-profile"
-          />
-        </Section>
-
-        <Section title="Portfolio URL">
-          <EditableText
-            value={data.portfolioUrl}
-            placeholder="https://your-portfolio.com"
-          />
-        </Section>
-
-        <Section title="Resume">
-          <div {...resRoot()} className="dropzone">
-            <input {...resInput()} />
-            {data.resume ? data.resume.name : "Click or drag to upload resume"}
-          </div>
-        </Section>
-
-        <Section title="Profile Picture">
-          <div {...picRoot()} className="dropzone">
-            <input {...picInput()} />
-            {data.profilePic
-              ? data.profilePic.name
-              : "Click or drag to upload profile picture"}
-          </div>
-        </Section>
-
-        <button className="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700">
-          Submit Application
-        </button>
       </div>
-    </div>
+    </>
   );
 };
 
