@@ -6,7 +6,7 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
-  Pencil, // future admin edit – ab bhi comment me rakha hai
+  Pencil, 
   BanIcon,
 } from "lucide-react";
 import Footer from "../components/Footer";
