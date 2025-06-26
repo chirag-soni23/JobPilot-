@@ -9,3 +9,15 @@
 .dropzone {
   @apply flex items-center justify-center p-4 rounded-lg border-2 border-dashed border-gray-400 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 cursor-pointer hover:border-blue-500;
 }
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

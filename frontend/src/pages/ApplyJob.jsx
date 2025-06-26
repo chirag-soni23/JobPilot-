@@ -4,7 +4,7 @@ import { useDropzone } from "react-dropzone";
 import { UserData } from "../context/UserContext";
 
 const ApplyJob = () => {
-  const {user} = UserData();
+  const { user } = UserData();
   const [data, setData] = useState({
     fullName: user.name,
     email: user.email,
@@ -55,12 +55,15 @@ const ApplyJob = () => {
 
         <Section title="Mobile Number">
           <input
-            type="number"
+            type="tel"
             name="mobileNumber"
             value={data.mobileNumber}
             onChange={handleChange}
             placeholder="Enter mobile number"
+            pattern="[0-9]{10}"
+            maxLength={10}
             className="w-full bg-transparent outline-none text-sm"
+            required
           />
         </Section>
 
