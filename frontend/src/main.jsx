@@ -6,6 +6,7 @@ import App from "./App.jsx";
 import { UserProvider } from "./context/UserContext.jsx";
 import { JobProvider } from "./context/JobContext.jsx";
 import { MailerProvider } from "./context/NodeMailerContext.jsx";
+import { JobApplyProvider } from "./context/JobApplyContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -13,7 +14,9 @@ createRoot(document.getElementById("root")).render(
       <UserProvider>
         <JobProvider>
           <MailerProvider>
-            <App />
+            <JobApplyProvider>
+              <App />
+            </JobApplyProvider>
           </MailerProvider>
         </JobProvider>
       </UserProvider>

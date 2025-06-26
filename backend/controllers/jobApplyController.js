@@ -20,7 +20,7 @@ export const createApplication = TryCatch(async (req, res) => {
     experience,
     linkedinUrl,
     portfolioUrl,
-    summary,                
+    summary,
   } = req.body;
 
   let resume = { id: "", url: "" };
@@ -57,15 +57,28 @@ export const createApplication = TryCatch(async (req, res) => {
     fullName: fullName?.trim(),
     email: email?.trim(),
     mobileNumber: mobileNumber?.trim(),
-    summary: summary?.trim(),        
+    summary: summary?.trim(),
     resume,
     profilePic,
     education: education?.trim(),
     experience: experience?.trim(),
     linkedinUrl: linkedinUrl?.trim(),
     portfolioUrl: portfolioUrl?.trim(),
-    isApplied: true,                
+    isApplied: true,
   });
 
   res.status(201).json({ message: "Application submitted", application });
+});
+
+// get all application
+export const getAllJobApplication = TryCatch(async (req, res) => {
+  const applications = await Application.find().sort({ createdAt: -1 });
+  res.json(applications);
+});
+
+// get application by id
+export const getApplicationById = TryCatch(async (req, res) => {
+  const application = await Application.findById(req.params.id);
+  if (!application) return res.status(404).json({ message: "Job not found" });
+  res.json(application);
 });

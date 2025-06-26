@@ -16,7 +16,7 @@ const getBadgeColor = (type) => {
 
 const FeaturedJobs = () => {
   const { jobs } = JobData();
-  const featuredJobs = jobs.filter((job) => job.isFeatured); // only featured jobs
+  const featuredJobs = jobs.filter((job) => job.isFeatured); 
 
   return (
     <section className="px-6 md:px-16 lg:px-24 xl:px-32 py-14">
@@ -32,7 +32,7 @@ const FeaturedJobs = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {featuredJobs.map((job) => (
           <div
-            key={job.id}
+            key={job._id}
             className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 shadow-sm hover:shadow-md transition"
           >
             <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
