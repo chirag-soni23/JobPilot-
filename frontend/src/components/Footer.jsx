@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Facebook,
   Youtube,
@@ -7,9 +6,13 @@ import {
   ArrowRight,
   Briefcase,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
-    let currentYear = new Date().getFullYear();
+  const scrollTopSmooth = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-[#111827] text-gray-400 pt-16 pb-10 px-6 md:px-20">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-10 mb-10">
@@ -32,11 +35,31 @@ const Footer = () => {
         <div>
           <h4 className="text-white font-semibold mb-4">Quick Link</h4>
           <ul className="space-y-2 text-sm">
-            <li>About</li>
             <li className="flex items-center gap-1">
-              <ArrowRight className="w-3.5 h-3.5" /> <span>Contact</span>
+              <Link onClick={scrollTopSmooth} className="cursor-pointer" to="/">
+                <span>Home</span>
+              </Link>
             </li>
-            <li>Pricing</li>
+
+            <li className="flex items-center gap-1">
+              <ArrowRight className="w-3.5 h-3.5" />
+              <Link
+                onClick={scrollTopSmooth}
+                className="cursor-pointer"
+                to="/contact"
+              >
+                <span>Contact</span>
+              </Link>
+            </li>
+            <li className="flex items-center gap-1">
+              <Link
+                onClick={scrollTopSmooth}
+                className="cursor-pointer"
+                to="/findjobs"
+              >
+                <span>Find Jobs</span>
+              </Link>
+            </li>
             <li>Blog</li>
           </ul>
         </div>
@@ -74,7 +97,6 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom Bar */}
       <div className="border-t border-gray-700 pt-6 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500">
         <p>© {currentYear} Jobpilot - Job Portal. All rights Reserved</p>
         <div className="flex gap-4 mt-4 md:mt-0">
