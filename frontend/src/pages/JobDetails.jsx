@@ -279,7 +279,15 @@ const JobDetails = () => {
                   </a>
                 )}
                 {shareLinks?.mail && (
-                  <a href={shareLinks.mail}>
+                  <a
+                    href={
+                      shareLinks.mail.startsWith("mailto:")
+                        ? shareLinks.mail
+                        : `mailto:${shareLinks.mail}`
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     <img
                       src={assets.mail}
                       alt="Mail"
