@@ -5,7 +5,7 @@ import { User } from "../models/userModel.js";
 import { TryCatch } from "../utils/TryCatch.js";
 import imagekit from "../utils/imagekit.js";
 import getDataUri from "../utils/urlGenerator.js";
-import { sendJobApplicationEmail } from "../utils/JobMailer.js";
+import { sendJobApplicationEmail } from "../utils/Jobmailer.js";
 
 export const createApplication = TryCatch(async (req, res) => {
   const { jobId } = req.params;
