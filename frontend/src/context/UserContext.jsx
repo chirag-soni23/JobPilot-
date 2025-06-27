@@ -6,6 +6,7 @@ import { useEffect } from "react";
 const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState([]);
+  const [users,setUsers] = useState([]);
   const [isAuth, setIsAuth] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
 
@@ -64,7 +65,7 @@ export const UserProvider = ({ children }) => {
   async function fetchAllUsers() {
     try {
       const { data } = await axios.get("/api/user/getall");
-      setUser(data);
+      setUsers(data);
       setIsAuth(true);
       setLoading(false);
     } catch (error) {
@@ -102,6 +103,7 @@ export const UserProvider = ({ children }) => {
         loading,
         registerUser,
         logout,
+        users
       }}
     >
       {children}
