@@ -1,125 +1,99 @@
-# app.py  ──────────────────────────────────────────────────────────
+# app.py ────────────────────────────────────────────────
+import os
+from dotenv import load_dotenv
 import streamlit as st
 import pandas as pd
 import requests
-import altair as alt
+import matplotlib.pyplot as plt
 
-# ─── CONFIG ───────────────────────────────────────────────────────
-API_BASE = "http://localhost:5000/api"  # ←– apne backend ka base URL
+# ── Load .env ───────────────────────────────────────────
+load_dotenv()
 
-# ─── Helper: safe GET that returns list/[] ────────────────────────
-def safe_json_get(url: str):
+API_BASE = "http://localhost:5000/api"
+ENV_TOKEN = os.getenv("JWT_SECRET", f"{"""EWOIFJ34OI[TJ46U0DD96VUN6WEF34T342T2]"""}")   # env से token
+st.set_page_config(page_title="Job-Portal Dashboard", layout="wide")
+st.title("📊 Job-Portal Analytics (matplotlib)")
+
+# ── Sidebar token input (env value pre-filled) ─────────
+st.sidebar.header("🔐 Authentication")
+token = st.sidebar.text_input("JWT Bearer Token", value=ENV_TOKEN, type="password")
+HEADERS = {"Authorization": f"Bearer {token}"} if token else {}
+
+# ── Safe fetch helper ──────────────────────────────────
+def get_json(url: str):
     try:
-        resp = requests.get(url, timeout=10)
-        if resp.status_code == 200:
-            return resp.json()
-        st.warning(f"⚠️ {url} returned {resp.status_code}")
+        res = requests.get(url, headers=HEADERS, timeout=10)
+        if res.status_code == 200:
+            return res.json()
+        st.warning(f"{url} → {res.status_code}")
     except Exception as e:
-        st.warning(f"⚠️ {url} error: {e}")
+        st.warning(f"{url} error: {e}")
     return []
 
-# ─── Fetch data (cached 5 min) ────────────────────────────────────
-@st.cache_data(ttl=300, show_spinner="Fetching data…")
+# ── Fetch data (cache 5 min) ───────────────────────────
+@st.cache_data(ttl=300, show_spinner="🔄 Loading data…")
 def fetch_all():
-    users = safe_json_get(f"{API_BASE}/user/getall")
-    jobs  = safe_json_get(f"{API_BASE}/job/getall")
-    apps  = safe_json_get(f"{API_BASE}/apply/getall")
+    users = get_json(f"{API_BASE}/user/getall")
+    jobs  = get_json(f"{API_BASE}/job/getall")
+    apps  = get_json(f"{API_BASE}/apply/getall")
     return users, jobs, apps
-
-# ─── MAIN UI ──────────────────────────────────────────────────────
-st.set_page_config(page_title="Job-Portal Dashboard", layout="wide")
-st.title("📊 Job-Portal Analytics")
 
 users, jobs, apps = fetch_all()
 
-# ─── Stat cards ───────────────────────────────────────────────────
-col1, col2, col3 = st.columns(3)
-col1.metric("Users", len(users))
-col2.metric("Jobs", len(jobs))
-col3.metric("Applications", len(apps))
-
+# ── Stat cards ─────────────────────────────────────────
+c1, c2, c3 = st.columns(3)
+c1.metric("Users", len(users))
+c2.metric("Jobs",  len(jobs))
+c3.metric("Applications", len(apps))
 st.divider()
 
-# ─── Users by Role (pie) ──────────────────────────────────────────
-st.subheader("Users by Role")
-role_df = (
-    pd.Series([u.get("role", "unknown") for u in users])
-    .value_counts()
-    .reset_index(name="count")
-    .rename(columns={"index": "role"})
-)
-if not role_df.empty:
-    st.altair_chart(
-        alt.Chart(role_df).mark_arc().encode(
-            theta="count",
-            color="role",
-            tooltip=["role", "count"],
-        ),
-        use_container_width=True,
-    )
+# ========== 1. Users by Role (Pie) =====================
+role_counts = pd.Series([u.get("role","unknown") for u in users]).value_counts()
+if not role_counts.empty:
+    fig1, ax1 = plt.subplots()
+    ax1.pie(role_counts, labels=role_counts.index, autopct="%1.0f%%", startangle=140)
+    ax1.set_title("Users by Role"); ax1.axis("equal")
+    st.pyplot(fig1)
 else:
     st.info("No user data.")
 
-# ─── Jobs by Type (bar) ───────────────────────────────────────────
-st.subheader("Jobs by Type")
-type_df = (
-    pd.Series([j.get("type", "unknown") for j in jobs])
-    .value_counts()
-    .reset_index(name="count")
-    .rename(columns={"index": "type"})
-)
-if not type_df.empty:
-    st.altair_chart(
-        alt.Chart(type_df).mark_bar().encode(
-            x="type",
-            y="count",
-            tooltip=["type", "count"],
-            color="type",
-        ).properties(height=300),
-        use_container_width=True,
-    )
+# ========== 2. Jobs by Type (Bar) ======================
+type_counts = pd.Series([j.get("type","unknown") for j in jobs]).value_counts()
+if not type_counts.empty:
+    fig2, ax2 = plt.subplots()
+    ax2.bar(type_counts.index, type_counts.values, color="skyblue")
+    ax2.set_title("Jobs by Type")
+    ax2.set_xlabel("Type"); ax2.set_ylabel("Count")
+    st.pyplot(fig2)
 else:
     st.info("No job data.")
 
-# ─── Applications per Company (horizontal bar) ───────────────────
-st.subheader("Applications per Company")
-comp_df = (
-    pd.Series([a.get("job", {}).get("company", "Unknown") for a in apps])
-    .value_counts()
-    .reset_index(name="count")
-    .rename(columns={"index": "company"})
-)
-if not comp_df.empty:
-    st.altair_chart(
-        alt.Chart(comp_df).mark_bar().encode(
-            x="count",
-            y=alt.Y("company", sort="-x"),
-            tooltip=["company", "count"],
-            color="company",
-        ).properties(height=400),
-        use_container_width=True,
-    )
+# ========== 3. Applications per Company (Barh) =========
+comp_counts = pd.Series(
+    [a.get("job",{}).get("company","Unknown") for a in apps]
+).value_counts()
+if not comp_counts.empty:
+    fig3, ax3 = plt.subplots(figsize=(6,4))
+    ax3.barh(comp_counts.index, comp_counts.values, color="coral")
+    ax3.set_title("Applications per Company")
+    ax3.set_xlabel("Applications")
+    st.pyplot(fig3)
 else:
     st.info("No application data.")
 
-# ─── Applications Over Time (line) ───────────────────────────────
-st.subheader("Applications Over Time")
-date_df = (
-    pd.Series([a.get("createdAt", "")[:10] for a in apps if a.get("createdAt")])
+# ========== 4. Applications over Time (Line) ===========
+date_counts = (
+    pd.Series([a.get("createdAt","")[:10] for a in apps if a.get("createdAt")])
     .value_counts()
-    .rename_axis("date")
-    .reset_index(name="count")
-    .sort_values("date")
+    .sort_index()
 )
-if not date_df.empty:
-    date_df["date"] = pd.to_datetime(date_df["date"])
-    st.altair_chart(
-        alt.Chart(date_df).mark_line(point=True).encode(
-            x="date:T",
-            y="count:Q",
-            tooltip=["date:T", "count"],
-        ).properties(height=300),
-        use_container_width=True,
-    )
+if not date_counts.empty:
+    date_counts.index = pd.to_datetime(date_counts.index)
+    fig4, ax4 = plt.subplots()
+    ax4.plot(date_counts.index, date_counts.values, marker="o")
+    ax4.set_title("Applications Over Time")
+    ax4.set_xlabel("Date"); ax4.set_ylabel("Applications")
+    fig4.autofmt_xdate()
+    st.pyplot(fig4)
 else:
-    st.info("No application timeline data.")
+    st.info("No timeline data.")
