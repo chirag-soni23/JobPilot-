@@ -103,3 +103,4 @@ export const getAllUsers = TryCatch(async (req, res) => {
   res.json(users);
 });
 
+
