@@ -9,6 +9,7 @@ export const UserProvider = ({ children }) => {
   const [isAuth, setIsAuth] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
 
+  // register user
   async function registerUser(name, email, password, navigate) {
     setBtnLoading(true);
     try {
@@ -28,6 +29,7 @@ export const UserProvider = ({ children }) => {
     }
   }
 
+  // login user
   async function loginUser(email, password, navigate) {
     setBtnLoading(true);
     try {
@@ -43,7 +45,9 @@ export const UserProvider = ({ children }) => {
       setBtnLoading(false);
     }
   }
+
   const [loading, setLoading] = useState(true);
+  // fetch user
   async function fetchUser() {
     try {
       const { data } = await axios.get("/api/user/me");
@@ -55,8 +59,22 @@ export const UserProvider = ({ children }) => {
       setLoading(false);
     }
   }
+
+  // fetch all users
+  async function fetchAllUsers() {
+    try {
+      const { data } = await axios.get("/api/user/getall");
+      setUser(data);
+      setIsAuth(true);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }
   useEffect(() => {
     fetchUser();
+    fetchAllUsers();
   }, []);
 
   async function logout() {

@@ -85,3 +85,21 @@ export const deleteProfileImage = TryCatch(async (req, res) => {
 
   res.json({ message: "Profile image removed successfully!" });
 });
+
+// get all user
+export const getAllUsers = TryCatch(async (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Forbidden: admin only" });
+  }
+
+  const users = await User.find()
+    .select("-password")
+    .populate(
+      "appliedJobs",
+      "fullName email mobileNumber summary resume profilePic linkedinUrl portfolioUrl"
+    )
+    .sort({ createdAt: -1 });
+
+  res.json(users);
+});
+

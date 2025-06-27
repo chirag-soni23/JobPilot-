@@ -1,6 +1,7 @@
 import express from "express";
 import {
   deleteProfileImage,
+  getAllUsers,
   loginUser,
   logout,
   Myprofile,
@@ -15,6 +16,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", isAuth, logout);
 router.get("/me", isAuth, Myprofile);
+router.get("/getall", isAuth, getAllUsers);
 router.get("/:id", isAuth, userProfile);
 router.post("/uploadprofile", isAuth, uploadFile, profileUpload);
 router.delete("/deleteprofile", isAuth, deleteProfileImage);
