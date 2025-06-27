@@ -5,6 +5,7 @@ import { User } from "../models/userModel.js";
 import { TryCatch } from "../utils/TryCatch.js";
 import imagekit from "../utils/imagekit.js";
 import getDataUri from "../utils/urlGenerator.js";
+import { sendJobApplicationEmail } from "../utils/JobMailer.js";
 
 export const createApplication = TryCatch(async (req, res) => {
   const { jobId } = req.params;
@@ -43,10 +44,8 @@ export const createApplication = TryCatch(async (req, res) => {
     const file = req.files.resume[0];
     if (file.mimetype !== "application/pdf")
       return res.status(400).json({ message: "Resume must be a PDF file" });
-
-    const fileUri = getDataUri(file);
     const { fileId, url } = await imagekit.upload({
-      file: fileUri.content,
+      file: getDataUri(file).content,
       fileName: `resume_${Date.now()}.pdf`,
     });
     resume = { id: fileId, url };
@@ -54,9 +53,8 @@ export const createApplication = TryCatch(async (req, res) => {
 
   if (req.files?.profilePic?.[0]) {
     const file = req.files.profilePic[0];
-    const fileUri = getDataUri(file);
     const { fileId, url } = await imagekit.upload({
-      file: fileUri.content,
+      file: getDataUri(file).content,
       fileName: `profile_${Date.now()}`,
     });
     profilePic = { id: fileId, url };
@@ -85,6 +83,20 @@ export const createApplication = TryCatch(async (req, res) => {
       $addToSet: { appliedJobs: application._id },
     }),
   ]);
+
+  const jobDoc = await Job.findById(jobId).select("title shareLinks");
+  const employerEmail = jobDoc?.shareLinks?.mail;
+  if (employerEmail) {
+    await sendJobApplicationEmail(employerEmail, {
+      jobTitle: jobDoc.title,
+      name: fullName,
+      email,
+      phone: mobileNumber,
+      resumeUrl: resume.url,
+      linkedinUrl,
+      portfolioUrl,
+    });
+  }
 
   res.status(201).json({ message: "Application submitted", application });
 });
