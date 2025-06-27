@@ -18,7 +18,7 @@ export default defineConfig({
         manualChunks: {
           react: ['react', 'react-dom'],
           icons: ['lucide-react'], 
-          vendor: ['axios', 'zustand'], 
+          vendor: ['axios'], 
         }
       }
     },
