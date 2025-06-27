@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 # env
 load_dotenv()
-API_BASE  = os.getenv("API_BASE", "http://localhost:5000/api")
+API_BASE  = os.getenv("API_BASE", "https://jobpilot-gqgi.onrender.com/api")
 ENV_TOKEN = os.getenv("AUTH_TOKEN", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWU5NjMzZWFiM2I4YWE0MDE4ZDk1YyIsImlhdCI6MTc1MTAzMDA1MSwiZXhwIjoxNzUyMzI2MDUxfQ.0AjqA0RdV8IdQi-yGEz0sPgATFMl3rCQQgDdMqsIRxE")    # ✅ token, not secret!
 
 st.set_page_config(page_title="Job-Portal Dashboard", layout="wide")
