@@ -92,7 +92,11 @@ export const createApplication = TryCatch(async (req, res) => {
       name: fullName,
       email,
       phone: mobileNumber,
+      summary: summary,
+      education: education,
+      experience: experience,
       resumeUrl: resume.url,
+      profilePic: profilePic.url,
       linkedinUrl,
       portfolioUrl,
     });
