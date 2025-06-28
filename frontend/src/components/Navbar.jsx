@@ -88,7 +88,7 @@ const Navbar = () => {
               target="_blank"
               rel="noopener noreferrer"
               className={`flex gap-2 items-center justify-center dark:text-white ${
-                user.role !== "admin" ? "hidden" : ""
+                user?.role !== "admin" ? "hidden" : ""
               }`}
               href="https://job-pilot-dashboard.streamlit.app/"
             >
@@ -132,7 +132,7 @@ const Navbar = () => {
               target="_blank"
               rel="noopener noreferrer"
               className={`flex gap-2 items-center justify-center dark:text-white  ${
-                user.role !== "admin" ? "hidden" : ""
+                user?.role !== "admin" ? "hidden" : ""
               }`}
               href="https://job-pilot-dashboard.streamlit.app/"
             >
