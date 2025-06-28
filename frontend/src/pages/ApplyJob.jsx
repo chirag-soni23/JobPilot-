@@ -5,6 +5,7 @@ import { UserData } from "../context/UserContext";
 import { useParams } from "react-router-dom";
 import ApplyJobHeader from "../components/ApplyJobHeader";
 import { UseJobApply } from "../context/JobApplyContext";
+import { toast } from "react-hot-toast";
 
 const ApplyJob = () => {
   const { user } = UserData();
@@ -12,8 +13,8 @@ const ApplyJob = () => {
   const { applyJob, applying } = UseJobApply();
 
   const [data, setData] = useState({
-    fullName: user?.name,
-    email: user?.email,
+    fullName: user?.name || "",
+    email: user?.email || "",
     mobileNumber: "",
     summary: "",
     education: "",
@@ -36,14 +37,34 @@ const ApplyJob = () => {
       "application/pdf": [".pdf"],
       "application/msword": [".doc", ".docx"],
     },
+    maxFiles: 1,
   });
 
   const { getRootProps: picRoot, getInputProps: picInput } = useDropzone({
     onDrop: onDrop("profilePic"),
     accept: { "image/*": [] },
+    maxFiles: 1,
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (
+      !data.fullName ||
+      !data.email ||
+      !data.mobileNumber ||
+      !data.summary ||
+      !data.education ||
+      !data.experience ||
+      !data.linkedinUrl ||
+      !data.portfolioUrl ||
+      !data.resume ||
+      !data.profilePic
+    ) {
+      toast.error("Please fill all required fields.");
+      return;
+    }
+
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (value) formData.append(key, value);
@@ -54,18 +75,23 @@ const ApplyJob = () => {
 
   return (
     <>
-      {/* header */}
       <ApplyJobHeader id={id} />
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-        <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 space-y-6">
+        <form
+          className="max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 space-y-6"
+          onSubmit={handleSubmit}
+        >
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {data.fullName}
+                {data.fullName || "Your Name"}
               </h2>
               <p className="text-gray-500 dark:text-gray-300">{data.email}</p>
             </div>
-            <button className="text-blue-600 hover:underline text-sm font-medium">
+            <button
+              type="button"
+              className="text-blue-600 hover:underline text-sm font-medium"
+            >
               <Upload className="inline w-4 h-4 mr-1" /> Download
             </button>
           </div>
@@ -91,6 +117,7 @@ const ApplyJob = () => {
               onChange={handleChange}
               className="w-full bg-transparent outline-none resize-none text-sm"
               placeholder="Write your objective..."
+              required
             />
           </Section>
 
@@ -100,6 +127,7 @@ const ApplyJob = () => {
               value={data.education}
               onChange={handleChange}
               className="w-full bg-transparent outline-none resize-none text-sm"
+              required
             />
           </Section>
 
@@ -109,6 +137,7 @@ const ApplyJob = () => {
               value={data.experience}
               onChange={handleChange}
               className="w-full bg-transparent outline-none resize-none text-sm"
+              required
             />
           </Section>
 
@@ -120,6 +149,7 @@ const ApplyJob = () => {
               onChange={handleChange}
               placeholder="https://linkedin.com/in/your-profile"
               className="w-full bg-transparent outline-none text-sm"
+              required
             />
           </Section>
 
@@ -131,12 +161,16 @@ const ApplyJob = () => {
               onChange={handleChange}
               placeholder="https://your-portfolio.com"
               className="w-full bg-transparent outline-none text-sm"
+              required
             />
           </Section>
 
           <Section title="Resume">
-            <div {...resRoot()} className="dropzone">
-              <input {...resInput()} />
+            <div
+              {...resRoot()}
+              className="dropzone cursor-pointer text-sm text-gray-500 dark:text-gray-300"
+            >
+              <input {...resInput()} required />
               {data.resume
                 ? data.resume.name
                 : "Click or drag to upload resume"}
@@ -144,8 +178,11 @@ const ApplyJob = () => {
           </Section>
 
           <Section title="Profile Picture">
-            <div {...picRoot()} className="dropzone">
-              <input {...picInput()} />
+            <div
+              {...picRoot()}
+              className="dropzone cursor-pointer text-sm text-gray-500 dark:text-gray-300"
+            >
+              <input {...picInput()} required />
               {data.profilePic
                 ? data.profilePic.name
                 : "Click or drag to upload profile picture"}
@@ -153,13 +190,13 @@ const ApplyJob = () => {
           </Section>
 
           <button
-            onClick={handleSubmit}
+            type="submit"
             disabled={applying}
             className="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60"
           >
             {applying ? "Submitting..." : "Submit Application"}
           </button>
-        </div>
+        </form>
       </div>
     </>
   );

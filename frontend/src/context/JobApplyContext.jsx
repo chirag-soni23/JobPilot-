@@ -35,7 +35,7 @@ export const JobApplyProvider = ({ children }) => {
       const { data } = await axios.get("/api/apply/getall");
       setApplications(data);
     } catch (err) {
-      toast.error("Failed to fetch applications");
+      console.error("Failed to fetch applications");
     } finally {
       setLoadingApplications(false);
     }
