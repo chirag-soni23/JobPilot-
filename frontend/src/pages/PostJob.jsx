@@ -185,7 +185,7 @@ const PostJob = () => {
               {field}
             </label>
             <input
-              required
+            
               type="text"
               name={field}
               value={form[field]}
