@@ -6,7 +6,7 @@ import { isAuth } from "../middlewares/isAuth.js";
 const router = express.Router();
 
 router.post("/apply/:jobId",isAuth, uploadApplicationFiles, createApplication);
-router.get("/getall",isAuth,getAllJobApplication);
+router.get("/getall",getAllJobApplication);
 router.get("/get/:id",isAuth,getApplicationById);
 
 export default router;

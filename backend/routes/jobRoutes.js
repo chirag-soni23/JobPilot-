@@ -13,7 +13,7 @@ import uploadFile from "../middlewares/multer.js";
 const router = express.Router();
 
 router.post("/createjob", isAuth, uploadFile, createJob);
-router.get("/getall", isAuth, getAllJobs);
+router.get("/getall", getAllJobs);
 router.get("/get/:id", isAuth, getJobById);
 router.put("/update/:id", isAuth,uploadFile, updateJob);
 router.delete("/deletejob", isAuth, deleteJob);
