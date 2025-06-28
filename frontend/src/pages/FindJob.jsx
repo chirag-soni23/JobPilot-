@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Pencil,
   BanIcon,
+  Trash,
 } from "lucide-react";
 import Footer from "../components/Footer";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -32,7 +33,7 @@ const getBadgeColor = (type) => {
 const isExpired = (dateStr) => new Date(dateStr).getTime() < Date.now();
 
 const FindJob = () => {
-  const { jobs } = JobData();
+  const { jobs, deleteJob } = JobData();
   const { isAuth, user } = UserData();
   const { applications } = UseJobApply();
   const navigate = useNavigate();
@@ -61,6 +62,10 @@ const FindJob = () => {
   const navigateJobDetails = (id) => navigate(`/jobdetails/${id}`);
 
   const scrollTopSmooth = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+  const deleteJobById =(jobId)=> {
+    deleteJob(jobId);
+  }
 
   return (
     <>
@@ -162,6 +167,15 @@ const FindJob = () => {
                       hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400
                       dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30"
                   >
+                    {user.role === "admin" && (
+                      <Trash
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteJobById(job._id);
+                        }}
+                        className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-red-500 hover:text-red-600"
+                      />
+                    )} 
                     {/* Admin Edit Button */}
                     {/* 
                     {user.role === "admin" && (

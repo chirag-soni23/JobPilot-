@@ -81,7 +81,7 @@ const Header = () => {
 
           <button
             onClick={(e) => handleRestrictedRoute(e, "/postjob")}
-            className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition whitespace-nowrap"
+            className={`bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition whitespace-nowrap ${user?.role !== "admin" ? "hidden":""}`}
           >
             Post a Job
           </button>

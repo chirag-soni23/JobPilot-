@@ -88,12 +88,15 @@ export const JobProvider = ({ children }) => {
 
   // Delete job
   const deleteJob = async (id) => {
+    setLoading(true);
     try {
-      const { data } = await axios.delete(`/api/job/delete/${id}`);
+      const { data } = await axios.delete(`/api/job/deletejob/${id}`);
       toast.success(data.message);
       getAllJobs();
+      setLoading(false);
     } catch {
       toast.error("Unable to delete job");
+      setLoading(false);
     }
   };
 
