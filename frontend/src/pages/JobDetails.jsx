@@ -6,6 +6,7 @@ import { JobData } from "../context/JobContext.jsx";
 import { UseJobApply } from "../context/JobApplyContext";
 import { useEffect, useState, useCallback } from "react";
 import { UserData } from "../context/UserContext.jsx";
+import { toast } from "react-hot-toast";
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -56,6 +57,13 @@ const JobDetails = () => {
     experience = "",
     education = "",
   } = singleJob;
+
+  const currentUrl = window.location.href;
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(currentUrl);
+    toast.success("Link copied!");
+  };
 
   return (
     <>
@@ -127,7 +135,7 @@ const JobDetails = () => {
               >
                 <img
                   className="w-10 h-10"
-                  src={isSaved ? assets.saved : assets.save}
+                  src={isSaved ? assets?.saved : assets?.save}
                   alt="save"
                 />
               </button>
@@ -231,6 +239,67 @@ const JobDetails = () => {
                   label="EDUCATION"
                   value={education || "-"}
                 />
+              </div>
+            </div>
+
+            {/* Share Section */}
+            <div>
+              <h4 className="text-base font-semibold text-gray-800 dark:text-white mb-3">
+                Share this job:
+              </h4>
+              <div className="flex items-center gap-3 flex-wrap">
+                <button
+                  onClick={copyLink}
+                  className="flex items-center gap-2 rounded-md text-sm font-medium text-gray-800 dark:text-gray-200"
+                >
+                  <img src={assets.copylink} alt="Copy" className="w-24 h-8" />
+                </button>
+
+                <a
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                    currentUrl
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={assets.linkedin}
+                    alt="LinkedIn"
+                    className="w-8 h-8"
+                  />
+                </a>
+
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                    currentUrl
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={assets.facebook}
+                    alt="Facebook"
+                    className="w-8 h-8"
+                  />
+                </a>
+
+                <a
+                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                    currentUrl
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src={assets.twitter} alt="Twitter" className="w-8 h-8" />
+                </a>
+
+                <a
+                  href={`mailto:?subject=${encodeURIComponent(
+                    title
+                  )}&body=${encodeURIComponent(currentUrl)}`}
+                >
+                  <img src={assets.mail} alt="Mail" className="w-8 h-8" />
+                </a>
               </div>
             </div>
 
