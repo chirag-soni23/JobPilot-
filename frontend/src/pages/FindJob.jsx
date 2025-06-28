@@ -167,7 +167,7 @@ const FindJob = () => {
                       hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400
                       dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30"
                   >
-                    {user.role === "admin" && (
+                    {user?.role === "admin" && (
                       <Trash
                         onClick={(e) => {
                           e.stopPropagation();

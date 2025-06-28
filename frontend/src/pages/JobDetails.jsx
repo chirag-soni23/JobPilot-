@@ -38,6 +38,15 @@ const JobDetails = () => {
 
   const scrollTopSmooth = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
+  const handleApplyClick = (e) => {
+    if (!user) {
+      e.preventDefault();
+      toast.error("Please login to apply the job!");
+      return;
+    }
+    scrollTopSmooth();
+  };
+
   const {
     title = "",
     company = "",
@@ -68,6 +77,7 @@ const JobDetails = () => {
   return (
     <>
       <section className="px-6 md:px-16 lg:px-24 xl:px-32 py-10 w-full mx-auto h-auto">
+        {/* ── Header & breadcrumb */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -97,7 +107,9 @@ const JobDetails = () => {
           </div>
         </div>
 
+        {/* ── Main */}
         <div className="flex flex-col md:flex-row gap-8">
+          {/* ── Left */}
           <div className="flex-1 bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg">
             <div className="flex items-start gap-4 mb-6">
               <img
@@ -150,7 +162,6 @@ const JobDetails = () => {
                   <p>{description}</p>
                 </div>
               )}
-
               {!!requirements.length && (
                 <div>
                   <h3 className="text-base font-semibold mb-1 dark:text-white">
@@ -163,7 +174,6 @@ const JobDetails = () => {
                   </ul>
                 </div>
               )}
-
               {!!desirable.length && (
                 <div>
                   <h3 className="text-base font-semibold mb-1 dark:text-white">
@@ -176,7 +186,6 @@ const JobDetails = () => {
                   </ul>
                 </div>
               )}
-
               {!!benefits.length && (
                 <div>
                   <h3 className="text-base font-semibold mb-1 dark:text-white">
@@ -192,6 +201,7 @@ const JobDetails = () => {
             </div>
           </div>
 
+          {/* ── Right */}
           <div className="w-full md:w-80 bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg space-y-6">
             <div>
               <p className="flex gap-2 items-center text-sm text-gray-500 dark:text-gray-400">
@@ -242,7 +252,7 @@ const JobDetails = () => {
               </div>
             </div>
 
-            {/* Share Section */}
+            {/* ── Share */}
             <div>
               <h4 className="text-base font-semibold text-gray-800 dark:text-white mb-3">
                 Share this job:
@@ -254,7 +264,6 @@ const JobDetails = () => {
                 >
                   <img src={assets.copylink} alt="Copy" className="w-24 h-8" />
                 </button>
-
                 <a
                   href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
                     currentUrl
@@ -262,13 +271,8 @@ const JobDetails = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <img
-                    src={assets.linkedin}
-                    alt="LinkedIn"
-                    className="w-8 h-8"
-                  />
+                  <img src={assets.linkedin} alt="LinkedIn" className="w-8 h-8" />
                 </a>
-
                 <a
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                     currentUrl
@@ -276,13 +280,8 @@ const JobDetails = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <img
-                    src={assets.facebook}
-                    alt="Facebook"
-                    className="w-8 h-8"
-                  />
+                  <img src={assets.facebook} alt="Facebook" className="w-8 h-8" />
                 </a>
-
                 <a
                   href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
                     currentUrl
@@ -292,7 +291,6 @@ const JobDetails = () => {
                 >
                   <img src={assets.twitter} alt="Twitter" className="w-8 h-8" />
                 </a>
-
                 <a
                   href={`mailto:?subject=${encodeURIComponent(
                     title
@@ -303,6 +301,7 @@ const JobDetails = () => {
               </div>
             </div>
 
+            {/* ── CTA */}
             {isApplied ? (
               <button
                 disabled
@@ -314,7 +313,7 @@ const JobDetails = () => {
               <Link
                 to={`/applyjob/${singleJob._id}`}
                 className="bg-[#0A65CC] hover:bg-blue-700 text-white w-full py-3 rounded-md font-medium flex justify-center items-center gap-2 transition"
-                onClick={scrollTopSmooth}
+                onClick={handleApplyClick}
               >
                 Apply Now <ArrowRight className="w-4 h-4" />
               </Link>

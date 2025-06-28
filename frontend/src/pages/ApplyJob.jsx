@@ -12,8 +12,8 @@ const ApplyJob = () => {
   const { applyJob, applying } = UseJobApply();
 
   const [data, setData] = useState({
-    fullName: user.name,
-    email: user.email,
+    fullName: user?.name,
+    email: user?.email,
     mobileNumber: "",
     summary: "",
     education: "",
