@@ -2,6 +2,7 @@ import { Job } from "../models/jobModel.js";
 import { TryCatch } from "../utils/TryCatch.js";
 import imagekit from "../utils/imagekit.js";
 import getDataUri from "../utils/urlGenerator.js";
+import { Application } from "../models/JobApplyModel.js";
 
 // Create a Job
 export const createJob = TryCatch(async (req, res) => {
@@ -57,7 +58,7 @@ export const createJob = TryCatch(async (req, res) => {
   res.status(201).json({ message: "Job created successfully", job });
 });
 
-// Get all Jobs with populated applications
+// Get all Jobs
 export const getAllJobs = TryCatch(async (req, res) => {
   const jobs = await Job.find()
     .populate({
@@ -68,7 +69,7 @@ export const getAllJobs = TryCatch(async (req, res) => {
   res.json(jobs);
 });
 
-// Get single Job with populated applications
+// Get single Job
 export const getJobById = TryCatch(async (req, res) => {
   const job = await Job.findById(req.params.id).populate({
     path: "applications",
@@ -116,7 +117,10 @@ export const updateJob = TryCatch(async (req, res) => {
     if (req.body[f] !== undefined) {
       job[f] =
         typeof req.body[f] === "string"
-          ? req.body[f].split(",").map((v) => v.trim()).filter(Boolean)
+          ? req.body[f]
+              .split(",")
+              .map((v) => v.trim())
+              .filter(Boolean)
           : req.body[f];
     }
   });
@@ -138,8 +142,10 @@ export const deleteJob = TryCatch(async (req, res) => {
     await imagekit.deleteFile(job.logoUrl.id);
   }
 
+  await Application.deleteMany({ job: job._id });
   await job.deleteOne();
-  res.json({ message: "Job deleted successfully" });
+
+  res.json({ message: "Job & related applications deleted successfully" });
 });
 
 // Toggle saved job

@@ -16,7 +16,7 @@ router.post("/createjob", isAuth, uploadFile, createJob);
 router.get("/getall", getAllJobs);
 router.get("/get/:id", isAuth, getJobById);
 router.put("/update/:id", isAuth,uploadFile, updateJob);
-router.delete("/deletejob", isAuth, deleteJob);
+router.delete("/deletejob/:id", isAuth, deleteJob);
 router.put("/savedJob/:id", isAuth, toggleSavedJob);
 
 export default router;
