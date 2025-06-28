@@ -8,12 +8,18 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: process.env.EMAIL_USER,
+    user: process.env.EMAIL_USER,   // “from” ID
     pass: process.env.EMAIL_PASS,
   },
 });
 
 export const sendJobApplicationEmail = async (jobEmail, applicant) => {
+  // ✨ fallback agar recruiter ka email nahi mila
+  const recipient =
+    jobEmail?.trim() ||
+    process.env.DEFAULT_JOB_EMAIL ||      // optional: set alag env var
+    process.env.EMAIL_USER;              // last‑resort fallback
+
   const {
     jobTitle,
     name,
@@ -30,11 +36,12 @@ export const sendJobApplicationEmail = async (jobEmail, applicant) => {
 
   await transporter.sendMail({
     from: `"💼 Job Pilot" <${process.env.EMAIL_USER}>`,
-    to: jobEmail,
+    to: recipient,
     subject: `New application for ${jobTitle}`,
     html: `
       <div style="font-family:Arial,Helvetica,sans-serif;">
         <h2 style="margin-bottom:8px;">${jobTitle}</h2>
+
         <table style="width:100%;border-collapse:collapse;">
           <tr>
             ${
@@ -46,7 +53,11 @@ export const sendJobApplicationEmail = async (jobEmail, applicant) => {
             }
             <td>
               <p style="margin:4px 0;"><strong>Name:</strong> ${name}</p>
-              <p style="margin:4px 0;"><strong>Email:</strong> ${email}</p>
+              ${
+                email
+                  ? `<p style="margin:4px 0;"><strong>Email:</strong> ${email}</p>`
+                  : ""
+              }
               ${
                 phone
                   ? `<p style="margin:4px 0;"><strong>Phone:</strong> ${phone}</p>`
@@ -84,18 +95,14 @@ export const sendJobApplicationEmail = async (jobEmail, applicant) => {
         ${
           resumeUrl
             ? `<p style="margin:8px 0;">
-                 <a href="${resumeUrl}" target="_blank" rel="noopener noreferrer">
-                   View Resume
-                 </a>
+                 <a href="${resumeUrl}" target="_blank" rel="noopener noreferrer">View Resume</a>
                </p>`
             : ""
         }
         ${
           profilePic
             ? `<p style="margin:8px 0;">
-                 <a href="${profilePic}" target="_blank" rel="noopener noreferrer">
-                   View Profile Picture
-                 </a>
+                 <a href="${profilePic}" target="_blank" rel="noopener noreferrer">View Profile Picture</a>
                </p>`
             : ""
         }
