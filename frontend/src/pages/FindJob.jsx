@@ -14,6 +14,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { UserData } from "../context/UserContext";
 import { JobData } from "../context/JobContext";
+import { UseJobApply } from "../context/JobApplyContext";
 
 const getBadgeColor = (type) => {
   switch (type) {
@@ -27,11 +28,13 @@ const getBadgeColor = (type) => {
       return "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300";
   }
 };
+
 const isExpired = (dateStr) => new Date(dateStr).getTime() < Date.now();
 
 const FindJob = () => {
   const { jobs } = JobData();
-  const { isAuth } = UserData();
+  const { isAuth, user } = UserData();
+  const { applications } = UseJobApply();
   const navigate = useNavigate();
   const { search } = useLocation();
 
@@ -139,6 +142,9 @@ const FindJob = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredJobs.slice(offset, offset + jobsPerPage).map((job) => {
                 const expired = isExpired(job.expireDate);
+                const applied = applications.some(
+                  (app) => app.job?._id?.toString() === job._id?.toString()
+                );
 
                 return (
                   <div
@@ -156,8 +162,8 @@ const FindJob = () => {
                       hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400
                       dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30"
                   >
-                    {/* Admin Edit Button (commented) */}
-                    {/*
+                    {/* Admin Edit Button */}
+                    {/* 
                     {user.role === "admin" && (
                       <Pencil
                         onClick={(e) => {
@@ -166,11 +172,17 @@ const FindJob = () => {
                         }}
                         className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-blue-600"
                       />
-                    )}
+                    )} 
                     */}
 
                     {expired && (
                       <BanIcon className="absolute top-3 right-3 w-4 h-4 text-red-400 dark:text-red-500" />
+                    )}
+
+                    {applied && (
+                      <span className="absolute bottom-3 right-3 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 text-xs font-bold px-2 py-1 rounded">
+                        Applied
+                      </span>
                     )}
 
                     <span
