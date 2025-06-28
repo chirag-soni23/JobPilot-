@@ -1,63 +1,92 @@
-import os
+import os, requests, pandas as pd, matplotlib.pyplot as plt, streamlit as st
 from dotenv import load_dotenv
-import streamlit as st
-import pandas as pd
-import requests
-import matplotlib.pyplot as plt
 
-# env
 load_dotenv()
-API_BASE  = os.getenv("API_BASE", "https://jobpilot-gqgi.onrender.com/api")
-ENV_TOKEN = os.getenv("AUTH_TOKEN", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWU5NjMzZWFiM2I4YWE0MDE4ZDk1YyIsImlhdCI6MTc1MTAzMDA1MSwiZXhwIjoxNzUyMzI2MDUxfQ.0AjqA0RdV8IdQi-yGEz0sPgATFMl3rCQQgDdMqsIRxE")    # ✅ token, not secret!
+API_BASE = os.getenv("API_BASE", "https://jobpilot-gqgi.onrender.com/api")
 
-st.set_page_config(page_title="Job-Portal Dashboard", layout="wide")
-st.title("📊 Job-Portal Analytics (matplotlib)")
+# ─── Streamlit page 
+st.set_page_config(page_title="Job Dashboard", layout="wide")
+st.title("📊 Job‑Portal Analytics")
 
-# sidebar
-st.sidebar.header("🔐 Authentication")
-token = st.sidebar.text_input("JWT Token", value=ENV_TOKEN, type="password")
+# ─── helper: store token + clear cache -------------------------------------
+def set_token(tok: str):
+    st.session_state["jwt"] = tok
+    st.cache_data.clear()
 
-HEADERS = {"Authorization": f"Bearer {token}"} if token else {}
-COOKIES = {"token": token} if token else {}
+# ─── Sidebar login/logout --------------------------------------------------
+with st.sidebar:
+    st.header("🔐 Login")
+    if "jwt" in st.session_state:
+        st.success("Logged in")
+        if st.button("Logout"):
+            st.session_state.pop("jwt")
+    else:
+        email    = st.text_input("Email")
+        password = st.text_input("Password", type="password")
+        if st.button("Login"):
+            try:
+                r = requests.post(f"{API_BASE}/user/login",
+                                  json={"email": email, "password": password},
+                                  timeout=10)
+                if r.status_code == 200:
+                    token = r.json().get("token") or r.cookies.get("token")
+                    if token:
+                        set_token(token)
+                        st.experimental_rerun()
+                    else:
+                        st.error("Token not found in response")
+                else:
+                    st.error(f"Login failed ({r.status_code})")
+            except Exception as e:
+                st.error(f"Error: {e}")
 
-def get_json(url: str):
+# stop if not authenticated
+if "jwt" not in st.session_state:
+    st.stop()
+
+token   = st.session_state["jwt"]
+HEADERS = {"Authorization": f"Bearer {token}"}
+COOKIES = {"token": token}
+
+# ─── safe GET --------------------------------------------------------------
+def safe_get(path: str):
     try:
-        res = requests.get(url, headers=HEADERS, cookies=COOKIES, timeout=10)
+        res = requests.get(f"{API_BASE}{path}", headers=HEADERS,
+                           cookies=COOKIES, timeout=10)
         if res.status_code == 200:
-            return res.json()          # ← () added
-        st.warning(f"{url} → {res.status_code}")
+            return res.json()
+        st.warning(f"{path} → {res.status_code}")
     except Exception as e:
-        st.warning(f"{url} error: {e}")
+        st.warning(f"{path} error: {e}")
     return []
 
 @st.cache_data(ttl=300, show_spinner="🔄 Loading…")
 def fetch_all(tok):
     return (
-        get_json(f"{API_BASE}/user/getall"),
-        get_json(f"{API_BASE}/job/getall"),
-        get_json(f"{API_BASE}/apply/getall"),
+        safe_get("/user/getall"),
+        safe_get("/job/getall"),
+        safe_get("/apply/getall"),
     )
 
 users, jobs, apps = fetch_all(token)
 
-# Stat cards
+# ─── Stat cards ------------------------------------------------------------
 c1, c2, c3 = st.columns(3)
 c1.metric("Users", len(users))
 c2.metric("Jobs",  len(jobs))
 c3.metric("Applications", len(apps))
 st.divider()
 
-# 1. Users by Role
+# ─── Chart 1: Users by Role -------------------------------------------------
 role_counts = pd.Series([u.get("role", "unknown") for u in users]).value_counts()
 if not role_counts.empty:
     fig, ax = plt.subplots()
-    ax.pie(role_counts, labels=role_counts.index, autopct="%1.0f%%", startangle=140)
+    ax.pie(role_counts, labels=role_counts.index,
+           autopct="%1.0f%%", startangle=140)
     ax.set_title("Users by Role"); ax.axis("equal")
     st.pyplot(fig)
-else:
-    st.info("No user data.")
 
-# 2. Jobs by Type
+# ─── Chart 2: Jobs by Type --------------------------------------------------
 type_counts = pd.Series([j.get("type", "unknown") for j in jobs]).value_counts()
 if not type_counts.empty:
     fig, ax = plt.subplots()
@@ -65,21 +94,19 @@ if not type_counts.empty:
     ax.set_title("Jobs by Type")
     ax.set_xlabel("Type"); ax.set_ylabel("Count")
     st.pyplot(fig)
-else:
-    st.info("No job data.")
 
-# 3. Applications per Company
-comp_counts = pd.Series([a.get("job", {}).get("company", "Unknown") for a in apps]).value_counts()
+# ─── Chart 3: Applications per Company -------------------------------------
+comp_counts = pd.Series(
+    [a.get("job", {}).get("company", "Unknown") for a in apps]
+).value_counts()
 if not comp_counts.empty:
     fig, ax = plt.subplots(figsize=(6, 4))
     ax.barh(comp_counts.index, comp_counts.values, color="coral")
     ax.set_title("Applications per Company")
     ax.set_xlabel("Applications")
     st.pyplot(fig)
-else:
-    st.info("No application data.")
 
-# 4. Applications over Time
+# ─── Chart 4: Applications Over Time ---------------------------------------
 date_counts = (
     pd.Series([a.get("createdAt", "")[:10] for a in apps if a.get("createdAt")])
     .value_counts()
@@ -93,5 +120,3 @@ if not date_counts.empty:
     ax.set_xlabel("Date"); ax.set_ylabel("Applications")
     fig.autofmt_xdate()
     st.pyplot(fig)
-else:
-    st.info("No timeline data.")
