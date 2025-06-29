@@ -32,16 +32,16 @@ const JobDetails = () => {
 
   if (!singleJob) return null;
 
-  const isApplied =
-    user?.role !== "admin" &&
-    applications.some((app) => app.job?._id?.toString() === id?.toString());
+  const isApplied = applications.some(
+    (app) => app.job?._id?.toString() === id?.toString()
+  );
 
   const scrollTopSmooth = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const handleApplyClick = (e) => {
     if (!user) {
       e.preventDefault();
-      toast.error("Please login to apply the job!");
+      toast.error("You need to login to apply the job!");
       return;
     }
     scrollTopSmooth();
@@ -77,7 +77,6 @@ const JobDetails = () => {
   return (
     <>
       <section className="px-6 md:px-16 lg:px-24 xl:px-32 py-10 w-full mx-auto h-auto">
-        {/* ── Header & breadcrumb */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -88,28 +87,18 @@ const JobDetails = () => {
             </p>
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">
-            <Link
-              onClick={scrollTopSmooth}
-              className="text-blue-600 hover:underline"
-              to="/"
-            >
+            <Link onClick={scrollTopSmooth} className="text-blue-600 hover:underline" to="/">
               Home
             </Link>{" "}
             /{" "}
-            <Link
-              onClick={scrollTopSmooth}
-              className="text-blue-600 hover:underline"
-              to="/findjobs"
-            >
+            <Link onClick={scrollTopSmooth} className="text-blue-600 hover:underline" to="/findjobs">
               Find Job
             </Link>{" "}
             / {title} / jobdetails
           </div>
         </div>
 
-        {/* ── Main */}
         <div className="flex flex-col md:flex-row gap-8">
-          {/* ── Left */}
           <div className="flex-1 bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg">
             <div className="flex items-start gap-4 mb-6">
               <img
@@ -201,7 +190,6 @@ const JobDetails = () => {
             </div>
           </div>
 
-          {/* ── Right */}
           <div className="w-full md:w-80 bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg space-y-6">
             <div>
               <p className="flex gap-2 items-center text-sm text-gray-500 dark:text-gray-400">
@@ -223,36 +211,19 @@ const JobDetails = () => {
                 <OverviewItem
                   icon={assets.calendar}
                   label="JOB POSTED"
-                  value={
-                    postedDate ? new Date(postedDate).toLocaleDateString() : "-"
-                  }
+                  value={postedDate ? new Date(postedDate).toLocaleDateString() : "-"}
                 />
                 <OverviewItem
                   icon={assets.timer}
                   label="JOB EXPIRE"
-                  value={
-                    expireDate ? new Date(expireDate).toLocaleDateString() : "-"
-                  }
+                  value={expireDate ? new Date(expireDate).toLocaleDateString() : "-"}
                 />
-                <OverviewItem
-                  icon={assets.stack}
-                  label="JOB LEVEL"
-                  value={jobLevel || "-"}
-                />
-                <OverviewItem
-                  icon={assets.wallet}
-                  label="EXPERIENCE"
-                  value={experience || "-"}
-                />
-                <OverviewItem
-                  icon={assets.briefcase}
-                  label="EDUCATION"
-                  value={education || "-"}
-                />
+                <OverviewItem icon={assets.stack} label="JOB LEVEL" value={jobLevel || "-"} />
+                <OverviewItem icon={assets.wallet} label="EXPERIENCE" value={experience || "-"} />
+                <OverviewItem icon={assets.briefcase} label="EDUCATION" value={education || "-"} />
               </div>
             </div>
 
-            {/* ── Share */}
             <div>
               <h4 className="text-base font-semibold text-gray-800 dark:text-white mb-3">
                 Share this job:
@@ -283,25 +254,22 @@ const JobDetails = () => {
                   <img src={assets.facebook} alt="Facebook" className="w-8 h-8" />
                 </a>
                 <a
-                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                    currentUrl
-                  )}`}
+                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <img src={assets.twitter} alt="Twitter" className="w-8 h-8" />
                 </a>
                 <a
-                  href={`mailto:?subject=${encodeURIComponent(
-                    title
-                  )}&body=${encodeURIComponent(currentUrl)}`}
+                  href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(
+                    currentUrl
+                  )}`}
                 >
                   <img src={assets.mail} alt="Mail" className="w-8 h-8" />
                 </a>
               </div>
             </div>
 
-            {/* ── CTA */}
             {isApplied ? (
               <button
                 disabled
@@ -331,9 +299,7 @@ const OverviewItem = ({ icon, label, value }) => (
     <img src={icon} className="w-5 h-5 mt-1" alt={label} />
     <div>
       <p className="text-xs text-gray-400 dark:text-gray-500">{label}</p>
-      <p className="text-sm font-medium text-gray-800 dark:text-white">
-        {value}
-      </p>
+      <p className="text-sm font-medium text-gray-800 dark:text-white">{value}</p>
     </div>
   </div>
 );

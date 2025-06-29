@@ -143,7 +143,9 @@ const FindJob = () => {
             </button>
 
             <button
-              onClick={() => !isAuth && toast.error("Please login to find jobs")}
+              onClick={() =>
+                !isAuth && toast.error("Please login to find jobs")
+              }
               className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm"
             >
               Find Job

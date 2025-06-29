@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Upload } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { UserData } from "../context/UserContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ApplyJobHeader from "../components/ApplyJobHeader";
 import { UseJobApply } from "../context/JobApplyContext";
 import { toast } from "react-hot-toast";
@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast";
 const ApplyJob = () => {
   const { user } = UserData();
   const { id } = useParams();
+  const navigate = useNavigate();
   const { applyJob, applying } = UseJobApply();
 
   const [data, setData] = useState({
@@ -33,10 +34,7 @@ const ApplyJob = () => {
 
   const { getRootProps: resRoot, getInputProps: resInput } = useDropzone({
     onDrop: onDrop("resume"),
-    accept: {
-      "application/pdf": [".pdf"],
-      "application/msword": [".doc", ".docx"],
-    },
+    accept: { "application/pdf": [".pdf"], "application/msword": [".doc", ".docx"] },
     maxFiles: 1,
   });
 
@@ -66,11 +64,13 @@ const ApplyJob = () => {
     }
 
     const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (value) formData.append(key, value);
-    });
+    Object.entries(data).forEach(([key, value]) => value && formData.append(key, value));
 
-    await applyJob(id, formData);
+    const success = await applyJob(id, formData);
+    if (success) {
+      toast.success("Application submitted!");
+      navigate(`/jobdetails/${id}`);
+    }
   };
 
   return (
@@ -88,10 +88,7 @@ const ApplyJob = () => {
               </h2>
               <p className="text-gray-500 dark:text-gray-300">{data.email}</p>
             </div>
-            <button
-              type="button"
-              className="text-blue-600 hover:underline text-sm font-medium"
-            >
+            <button type="button" className="text-blue-600 hover:underline text-sm font-medium">
               <Upload className="inline w-4 h-4 mr-1" /> Download
             </button>
           </div>
@@ -166,26 +163,16 @@ const ApplyJob = () => {
           </Section>
 
           <Section title="Resume">
-            <div
-              {...resRoot()}
-              className="dropzone cursor-pointer text-sm text-gray-500 dark:text-gray-300"
-            >
+            <div {...resRoot()} className="dropzone cursor-pointer text-sm text-gray-500 dark:text-gray-300">
               <input {...resInput()} required />
-              {data.resume
-                ? data.resume.name
-                : "Click or drag to upload resume"}
+              {data.resume ? data.resume.name : "Click or drag to upload resume"}
             </div>
           </Section>
 
           <Section title="Profile Picture">
-            <div
-              {...picRoot()}
-              className="dropzone cursor-pointer text-sm text-gray-500 dark:text-gray-300"
-            >
+            <div {...picRoot()} className="dropzone cursor-pointer text-sm text-gray-500 dark:text-gray-300">
               <input {...picInput()} required />
-              {data.profilePic
-                ? data.profilePic.name
-                : "Click or drag to upload profile picture"}
+              {data.profilePic ? data.profilePic.name : "Click or drag to upload profile picture"}
             </div>
           </Section>
 
@@ -204,12 +191,8 @@ const ApplyJob = () => {
 
 const Section = ({ title, children }) => (
   <div>
-    <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-200 uppercase mb-1">
-      {title}
-    </h3>
-    <div className="bg-gray-100 dark:bg-gray-700 rounded-md p-4 text-sm dark:text-white">
-      {children}
-    </div>
+    <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-200 uppercase mb-1">{title}</h3>
+    <div className="bg-gray-100 dark:bg-gray-700 rounded-md p-4 text-sm dark:text-white">{children}</div>
   </div>
 );
 

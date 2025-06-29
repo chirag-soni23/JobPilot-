@@ -106,7 +106,11 @@ export const createApplication = TryCatch(async (req, res) => {
 });
 
 export const getAllJobApplication = TryCatch(async (req, res) => {
-  const filter = req.user.role === "admin" ? {} : { applicant: req.user._id };
+  const userId = req.user._id;
+  const userRole = req.user.role;
+
+  const filter =
+    userRole === "admin" ? { applicant: userId } : { applicant: userId };
 
   const applications = await Application.find(filter)
     .populate("applicant", "name email role")
@@ -115,6 +119,7 @@ export const getAllJobApplication = TryCatch(async (req, res) => {
 
   res.json(applications);
 });
+
 export const getApplicationById = TryCatch(async (req, res) => {
   const application = await Application.findById(req.params.id)
     .populate("applicant", "name email role")
