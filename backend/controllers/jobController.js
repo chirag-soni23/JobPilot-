@@ -151,30 +151,30 @@ export const deleteJob = TryCatch(async (req, res) => {
 
 // Toggle saved job
 export const toggleSavedJob = TryCatch(async (req, res) => {
-  const jobId = req.params.id;
+  const { id: jobId } = req.params;
   const userId = req.user._id;
 
-  if (!(await Job.exists({ _id: jobId })))
-    return res.status(404).json({ message: "Job not found" });
+  const job = await Job.findById(jobId);
+  if (!job) return res.status(404).json({ message: "Job not found" });
 
   const user = await User.findById(userId).select("savedJobs");
   if (!user) return res.status(404).json({ message: "User not found" });
 
-  const already = user.savedJobs.some((j) => j.equals(jobId));
+  const already = user.savedJobs.some(j => j.equals(jobId));
 
   if (already) {
     user.savedJobs.pull(jobId);
+    job.isSaved = false;
   } else {
     user.savedJobs.addToSet(jobId);
+    job.isSaved = true;
   }
 
-  await user.save();
+  await Promise.all([user.save(), job.save()]);
 
-  res.json({
-    message: already ? "Job unsaved" : "Job saved",
-    isSaved: !already,
-  });
+  res.json({ message: already ? "Job unsaved" : "Job saved", isSaved: job.isSaved });
 });
+
 
 // get saved job
 export const getSavedJobs = TryCatch(async (req, res) => {
