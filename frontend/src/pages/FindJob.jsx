@@ -64,7 +64,9 @@ const FindJob = () => {
   const scrollTopSmooth = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const deleteJobById =(jobId)=> {
-    deleteJob(jobId);
+    if(confirm("Do you really want to delete the job?")){
+      deleteJob(jobId);
+    }
   }
 
   return (
