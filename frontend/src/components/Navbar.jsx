@@ -90,7 +90,7 @@ const Navbar = () => {
         </div>
       )}
 
-      <nav className="bg-white dark:bg-gray-900 shadow-md px-6 md:px-20 py-4 transition-colors duration-300 relative">
+      <nav className="bg-white right-0 top-0 left-0 dark:bg-gray-900 shadow-md px-6 md:px-20 py-4 transition-colors duration-300 sticky z-10">
         <div className="flex items-center justify-between">
           <div className="md:hidden flex items-center w-full">
             <button onClick={() => setIsOpen(!isOpen)}>
