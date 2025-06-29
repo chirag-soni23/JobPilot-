@@ -18,7 +18,7 @@ const JobDetails = () => {
 
   useEffect(() => {
     if (id) getJobById(id);
-  }, [id, getJobById]);
+  }, [id]);
 
   useEffect(() => {
     if (singleJob) setIsSaved(Boolean(singleJob.isSaved));
