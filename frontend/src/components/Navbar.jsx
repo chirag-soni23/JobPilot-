@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Phone, Menu, X, ChartBar } from "lucide-react";
+import { Phone, Menu, X, ChartBar, User2Icon } from "lucide-react";
 import Header from "./Header";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserData } from "../context/UserContext";
@@ -40,12 +40,7 @@ const Navbar = () => {
         </div>
       )
     ) : (
-      <Link
-        to="/signin"
-        className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9b] transition"
-      >
-        Sign In
-      </Link>
+      <User2Icon className="w-6 h-6 text-white" />
     );
 
   return (
