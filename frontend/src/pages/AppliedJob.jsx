@@ -5,6 +5,20 @@ import { MapPin, Search, SlidersHorizontal, Bookmark } from "lucide-react";
 import toast from "react-hot-toast";
 import { UseJobApply } from "../context/JobApplyContext";
 
+const formatSalary = (value) => {
+  const salary = Number(value);
+  if (isNaN(salary) || salary === 0) return "—";
+  if (salary >= 100000) {
+    const lpa = salary / 100000;
+    return `${Number.isInteger(lpa) ? lpa : lpa.toFixed(1)} LPA`;
+  }
+  if (salary >= 1000) {
+    const k = salary / 1000;
+    return `${Number.isInteger(k) ? k : k.toFixed(1)} K`;
+  }
+  return `₹${salary.toLocaleString("en-IN")}`;
+};
+
 const AppliedJob = () => {
   const { applications } = UseJobApply();
   const navigate = useNavigate();
@@ -19,7 +33,7 @@ const AppliedJob = () => {
 
   const appliedJobs = useMemo(() => {
     return applications
-      .map((app) => app.job) 
+      .map((app) => app.job)
       .filter(
         (job) =>
           job.title.toLowerCase().includes(keyword.toLowerCase()) &&
@@ -35,7 +49,6 @@ const AppliedJob = () => {
   return (
     <>
       <div className="w-full py-6 space-y-10 px-6 md:px-16 lg:px-24 xl:px-32">
-        {/* Top Section */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
@@ -112,9 +125,7 @@ const AppliedJob = () => {
             </button>
 
             <button
-              onClick={() =>
-                toast("Already viewing applied jobs")
-              }
+              onClick={() => toast("Already viewing applied jobs")}
               className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm"
             >
               Find Job
@@ -149,7 +160,7 @@ const AppliedJob = () => {
                 </h2>
 
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  Salary: ₹{job.minSalary} – ₹{job.maxSalary}
+                  Salary: {formatSalary(job.minSalary)} – {formatSalary(job.maxSalary)}
                 </p>
 
                 <div className="flex items-center gap-2 mt-2">

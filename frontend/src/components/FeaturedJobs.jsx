@@ -14,9 +14,16 @@ const getBadgeColor = (type) => {
   }
 };
 
+const formatSalary = (value) => {
+  const salary = Number(value);
+  if (isNaN(salary)) return "—";
+  if (salary >= 100000) return `${(salary / 100000).toFixed(1)} LPA`;
+  return `₹${salary.toLocaleString("en-IN")}`;
+};
+
 const FeaturedJobs = () => {
   const { jobs } = JobData();
-  const featuredJobs = jobs.filter((job) => job.isFeatured); 
+  const featuredJobs = jobs.filter((job) => job.isFeatured);
 
   return (
     <section className="px-6 md:px-16 lg:px-24 xl:px-32 py-14">
@@ -41,14 +48,12 @@ const FeaturedJobs = () => {
 
             <div className="flex items-center justify-between mb-3">
               <span
-                className={`text-xs px-2 py-1 rounded-full font-medium ${getBadgeColor(
-                  job.type
-                )}`}
+                className={`text-xs px-2 py-1 rounded-full font-medium ${getBadgeColor(job.type)}`}
               >
                 {job.type}
               </span>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                ₹ Salary:  {job.minSalary}-{job.maxSalary}
+                Salary: {formatSalary(job.minSalary)} - {formatSalary(job.maxSalary)}
               </p>
             </div>
 

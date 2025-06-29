@@ -5,13 +5,27 @@ import { Link, useNavigate } from "react-router-dom";
 import { MapPin, Search, SlidersHorizontal, Bookmark } from "lucide-react";
 import toast from "react-hot-toast";
 
+const formatSalary = (value) => {
+  const salary = Number(value);
+  if (isNaN(salary) || salary === 0) return "—";
+  if (salary >= 100000) {
+    const lpa = salary / 100000;
+    return `${Number.isInteger(lpa) ? lpa : lpa.toFixed(1)} LPA`;
+  }
+  if (salary >= 1000) {
+    const k = salary / 1000;
+    return `${Number.isInteger(k) ? k : k.toFixed(1)} K`;
+  }
+  return `₹${salary.toLocaleString("en-IN")}`;
+};
+
 const SavedJob = () => {
   const { jobs, isAuth } = JobData();
   const navigate = useNavigate();
 
   const [keyword, setKeyword] = useState("");
   const [city, setCity] = useState("");
-  const [type, setType] = useState(""); 
+  const [type, setType] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
 
   const jobsPerPage = 8;
@@ -35,7 +49,6 @@ const SavedJob = () => {
   return (
     <>
       <div className="w-full py-6 space-y-10 px-6 md:px-16 lg:px-24 xl:px-32">
-        {/* Top Section */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
@@ -54,10 +67,8 @@ const SavedJob = () => {
           </div>
         </div>
 
-        {/* Search & Filters */}
         <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
           <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
-            {/* keyword */}
             <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-l-lg flex-1 bg-white dark:bg-gray-800 shadow-sm">
               <span className="text-[#0A65CC]">
                 <Search className="w-5 h-5" />
@@ -73,7 +84,6 @@ const SavedJob = () => {
                 className="outline-none w-full text-base placeholder:text-gray-400 dark:placeholder:text-gray-500 bg-transparent text-gray-900 dark:text-white"
               />
             </div>
-            {/* city */}
             <div className="flex items-center gap-3 px-4 py-4 border-t border-b border-gray-200 dark:border-gray-700 flex-1 bg-white dark:bg-gray-800 shadow-sm lg:border-t lg:border-b-0">
               <span className="text-[#0A65CC]">
                 <MapPin className="w-5 h-5" />
@@ -89,7 +99,6 @@ const SavedJob = () => {
                 className="outline-none w-full text-base placeholder:text-gray-400 dark:placeholder:text-gray-500 bg-transparent text-gray-900 dark:text-white"
               />
             </div>
-            {/* type */}
             <select
               value={type}
               onChange={(e) => {
@@ -113,9 +122,7 @@ const SavedJob = () => {
             </button>
 
             <button
-              onClick={() =>
-                !isAuth && toast.error("Please login to find jobs")
-              }
+              onClick={() => !isAuth && toast.error("Please login to find jobs")}
               className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm"
             >
               Find Job
@@ -123,7 +130,6 @@ const SavedJob = () => {
           </div>
         </div>
 
-        {/* Job Cards */}
         {savedJobs.length === 0 ? (
           <div className="w-full text-center py-20 text-gray-600 dark:text-gray-300">
             No job found
@@ -150,7 +156,7 @@ const SavedJob = () => {
                 </h2>
 
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  Salary: ₹{job.minSalary} – ₹{job.maxSalary}
+                  Salary: {formatSalary(job.minSalary)} – {formatSalary(job.maxSalary)}
                 </p>
 
                 <div className="flex items-center gap-2 mt-2">
