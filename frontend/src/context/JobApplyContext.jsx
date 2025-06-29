@@ -12,7 +12,7 @@ export const JobApplyProvider = ({ children }) => {
   console.log(applications);
 
   // Apply for a job
-  const applyJob = async (jobId, formData) => {
+  const applyJob = async (jobId, formData, navigate) => {
     setApplying(true);
     try {
       const { data } = await axios.post(`/api/apply/apply/${jobId}`, formData, {
@@ -21,6 +21,8 @@ export const JobApplyProvider = ({ children }) => {
 
       toast.success(data.message);
       setApplications((prev) => [...prev, data.application]);
+      navigate(`/jobdetails/${jobId}`);
+      window.location.reload();
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to apply");
     } finally {

@@ -20,7 +20,7 @@ const formatSalary = (value) => {
 };
 
 const SavedJob = () => {
-  const { jobs, isAuth } = JobData();
+  const { savedJobs, isAuth } = JobData();
   const navigate = useNavigate();
 
   const [keyword, setKeyword] = useState("");
@@ -31,18 +31,16 @@ const SavedJob = () => {
   const jobsPerPage = 8;
   const offset = currentPage * jobsPerPage;
 
-  const savedJobs = useMemo(() => {
-    return jobs
-      .filter((job) => job.isSaved)
-      .filter(
-        (job) =>
-          job.title.toLowerCase().includes(keyword.toLowerCase()) &&
-          job.location.toLowerCase().includes(city.toLowerCase()) &&
-          (type === "" || job.type === type)
-      );
-  }, [jobs, keyword, city, type]);
+  const filteredJobs = useMemo(() => {
+    return savedJobs.filter(
+      (job) =>
+        job.title.toLowerCase().includes(keyword.toLowerCase()) &&
+        job.location.toLowerCase().includes(city.toLowerCase()) &&
+        (type === "" || job.type === type)
+    );
+  }, [savedJobs, keyword, city, type]);
 
-  const displayedJobs = savedJobs.slice(offset, offset + jobsPerPage);
+  const displayedJobs = filteredJobs.slice(offset, offset + jobsPerPage);
 
   const navigateJobDetails = (id) => navigate(`/jobdetails/${id}`);
 
@@ -67,6 +65,7 @@ const SavedJob = () => {
           </div>
         </div>
 
+        {/* ── Search & Filters */}
         <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
           <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
             <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-l-lg flex-1 bg-white dark:bg-gray-800 shadow-sm">
@@ -122,7 +121,9 @@ const SavedJob = () => {
             </button>
 
             <button
-              onClick={() => !isAuth && toast.error("Please login to find jobs")}
+              onClick={() =>
+                !isAuth && toast.error("Please login to find jobs")
+              }
               className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm"
             >
               Find Job
@@ -130,7 +131,8 @@ const SavedJob = () => {
           </div>
         </div>
 
-        {savedJobs.length === 0 ? (
+        {/* ── Job Cards */}
+        {filteredJobs.length === 0 ? (
           <div className="w-full text-center py-20 text-gray-600 dark:text-gray-300">
             No job found
           </div>
@@ -146,7 +148,7 @@ const SavedJob = () => {
                   dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30
                   shadow-md rounded-xl p-4 w-full"
               >
-                <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400 flex items-center justify-center gap-1 w-fit">
+                <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400 flex items-center gap-1 w-fit">
                   {job.type}
                   <Bookmark className="absolute top-3 right-3 w-5 h-5 text-green-500" />
                 </span>
@@ -156,7 +158,8 @@ const SavedJob = () => {
                 </h2>
 
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  Salary: {formatSalary(job.minSalary)} – {formatSalary(job.maxSalary)}
+                  Salary: {formatSalary(job.minSalary)} –{" "}
+                  {formatSalary(job.maxSalary)}
                 </p>
 
                 <div className="flex items-center gap-2 mt-2">

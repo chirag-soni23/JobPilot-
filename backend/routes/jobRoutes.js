@@ -6,6 +6,7 @@ import {
   updateJob,
   deleteJob,
   toggleSavedJob,
+  getSavedJobs,
 } from "../controllers/jobController.js";
 import { isAuth } from "../middlewares/isAuth.js";
 import uploadFile from "../middlewares/multer.js";
@@ -18,5 +19,6 @@ router.get("/get/:id", getJobById);
 router.put("/update/:id", isAuth,uploadFile, updateJob);
 router.delete("/deletejob/:id", isAuth, deleteJob);
 router.put("/savedJob/:id", isAuth, toggleSavedJob);
+router.get("/getsaved",isAuth,getSavedJobs);
 
 export default router;

@@ -66,10 +66,9 @@ const ApplyJob = () => {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => value && formData.append(key, value));
 
-    const success = await applyJob(id, formData);
+    const success = await applyJob(id, formData, navigate);
     if (success) {
       toast.success("Application submitted!");
-      navigate(`/jobdetails/${id}`);
     }
   };
 

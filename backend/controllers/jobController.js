@@ -1,4 +1,5 @@
 import { Job } from "../models/jobModel.js";
+import { User } from "../models/userModel.js";
 import { TryCatch } from "../utils/TryCatch.js";
 import imagekit from "../utils/imagekit.js";
 import getDataUri from "../utils/urlGenerator.js";
@@ -150,14 +151,41 @@ export const deleteJob = TryCatch(async (req, res) => {
 
 // Toggle saved job
 export const toggleSavedJob = TryCatch(async (req, res) => {
-  const job = await Job.findById(req.params.id);
-  if (!job) return res.status(404).json({ message: "Job not found" });
+  const jobId = req.params.id;
+  const userId = req.user._id;
 
-  job.isSaved = !job.isSaved;
-  await job.save();
+  if (!(await Job.exists({ _id: jobId })))
+    return res.status(404).json({ message: "Job not found" });
+
+  const user = await User.findById(userId).select("savedJobs");
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  const already = user.savedJobs.some((j) => j.equals(jobId));
+
+  if (already) {
+    user.savedJobs.pull(jobId);
+  } else {
+    user.savedJobs.addToSet(jobId);
+  }
+
+  await user.save();
 
   res.json({
-    message: job.isSaved ? "Job saved" : "Job unsaved",
-    job,
+    message: already ? "Job unsaved" : "Job saved",
+    isSaved: !already,
   });
+});
+
+// get saved job
+export const getSavedJobs = TryCatch(async (req, res) => {
+  const user = await User.findById(req.user._id)
+    .select("savedJobs")
+    .populate({
+      path: "savedJobs",
+      populate: {
+        path: "applications",
+        populate: { path: "applicant", select: "name email" },
+      },
+    });
+  res.json(user.savedJobs);
 });

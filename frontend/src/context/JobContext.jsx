@@ -6,13 +6,13 @@ const JobContext = createContext();
 
 export const JobProvider = ({ children }) => {
   const [jobs, setJobs] = useState([]);
+  const [savedJobs, setSavedJobs] = useState([]);
   const [singleJob, setSingleJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadingSingleJob, setLoadingSingleJob] = useState(false);
   const [savedLoading, setSavedLoading] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
 
-  // Create a job
   const postJob = async (formData) => {
     setBtnLoading(true);
     try {
@@ -24,16 +24,12 @@ export const JobProvider = ({ children }) => {
     }
   };
 
-  // Update a job
   const updateJob = async (id, formData) => {
     setBtnLoading(true);
     try {
       const { data } = await axios.put(`/api/job/update/${id}`, formData);
       toast.success(data.message);
-
-      setJobs((prev) =>
-        prev.map((job) => (job._id === id ? data.job : job))
-      );
+      setJobs((prev) => prev.map((job) => (job._id === id ? data.job : job)));
       if (singleJob?._id === id) setSingleJob(data.job);
     } catch {
       toast.error("Unable to update job");
@@ -42,7 +38,6 @@ export const JobProvider = ({ children }) => {
     }
   };
 
-  // Get all jobs
   const getAllJobs = async () => {
     try {
       const { data } = await axios.get("/api/job/getall");
@@ -52,7 +47,15 @@ export const JobProvider = ({ children }) => {
     }
   };
 
-  // Toggle saved job
+  const fetchSavedJobs = async () => {
+    try {
+      const { data } = await axios.get("/api/job/getsaved");
+      setSavedJobs(data);
+    } catch {
+      toast.error("Unable to fetch saved jobs");
+    }
+  };
+
   const toggleSaveJob = async (jobId) => {
     setSavedLoading(true);
     try {
@@ -68,6 +71,8 @@ export const JobProvider = ({ children }) => {
           job._id === jobId ? { ...job, isSaved: data.isSaved } : job
         )
       );
+
+      fetchSavedJobs();
     } catch {
       toast.error("Unable to save / unsave job");
     } finally {
@@ -75,7 +80,6 @@ export const JobProvider = ({ children }) => {
     }
   };
 
-  // Get job by id
   const getJobById = async (id) => {
     setLoadingSingleJob(true);
     try {
@@ -86,28 +90,29 @@ export const JobProvider = ({ children }) => {
     }
   };
 
-  // Delete job
   const deleteJob = async (id) => {
     setLoading(true);
     try {
       const { data } = await axios.delete(`/api/job/deletejob/${id}`);
       toast.success(data.message);
       getAllJobs();
-      setLoading(false);
     } catch {
       toast.error("Unable to delete job");
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
     getAllJobs();
+    fetchSavedJobs();
   }, []);
 
   return (
     <JobContext.Provider
       value={{
         jobs,
+        savedJobs,
         postJob,
         updateJob,
         getAllJobs,
@@ -118,6 +123,7 @@ export const JobProvider = ({ children }) => {
         singleJob,
         toggleSaveJob,
         savedLoading,
+        fetchSavedJobs,
       }}
     >
       {children}
