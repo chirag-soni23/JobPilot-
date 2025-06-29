@@ -6,7 +6,6 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
-  Pencil,
   BanIcon,
   Trash,
 } from "lucide-react";
@@ -31,6 +30,20 @@ const getBadgeColor = (type) => {
 };
 
 const isExpired = (dateStr) => new Date(dateStr).getTime() < Date.now();
+
+const formatSalary = (value) => {
+  const salary = Number(value);
+  if (isNaN(salary) || salary === 0) return "—";
+  if (salary >= 100000) {
+    const lpa = salary / 100000;
+    return `${Number.isInteger(lpa) ? lpa : lpa.toFixed(1)} LPA`;
+  }
+  if (salary >= 1000) {
+    const k = salary / 1000;
+    return `${Number.isInteger(k) ? k : k.toFixed(1)} K`;
+  }
+  return `₹${salary.toLocaleString()}`;
+};
 
 const FindJob = () => {
   const { jobs, deleteJob } = JobData();
@@ -63,11 +76,11 @@ const FindJob = () => {
 
   const scrollTopSmooth = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
-  const deleteJobById =(jobId)=> {
-    if(confirm("Do you really want to delete the job?")){
+  const deleteJobById = (jobId) => {
+    if (confirm("Do you really want to delete the job?")) {
       deleteJob(jobId);
     }
-  }
+  };
 
   return (
     <>
@@ -130,9 +143,7 @@ const FindJob = () => {
             </button>
 
             <button
-              onClick={() =>
-                !isAuth && toast.error("Please login to find jobs")
-              }
+              onClick={() => !isAuth && toast.error("Please login to find jobs")}
               className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm"
             >
               Find Job
@@ -163,11 +174,7 @@ const FindJob = () => {
                       }
                       navigateJobDetails(job._id);
                     }}
-                    className="relative bg-white dark:bg-gray-800 cursor-pointer
-                      shadow-md rounded-xl p-4 w-full
-                      transition-transform duration-300 ease-in-out
-                      hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400
-                      dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30"
+                    className="relative bg-white dark:bg-gray-800 cursor-pointer shadow-md rounded-xl p-4 w-full transition-transform duration-300 ease-in-out hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400 dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30"
                   >
                     {user?.role === "admin" && (
                       <Trash
@@ -177,19 +184,7 @@ const FindJob = () => {
                         }}
                         className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-red-500 hover:text-red-600"
                       />
-                    )} 
-                    {/* Admin Edit Button */}
-                    {/* 
-                    {user.role === "admin" && (
-                      <Pencil
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          editJob(job._id);
-                        }}
-                        className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-gray-500 hover:text-blue-600"
-                      />
-                    )} 
-                    */}
+                    )}
 
                     {expired && (
                       <BanIcon className="absolute top-3 right-3 w-4 h-4 text-red-400 dark:text-red-500" />
@@ -214,7 +209,8 @@ const FindJob = () => {
                     </h2>
 
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      Salary: ₹{job.minSalary} – ₹{job.maxSalary}
+                      Salary: {formatSalary(job.minSalary)} –{" "}
+                      {formatSalary(job.maxSalary)}
                     </p>
 
                     <div className="flex items-center gap-2 mt-2">

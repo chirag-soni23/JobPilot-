@@ -55,7 +55,7 @@ const PostJob = () => {
       }
     });
 
-    if (logo) formData.append("file", logo); // 🔑 backend expects "file"
+    if (logo) formData.append("file", logo); 
 
     postJob(formData);
   };
