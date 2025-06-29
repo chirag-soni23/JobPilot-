@@ -78,6 +78,7 @@ export const UserProvider = ({ children }) => {
     fetchAllUsers();
   }, []);
 
+  // logout
   async function logout() {
     setBtnLoading(true);
     try {
@@ -93,6 +94,40 @@ export const UserProvider = ({ children }) => {
     }
   }
 
+  // upload profile
+  async function uploadProfile(file) {
+  setBtnLoading(true);
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const { data } = await axios.post("/api/user/uploadprofile", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    toast.success(data.message);
+    setUser((prev) => ({ ...prev, profile: data.profile }));
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Upload failed");
+  } finally {
+    setBtnLoading(false);
+  }
+}
+
+  // delete profile
+async function deleteProfile() {
+  setBtnLoading(true);
+  try {
+    const { data } = await axios.delete("/api/user/deleteprofile");
+    toast.success(data.message);
+    setUser((prev) => ({ ...prev, profile: { url: "", id: "" } }));
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Delete failed");
+  } finally {
+    setBtnLoading(false);
+  }
+}
+
   return (
     <UserContext.Provider
       value={{
@@ -103,7 +138,9 @@ export const UserProvider = ({ children }) => {
         loading,
         registerUser,
         logout,
-        users
+        users,
+        uploadProfile,
+        deleteProfile,
       }}
     >
       {children}
