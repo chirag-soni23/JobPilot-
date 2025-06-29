@@ -29,6 +29,7 @@ export const UserProvider = ({ children }) => {
       axios.defaults.headers.common.Authorization = `Bearer ${data.token}`;
       toast.success(data.message);
       navigate("/");
+      window.location.reload();
     } catch (err) {
       toast.error(err.response?.data?.message || "Register failed");
     } finally {
