@@ -1,17 +1,21 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-import { useEffect } from "react";
 
 const UserContext = createContext();
+
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState([]);
-  const [users,setUsers] = useState([]);
+  const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]);
   const [isAuth, setIsAuth] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // register user
-  async function registerUser(name, email, password, navigate) {
+  const tokenLS = localStorage.getItem("token");
+  if (tokenLS && !axios.defaults.headers.common.Authorization)
+    axios.defaults.headers.common.Authorization = `Bearer ${tokenLS}`;
+
+  const registerUser = async (name, email, password, navigate) => {
     setBtnLoading(true);
     try {
       const { data } = await axios.post("/api/user/register", {
@@ -19,128 +23,115 @@ export const UserProvider = ({ children }) => {
         email,
         password,
       });
-      toast.success(data.message);
       setUser(data.user);
       setIsAuth(true);
-      setBtnLoading(false);
+      localStorage.setItem("token", data.token);
+      axios.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+      toast.success(data.message);
       navigate("/");
-    } catch (error) {
-      toast.error(error.response.data.message);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Register failed");
+    } finally {
       setBtnLoading(false);
     }
-  }
+  };
 
-  // login user
-  async function loginUser(email, password, navigate) {
+  const loginUser = async (email, password, navigate) => {
     setBtnLoading(true);
     try {
       const { data } = await axios.post("/api/user/login", { email, password });
-      toast.success(data.message);
       setUser(data.user);
       setIsAuth(true);
-      setBtnLoading(false);
+      localStorage.setItem("token", data.token);
+      axios.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+      toast.success(data.message);
       navigate("/");
-      window.location.reload();
-    } catch (error) {
-      toast.error(error.response.data.message);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Login failed");
+    } finally {
       setBtnLoading(false);
     }
-  }
+  };
 
-  const [loading, setLoading] = useState(true);
-  // fetch user
-  async function fetchUser() {
+  const fetchUser = async () => {
     try {
       const { data } = await axios.get("/api/user/me");
       setUser(data);
       setIsAuth(true);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
-  // fetch all users
-  async function fetchAllUsers() {
+  const fetchAllUsers = async () => {
     try {
       const { data } = await axios.get("/api/user/getall");
       setUsers(data);
-      setIsAuth(true);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  }
+    } catch {}
+  };
+
   useEffect(() => {
     fetchUser();
     fetchAllUsers();
   }, []);
 
-  // logout
-  async function logout() {
+  const logout = async () => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.get("/api/user/logout");
-      toast.success(data.message);
+      await axios.get("/api/user/logout");
+      localStorage.removeItem("token");
+      delete axios.defaults.headers.common.Authorization;
       setUser(null);
       setIsAuth(false);
-      setLoading(false);
-    } catch (error) {
-      toast.error(error.response.data.message);
+      toast.success("Logged out successfully!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Logout failed");
     } finally {
       setBtnLoading(false);
     }
-  }
+  };
 
-  // upload profile
-  async function uploadProfile(file) {
-  setBtnLoading(true);
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
+  const uploadProfile = async (file) => {
+    setBtnLoading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const { data } = await axios.post("/api/user/uploadprofile", fd);
+      setUser((prev) => ({ ...prev, profile: data.profile }));
+      toast.success(data.message);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Upload failed");
+    } finally {
+      setBtnLoading(false);
+    }
+  };
 
-    const { data } = await axios.post("/api/user/uploadprofile", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-
-    toast.success(data.message);
-    setUser((prev) => ({ ...prev, profile: data.profile }));
-  } catch (error) {
-    toast.error(error.response?.data?.message || "Upload failed");
-  } finally {
-    setBtnLoading(false);
-  }
-}
-
-  // delete profile
-async function deleteProfile() {
-  setBtnLoading(true);
-  try {
-    const { data } = await axios.delete("/api/user/deleteprofile");
-    toast.success(data.message);
-    setUser((prev) => ({ ...prev, profile: { url: "", id: "" } }));
-  } catch (error) {
-    toast.error(error.response?.data?.message || "Delete failed");
-  } finally {
-    setBtnLoading(false);
-  }
-}
+  const deleteProfile = async () => {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.delete("/api/user/deleteprofile");
+      setUser((prev) => ({ ...prev, profile: { url: "", id: "" } }));
+      toast.success(data.message);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Delete failed");
+    } finally {
+      setBtnLoading(false);
+    }
+  };
 
   return (
     <UserContext.Provider
       value={{
-        loginUser,
-        btnLoading,
-        isAuth,
-        user,
-        loading,
         registerUser,
+        loginUser,
         logout,
-        users,
         uploadProfile,
         deleteProfile,
+        user,
+        users,
+        isAuth,
+        loading,
+        btnLoading,
       }}
     >
       {children}

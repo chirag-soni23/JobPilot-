@@ -9,4 +9,6 @@ export const generateToken = (id, res) => {
     httpOnly: true,
     sameSite: "strict",
   });
+  
+  return token;
 };
