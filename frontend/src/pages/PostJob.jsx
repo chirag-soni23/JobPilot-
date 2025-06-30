@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { JobData } from "../context/JobContext";
 
 const PostJob = () => {
   const { postJob, btnLoading } = JobData();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     title: "",
@@ -41,7 +43,7 @@ const PostJob = () => {
     setForm((prev) => ({ ...prev, [key]: arr }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
 
@@ -55,9 +57,10 @@ const PostJob = () => {
       }
     });
 
-    if (logo) formData.append("file", logo); 
+    if (logo) formData.append("file", logo);
 
-    postJob(formData);
+    await postJob(formData);
+    navigate("/findjobs");
   };
 
   return (
