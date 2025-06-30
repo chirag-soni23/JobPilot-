@@ -31,8 +31,8 @@ export const JobProvider = ({ children }) => {
       toast.success(data.message);
       setJobs((prev) => prev.map((job) => (job._id === id ? data.job : job)));
       if (singleJob?._id === id) setSingleJob(data.job);
-    } catch {
-      toast.error("Unable to update job");
+    } catch (error) {
+      console.error(`Unable to update job ${error.message}`);
     } finally {
       setBtnLoading(false);
     }
@@ -51,8 +51,8 @@ export const JobProvider = ({ children }) => {
     try {
       const { data } = await axios.get("/api/job/getsaved");
       setSavedJobs(data);
-    } catch {
-      toast.error("Unable to fetch saved jobs");
+    } catch (error) {
+      console.error(`Unable to fetch saved jobs ${error.message}`);
     }
   };
 
