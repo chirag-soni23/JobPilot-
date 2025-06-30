@@ -1,3 +1,4 @@
+// vite.config.js
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import tailwindcss from '@tailwindcss/vite'
@@ -7,21 +8,21 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true, 
-      }
-    }
+        target: 'http://backend:5000', 
+        changeOrigin: true,
+      },
+    },
   },
   build: {
     rollupOptions: {
       output: {
         manualChunks: {
           react: ['react', 'react-dom'],
-          icons: ['lucide-react'], 
-          vendor: ['axios'], 
-        }
-      }
+          icons: ['lucide-react'],
+          vendor: ['axios'],
+        },
+      },
     },
-    chunkSizeWarningLimit: 1000 
-  }
+    chunkSizeWarningLimit: 1000,
+  },
 })

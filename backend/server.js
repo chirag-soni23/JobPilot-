@@ -28,7 +28,7 @@ app.use("/api/mail",nodemailerRoutes);
 
 
 // server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-    connectDb();
-})
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+  connectDb();
+});
