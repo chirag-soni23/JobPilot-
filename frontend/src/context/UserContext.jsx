@@ -18,7 +18,7 @@ export const UserProvider = ({ children }) => {
   const registerUser = async (name, email, password, navigate) => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post("https://jobpilot-gqgi.onrender.com/api/user/register", {
+      const { data } = await axios.post("/api/user/register", {
         name,
         email,
         password,
@@ -40,7 +40,7 @@ export const UserProvider = ({ children }) => {
   const loginUser = async (email, password, navigate) => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post("https://jobpilot-gqgi.onrender.com/api/user/login", { email, password });
+      const { data } = await axios.post("/api/user/login", { email, password });
       setUser(data.user);
       setIsAuth(true);
       localStorage.setItem("token", data.token);
@@ -56,7 +56,7 @@ export const UserProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get("https://jobpilot-gqgi.onrender.com/api/user/me");
+      const { data } = await axios.get("/api/user/me");
       setUser(data);
       setIsAuth(true);
     } finally {
@@ -66,7 +66,7 @@ export const UserProvider = ({ children }) => {
 
   const fetchAllUsers = async () => {
     try {
-      const { data } = await axios.get("https://jobpilot-gqgi.onrender.com/api/user/getall");
+      const { data } = await axios.get("/api/user/getall");
       setUsers(data);
     } catch {}
   };
@@ -97,7 +97,7 @@ export const UserProvider = ({ children }) => {
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const { data } = await axios.post("https://jobpilot-gqgi.onrender.com/api/user/uploadprofile", fd);
+      const { data } = await axios.post("/api/user/uploadprofile", fd);
       setUser((prev) => ({ ...prev, profile: data.profile }));
       toast.success(data.message);
     } catch (err) {
@@ -110,7 +110,7 @@ export const UserProvider = ({ children }) => {
   const deleteProfile = async () => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.delete("https://jobpilot-gqgi.onrender.com/api/user/deleteprofile");
+      const { data } = await axios.delete("/api/user/deleteprofile");
       setUser((prev) => ({ ...prev, profile: { url: "", id: "" } }));
       toast.success(data.message);
     } catch (err) {
