@@ -31,13 +31,28 @@ app.use("/api/job", jobRoutes);
 app.use("/api/apply", jobApplyRoutes);
 app.use("/api/mail", nodemailerRoutes);
 
+const url = `https://jobpilot-gqgi.onrender.com`;
+const interval = 30000;
+
+function reloadWebsite() {
+  axios
+    .get(url)
+    .then((response) => {
+      console.log("website reloded");
+    })
+    .catch((error) => {
+      console.error(`Error : ${error.message}`);
+    });
+}
+
+setInterval(reloadWebsite, interval);
+
+
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "/frontend/dist")))
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"))
 })
-
-
 
 // server
 app.listen(PORT, "0.0.0.0", () => {
