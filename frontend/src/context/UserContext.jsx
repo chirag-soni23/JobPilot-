@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import api from "../api.js";
+import axios from "axios";
 
 const UserContext = createContext();
 
@@ -12,17 +12,21 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const tokenLS = localStorage.getItem("token");
-  if (tokenLS && !api.defaults.headers.common.Authorization)
-    api.defaults.headers.common.Authorization = `Bearer ${tokenLS}`;
+  if (tokenLS && !axios.defaults.headers.common.Authorization)
+    axios.defaults.headers.common.Authorization = `Bearer ${tokenLS}`;
 
   const registerUser = async (name, email, password, navigate) => {
     setBtnLoading(true);
     try {
-      const { data } = await api.post("/api/user/register", { name, email, password });
+      const { data } = await axios.post("/api/user/register", {
+        name,
+        email,
+        password,
+      });
       setUser(data.user);
       setIsAuth(true);
       localStorage.setItem("token", data.token);
-      api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+      axios.defaults.headers.common.Authorization = `Bearer ${data.token}`;
       toast.success(data.message);
       navigate("/");
       window.location.reload();
@@ -36,11 +40,11 @@ export const UserProvider = ({ children }) => {
   const loginUser = async (email, password, navigate) => {
     setBtnLoading(true);
     try {
-      const { data } = await api.post("/api/user/login", { email, password });
+      const { data } = await axios.post("/api/user/login", { email, password });
       setUser(data.user);
       setIsAuth(true);
       localStorage.setItem("token", data.token);
-      api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+      axios.defaults.headers.common.Authorization = `Bearer ${data.token}`;
       toast.success(data.message);
       navigate("/");
     } catch (err) {
@@ -52,7 +56,7 @@ export const UserProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const { data } = await api.get("/api/user/me");
+      const { data } = await axios.get("/api/user/me");
       setUser(data);
       setIsAuth(true);
     } finally {
@@ -62,7 +66,7 @@ export const UserProvider = ({ children }) => {
 
   const fetchAllUsers = async () => {
     try {
-      const { data } = await api.get("/api/user/getall");
+      const { data } = await axios.get("/api/user/getall");
       setUsers(data);
     } catch {}
   };
@@ -75,9 +79,9 @@ export const UserProvider = ({ children }) => {
   const logout = async () => {
     setBtnLoading(true);
     try {
-      await api.get("/api/user/logout");
+      await axios.get("/api/user/logout");
       localStorage.removeItem("token");
-      delete api.defaults.headers.common.Authorization;
+      delete axios.defaults.headers.common.Authorization;
       setUser(null);
       setIsAuth(false);
       toast.success("Logged out successfully!");
@@ -93,7 +97,7 @@ export const UserProvider = ({ children }) => {
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const { data } = await api.post("/api/user/uploadprofile", fd);
+      const { data } = await axios.post("/api/user/uploadprofile", fd);
       setUser((prev) => ({ ...prev, profile: data.profile }));
       toast.success(data.message);
     } catch (err) {
@@ -106,7 +110,7 @@ export const UserProvider = ({ children }) => {
   const deleteProfile = async () => {
     setBtnLoading(true);
     try {
-      const { data } = await api.delete("/api/user/deleteprofile");
+      const { data } = await axios.delete("/api/user/deleteprofile");
       setUser((prev) => ({ ...prev, profile: { url: "", id: "" } }));
       toast.success(data.message);
     } catch (err) {

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
 import toast from "react-hot-toast";
-import api from "../api.js";
 
 const JobApplyContext = createContext();
 
@@ -14,7 +14,7 @@ export const JobApplyProvider = ({ children }) => {
   const applyJob = async (jobId, formData, navigate) => {
     setApplying(true);
     try {
-      const { data } = await api.post(`/api/apply/apply/${jobId}`, formData, {
+      const { data } = await axios.post(`/api/apply/apply/${jobId}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -33,7 +33,7 @@ export const JobApplyProvider = ({ children }) => {
   const getAllApplications = async () => {
     setLoadingApplications(true);
     try {
-      const { data } = await api.get("/api/apply/getall");
+      const { data } = await axios.get("/api/apply/getall");
       setApplications(data);
     } catch (err) {
       console.error("Failed to fetch applications");
@@ -45,7 +45,7 @@ export const JobApplyProvider = ({ children }) => {
   // Get single application
   const getApplicationById = async (id) => {
     try {
-      const { data } = await api.get(`/api/apply/get/${id}`);
+      const { data } = await axios.get(`/api/apply/get/${id}`);
       setApplication(data.application);
     } catch (err) {
       toast.error("Unable to fetch application");
