@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         // target: 'http://backend:5000', 
-        target: 'https://jobpilot-gqgi.onrender.com', 
+        target: 'https://jobpilot-gqgi.onrender.com/', 
         changeOrigin: true,
       },
     },
