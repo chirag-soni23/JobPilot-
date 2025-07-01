@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import axios from "axios";
+import api from "../api.js";
 
 const JobContext = createContext();
 
@@ -16,7 +16,7 @@ export const JobProvider = ({ children }) => {
   const postJob = async (formData) => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post("/api/job/createjob", formData);
+      const { data } = await api.post("/api/job/createjob", formData);
       toast.success(data.message);
       getAllJobs();
     } finally {
@@ -27,7 +27,7 @@ export const JobProvider = ({ children }) => {
   const updateJob = async (id, formData) => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.put(`/api/job/update/${id}`, formData);
+      const { data } = await api.put(`/api/job/update/${id}`, formData);
       toast.success(data.message);
       setJobs((prev) => prev.map((job) => (job._id === id ? data.job : job)));
       if (singleJob?._id === id) setSingleJob(data.job);
@@ -40,7 +40,7 @@ export const JobProvider = ({ children }) => {
 
   const getAllJobs = async () => {
     try {
-      const { data } = await axios.get("/api/job/getall");
+      const { data } = await api.get("/api/job/getall");
       setJobs(data);
     } finally {
       setLoading(false);
@@ -49,7 +49,7 @@ export const JobProvider = ({ children }) => {
 
   const fetchSavedJobs = async () => {
     try {
-      const { data } = await axios.get("/api/job/getsaved");
+      const { data } = await api.get("/api/job/getsaved");
       setSavedJobs(data);
     } catch (error) {
       console.error(`Unable to fetch saved jobs ${error.message}`);
@@ -59,7 +59,7 @@ export const JobProvider = ({ children }) => {
   const toggleSaveJob = async (jobId) => {
     setSavedLoading(true);
     try {
-      const { data } = await axios.put(`/api/job/savedJob/${jobId}`);
+      const { data } = await api.put(`/api/job/savedJob/${jobId}`);
       toast.success(data.message);
 
       if (singleJob?._id === jobId) {
@@ -83,7 +83,7 @@ export const JobProvider = ({ children }) => {
   const getJobById = async (id) => {
     setLoadingSingleJob(true);
     try {
-      const { data } = await axios.get(`/api/job/get/${id}`);
+      const { data } = await api.get(`/api/job/get/${id}`);
       setSingleJob(data);
     } finally {
       setLoadingSingleJob(false);
@@ -93,7 +93,7 @@ export const JobProvider = ({ children }) => {
   const deleteJob = async (id) => {
     setLoading(true);
     try {
-      const { data } = await axios.delete(`/api/job/deletejob/${id}`);
+      const { data } = await api.delete(`/api/job/deletejob/${id}`);
       toast.success(data.message);
       getAllJobs();
     } catch {

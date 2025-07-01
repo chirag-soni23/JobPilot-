@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import axios from "axios";
+import api from "../api.js";
 
 const MailerContext = createContext();
 
@@ -10,7 +10,7 @@ export const MailerProvider = ({ children }) => {
   const sendMail = async (dataObj) => {
     setIsLoading(true);
     try {
-      const { data } = await axios.post("/api/mail/send-email", dataObj);
+      const { data } = await api.post("/api/mail/send-email", dataObj);
       toast.success(data.message || "Email sent!");
       return true;
     } catch (err) {
