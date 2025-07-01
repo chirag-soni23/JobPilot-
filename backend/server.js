@@ -7,6 +7,7 @@ import jobApplyRoutes from "./routes/jobApplyRoutes.js";
 import nodemailerRoutes from "./routes/nodemailer.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import path from "path";
 
 const app = express();
 const PORT = 5000 || process.env.PORT;
@@ -29,6 +30,13 @@ app.use("/api/user", userRoutes);
 app.use("/api/job", jobRoutes);
 app.use("/api/apply", jobApplyRoutes);
 app.use("/api/mail", nodemailerRoutes);
+
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "/Frontend/dist")))
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "Frontend", "dist", "index.html"))
+})
+
 
 // server
 app.listen(PORT, "0.0.0.0", () => {
