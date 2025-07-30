@@ -121,7 +121,7 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center gap-6">
             <span className="text-gray-700 dark:text-gray-200 flex items-center gap-2 font-medium">
-              <Phone className="w-5 h-5" /> +91&nbsp;9876543210
+              <Phone className="w-5 h-5" /> +91&nbsp;8233877457
             </span>
 
             <a
