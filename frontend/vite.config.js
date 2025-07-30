@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://jobpilot-gqgi.onrender.com/', 
+        target: 'https://jobpilot-3gz2.onrender.com/', 
         changeOrigin: true,
       },
     },
