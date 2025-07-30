@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 const JobApplyContext = createContext();
 const VITE_URL = import.meta.env.VITE_BACKEND_URL;
 
-
 export const JobApplyProvider = ({ children }) => {
   const [applications, setApplications] = useState([]);
   const [application, setApplication] = useState(null);
@@ -16,9 +15,14 @@ export const JobApplyProvider = ({ children }) => {
   const applyJob = async (jobId, formData, navigate) => {
     setApplying(true);
     try {
-      const { data } = await axios.post(`${VITE_URL}/api/apply/apply/${jobId}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const { data } = await axios.post(
+        `${VITE_URL}/api/apply/apply/${jobId}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+        }
+      );
 
       toast.success(data.message);
       setApplications((prev) => [...prev, data.application]);
@@ -35,7 +39,9 @@ export const JobApplyProvider = ({ children }) => {
   const getAllApplications = async () => {
     setLoadingApplications(true);
     try {
-      const { data } = await axios.get(`${VITE_URL}/api/apply/getall`);
+      const { data } = await axios.get(`${VITE_URL}/api/apply/getall`, {
+        withCredentials: true,
+      });
       setApplications(data);
     } catch (err) {
       console.error("Failed to fetch applications");
@@ -47,7 +53,9 @@ export const JobApplyProvider = ({ children }) => {
   // Get single application
   const getApplicationById = async (id) => {
     try {
-      const { data } = await axios.get(`${VITE_URL}/api/apply/get/${id}`);
+      const { data } = await axios.get(`${VITE_URL}/api/apply/get/${id}`, {
+        withCredentials: true,
+      });
       setApplication(data.application);
     } catch (err) {
       toast.error("Unable to fetch application");

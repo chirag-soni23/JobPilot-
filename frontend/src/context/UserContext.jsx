@@ -5,7 +5,6 @@ import axios from "axios";
 const UserContext = createContext();
 const VITE_URL = import.meta.env.VITE_BACKEND_URL;
 
-
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
@@ -13,22 +12,16 @@ export const UserProvider = ({ children }) => {
   const [btnLoading, setBtnLoading] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const tokenLS = localStorage.getItem("token");
-  if (tokenLS && !axios.defaults.headers.common.Authorization)
-    axios.defaults.headers.common.Authorization = `Bearer ${tokenLS}`;
-
   const registerUser = async (name, email, password, navigate) => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post(`${VITE_URL}/api/user/register`, {
-        name,
-        email,
-        password,
-      });
+      const { data } = await axios.post(
+        `${VITE_URL}/api/user/register`,
+        { name, email, password },
+        { withCredentials: true }
+      );
       setUser(data.user);
       setIsAuth(true);
-      localStorage.setItem("token", data.token);
-      axios.defaults.headers.common.Authorization = `Bearer ${data.token}`;
       toast.success(data.message);
       navigate("/");
       window.location.reload();
@@ -42,11 +35,13 @@ export const UserProvider = ({ children }) => {
   const loginUser = async (email, password, navigate) => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post(`${VITE_URL}/api/user/login`, { email, password });
+      const { data } = await axios.post(
+        `${VITE_URL}/api/user/login`,
+        { email, password },
+        { withCredentials: true }
+      );
       setUser(data.user);
       setIsAuth(true);
-      localStorage.setItem("token", data.token);
-      axios.defaults.headers.common.Authorization = `Bearer ${data.token}`;
       toast.success(data.message);
       navigate("/");
     } catch (err) {
@@ -58,9 +53,13 @@ export const UserProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get(`${VITE_URL}/api/user/me`);
+      const { data } = await axios.get(`${VITE_URL}/api/user/me`, {
+        withCredentials: true,
+      });
       setUser(data);
       setIsAuth(true);
+    } catch {
+      setIsAuth(false);
     } finally {
       setLoading(false);
     }
@@ -68,22 +67,19 @@ export const UserProvider = ({ children }) => {
 
   const fetchAllUsers = async () => {
     try {
-      const { data } = await axios.get(`${VITE_URL}/api/user/getall`);
+      const { data } = await axios.get(`${VITE_URL}/api/user/getall`, {
+        withCredentials: true,
+      });
       setUsers(data);
     } catch {}
   };
 
-  useEffect(() => {
-    fetchUser();
-    fetchAllUsers();
-  }, []);
-
   const logout = async () => {
     setBtnLoading(true);
     try {
-      await axios.get(`${VITE_URL}/api/user/logout`);
-      localStorage.removeItem("token");
-      delete axios.defaults.headers.common.Authorization;
+      await axios.get(`${VITE_URL}/api/user/logout`, {
+        withCredentials: true,
+      });
       setUser(null);
       setIsAuth(false);
       toast.success("Logged out successfully!");
@@ -99,7 +95,9 @@ export const UserProvider = ({ children }) => {
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const { data } = await axios.post(`${VITE_URL}/api/user/uploadprofile`, fd);
+      const { data } = await axios.post(`${VITE_URL}/api/user/uploadprofile`, fd, {
+        withCredentials: true,
+      });
       setUser((prev) => ({ ...prev, profile: data.profile }));
       toast.success(data.message);
     } catch (err) {
@@ -112,7 +110,9 @@ export const UserProvider = ({ children }) => {
   const deleteProfile = async () => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.delete(`${VITE_URL}/api/user/deleteprofile`);
+      const { data } = await axios.delete(`${VITE_URL}/api/user/deleteprofile`, {
+        withCredentials: true,
+      });
       setUser((prev) => ({ ...prev, profile: { url: "", id: "" } }));
       toast.success(data.message);
     } catch (err) {
@@ -121,6 +121,11 @@ export const UserProvider = ({ children }) => {
       setBtnLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchUser();
+    fetchAllUsers();
+  }, []);
 
   return (
     <UserContext.Provider
