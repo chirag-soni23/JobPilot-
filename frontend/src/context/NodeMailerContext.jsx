@@ -3,7 +3,8 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
 const MailerContext = createContext();
-const VITE_URL = import.meta.env.BACKEND_URL
+const VITE_URL = import.meta.env.VITE_BACKEND_URL;
+
 
 export const MailerProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);

@@ -3,7 +3,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const JobApplyContext = createContext();
-const VITE_URL = import.meta.env.BACKEND_URL
+const VITE_URL = import.meta.env.VITE_BACKEND_URL;
+
 
 export const JobApplyProvider = ({ children }) => {
   const [applications, setApplications] = useState([]);

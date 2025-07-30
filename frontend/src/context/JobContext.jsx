@@ -3,7 +3,8 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 const JobContext = createContext();
-const VITE_URL = import.meta.env.BACKEND_URL
+const VITE_URL = import.meta.env.VITE_BACKEND_URL;
+
 
 export const JobProvider = ({ children }) => {
   const [jobs, setJobs] = useState([]);
