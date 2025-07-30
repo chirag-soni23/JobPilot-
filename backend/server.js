@@ -6,7 +6,6 @@ import jobRoutes from "./routes/jobRoutes.js";
 import jobApplyRoutes from "./routes/jobApplyRoutes.js";
 import nodemailerRoutes from "./routes/nodemailer.route.js";
 import cookieParser from "cookie-parser";
-import axios from "axios";
 import cors from "cors";
 import path from "path";
 
@@ -31,23 +30,6 @@ app.use("/api/user", userRoutes);
 app.use("/api/job", jobRoutes);
 app.use("/api/apply", jobApplyRoutes);
 app.use("/api/mail", nodemailerRoutes);
-
-const url = `https://jobpilot-gqgi.onrender.com`;
-const interval = 30000;
-
-function reloadWebsite() {
-  axios
-    .get(url)
-    .then((response) => {
-      console.log("website reloded");
-    })
-    .catch((error) => {
-      console.error(`Error : ${error.message}`);
-    });
-}
-
-setInterval(reloadWebsite, interval);
-
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "/frontend/dist")))
