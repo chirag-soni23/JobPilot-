@@ -217,7 +217,7 @@ const FindJob = () => {
 
                     {/* Expired Badge */}
                     {expired && (
-                      <BanIcon className="absolute top-3 right-3 w-4 h-4 text-red-400 dark:text-red-500" />
+                      <BanIcon className="absolute top-3 right-10 w-4 h-4 text-red-400 dark:text-red-500" />
                     )}
 
                     {/* Applied Badge */}
