@@ -6,6 +6,7 @@ import jobRoutes from "./routes/jobRoutes.js";
 import jobApplyRoutes from "./routes/jobApplyRoutes.js";
 import nodemailerRoutes from "./routes/nodemailer.route.js";
 import cookieParser from "cookie-parser";
+import axios from "axios";
 import cors from "cors";
 import path from "path";
 
