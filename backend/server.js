@@ -16,7 +16,7 @@ dotenv.config();
 // middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://jobpilot-1-8vnh.onrender.com"],
+    origin: ["http://localhost:5173", "https://job-pilot-nu.vercel.app"],
     credentials: true,
   })
 );
