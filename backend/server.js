@@ -7,6 +7,7 @@ import jobApplyRoutes from "./routes/jobApplyRoutes.js";
 import nodemailerRoutes from "./routes/nodemailer.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import compression from "compression";
 
 const app = express();
 const PORT = 5000 || process.env.PORT;
@@ -23,6 +24,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(compression())
 
 // routes
 app.use("/api/user", userRoutes);
