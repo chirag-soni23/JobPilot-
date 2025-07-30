@@ -1,4 +1,11 @@
-import { BriefcaseIcon, User, CalendarDays, Menu, X } from "lucide-react";
+import {
+  BriefcaseIcon,
+  User,
+  CalendarDays,
+  Menu,
+  X,
+  TicketIcon,
+} from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserData } from "../context/UserContext";
@@ -39,6 +46,18 @@ const Header = () => {
               <span className="font-semibold text-[#0A65CC]">{user.name}</span>
             </div>
           )}
+
+          {isAuth && (
+            <div
+              className={`${
+                user.role !== "admin" ? "hidden" : ""
+              } flex items-center gap-2 text-base text-gray-700 dark:text-gray-300`}
+            >
+              <TicketIcon className="w-5 h-5 text-[#0A65CC]" />
+              Admin
+            </div>
+          )}
+
           <div className="flex items-center gap-2 text-base text-gray-500 dark:text-gray-400">
             <CalendarDays className="w-5 h-5 text-[#0A65CC]" />
             {currentDate}
@@ -56,7 +75,9 @@ const Header = () => {
               </button>
               <Link
                 to="/postjob"
-                className={`bg-[#0A65CC] text-white px-5 py-2 rounded-md hover:bg-[#084d9bcf] transition text-base ${user.role !== "admin" ? "hidden" : ""}`}
+                className={`bg-[#0A65CC] text-white px-5 py-2 rounded-md hover:bg-[#084d9bcf] transition text-base ${
+                  user.role !== "admin" ? "hidden" : ""
+                }`}
               >
                 Post a Job
               </Link>
@@ -108,6 +129,18 @@ const Header = () => {
                 </span>
               </div>
             )}
+
+            {isAuth && (
+              <div
+                className={`${
+                  user.role !== "admin" ? "hidden" : ""
+                } flex items-center gap-2 text-base text-gray-700 dark:text-gray-300`}
+              >
+                <TicketIcon className="w-5 h-5 text-[#0A65CC]" />
+                Admin
+              </div>
+            )}
+
             <div className="flex items-center gap-2 text-base text-gray-500 dark:text-gray-400">
               <CalendarDays className="w-5 h-5 text-[#0A65CC]" />
               {currentDate}
