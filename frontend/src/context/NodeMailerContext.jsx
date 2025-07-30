@@ -3,6 +3,7 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
 const MailerContext = createContext();
+const VITE_URL = import.meta.env.BACKEND_URL
 
 export const MailerProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -10,7 +11,7 @@ export const MailerProvider = ({ children }) => {
   const sendMail = async (dataObj) => {
     setIsLoading(true);
     try {
-      const { data } = await axios.post("/api/mail/send-email", dataObj);
+      const { data } = await axios.post(`${VITE_URL}/api/mail/send-email`, dataObj);
       toast.success(data.message || "Email sent!");
       return true;
     } catch (err) {
