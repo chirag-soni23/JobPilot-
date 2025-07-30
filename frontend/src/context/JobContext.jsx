@@ -124,6 +124,7 @@ export const JobProvider = ({ children }) => {
         toggleSaveJob,
         savedLoading,
         fetchSavedJobs,
+        loadingSingleJob
       }}
     >
       {children}

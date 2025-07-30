@@ -15,6 +15,7 @@ import { toast } from "react-hot-toast";
 import { UserData } from "../context/UserContext";
 import { JobData } from "../context/JobContext";
 import { UseJobApply } from "../context/JobApplyContext";
+import Loading from "../components/Loading";
 
 const getBadgeColor = (type) => {
   switch (type) {
@@ -48,7 +49,7 @@ const formatSalary = (value) => {
 };
 
 const FindJob = () => {
-  const { jobs, deleteJob } = JobData();
+  const { jobs, deleteJob, loadingSingleJob } = JobData();
   const { isAuth, user } = UserData();
   const { applications } = UseJobApply();
   const navigate = useNavigate();
@@ -89,6 +90,7 @@ const FindJob = () => {
   return (
     <>
       <div className="w-full py-6 space-y-10 px-6 md:px-16 lg:px-24 xl:px-32">
+        {/* Header */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -178,95 +180,98 @@ const FindJob = () => {
           </div>
         </div>
 
-        {/* Job Cards */}
-        {filteredJobs.length === 0 ? (
+        {/* Job Cards Section */}
+        {filteredJobs.length === 0 && !loadingSingleJob ? (
           <div className="w-full text-center py-20 text-gray-600 dark:text-gray-300">
             No job found
           </div>
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredJobs.slice(offset, offset + jobsPerPage).map((job) => {
-                const expired = isExpired(job.expireDate);
-                const applied = applications.some(
-                  (app) => app.job?._id?.toString() === job._id?.toString()
-                );
+              {loadingSingleJob ? (
+                <Loading />
+              ) : (
+                filteredJobs
+                  .slice(offset, offset + jobsPerPage)
+                  .map((job) => {
+                    const expired = isExpired(job.expireDate);
+                    const applied = applications.some(
+                      (app) =>
+                        app.job?._id?.toString() === job._id?.toString()
+                    );
 
-                return (
-                  <div
-                    key={job._id}
-                    onClick={() => {
-                      if (expired) {
-                        toast.error("This job listing has expired");
-                        return;
-                      }
-                      navigateJobDetails(job._id);
-                    }}
-                    className="relative bg-white dark:bg-gray-800 cursor-pointer shadow-md rounded-xl p-4 w-full transition-transform duration-300 ease-in-out hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400 dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30"
-                  >
-                    {/* Admin Delete */}
-                    {user?.role === "admin" && (
-                      <Trash
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteJobById(job._id);
+                    return (
+                      <div
+                        key={job._id}
+                        onClick={() => {
+                          if (expired) {
+                            toast.error("This job listing has expired");
+                            return;
+                          }
+                          navigateJobDetails(job._id);
                         }}
-                        className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-red-500 hover:text-red-600"
-                      />
-                    )}
+                        className="relative bg-white dark:bg-gray-800 cursor-pointer shadow-md rounded-xl p-4 w-full transition-transform duration-300 ease-in-out hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400 dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30"
+                      >
+                        {user?.role === "admin" && (
+                          <Trash
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteJobById(job._id);
+                            }}
+                            className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-red-500 hover:text-red-600"
+                          />
+                        )}
 
-                    {/* Expired Badge */}
-                    {expired && (
-                      <BanIcon className="absolute top-3 right-10 w-4 h-4 text-red-400 dark:text-red-500" />
-                    )}
+                        {expired && (
+                          <BanIcon className="absolute top-3 right-10 w-4 h-4 text-red-400 dark:text-red-500" />
+                        )}
 
-                    {/* Applied Badge */}
-                    {applied && (
-                      <span className="absolute bottom-3 right-3 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 text-xs font-bold px-2 py-1 rounded">
-                        Applied
-                      </span>
-                    )}
+                        {applied && (
+                          <span className="absolute bottom-3 right-3 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 text-xs font-bold px-2 py-1 rounded">
+                            Applied
+                          </span>
+                        )}
 
-                    {/* Type Badge */}
-                    <span
-                      className={`text-xs font-bold px-2 py-1 rounded-full ${getBadgeColor(
-                        job.type
-                      )}`}
-                    >
-                      {job.type}
-                    </span>
+                        <span
+                          className={`text-xs font-bold px-2 py-1 rounded-full ${getBadgeColor(
+                            job.type
+                          )}`}
+                        >
+                          {job.type}
+                        </span>
 
-                    {/* Job Info */}
-                    <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
-                      {job.title}
-                    </h2>
+                        <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
+                          {job.title}
+                        </h2>
 
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      Salary: {formatSalary(job.minSalary)} – {formatSalary(job.maxSalary)}
-                    </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                          Salary: {formatSalary(job.minSalary)} –{" "}
+                          {formatSalary(job.maxSalary)}
+                        </p>
 
-                    <div className="flex items-center gap-2 mt-2">
-                      <img
-                        src={job.logoUrl?.url}
-                        alt="Company"
-                        className="w-6 h-6 rounded"
-                      />
-                      <p className="text-sm text-gray-600 dark:text-gray-300">
-                        {job.company}
-                      </p>
-                    </div>
+                        <div className="flex items-center gap-2 mt-2">
+                          <img
+                            src={job.logoUrl?.url}
+                            alt="Company"
+                            className="w-6 h-6 rounded"
+                          />
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
+                            {job.company}
+                          </p>
+                        </div>
 
-                    <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
-                      <MapPin className="w-4 h-4 text-blue-500" />
-                      {job.location}
-                    </p>
-                  </div>
-                );
-              })}
+                        <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
+                          <MapPin className="w-4 h-4 text-blue-500" />
+                          {job.location}
+                        </p>
+                      </div>
+                    );
+                  })
+              )}
             </div>
 
             {/* Pagination */}
-            {pageCount > 1 && (
+            {!loadingSingleJob && pageCount > 1 && (
               <div className="flex justify-center pt-10">
                 <ReactPaginate
                   previousLabel={<ChevronLeft className="w-4 h-4" />}
@@ -292,6 +297,7 @@ const FindJob = () => {
           </>
         )}
       </div>
+
       <Footer />
     </>
   );
