@@ -27,6 +27,7 @@ import user from "./user.png";
 import user1 from "./user1.png";
 import user2 from "./user2.png";
 import user3 from "./user3.png";
+import user4 from "./user4.png";
 import video from "./video.png";
 import wallet from "./wallet.png";
 import save from "./save.png";
@@ -64,6 +65,7 @@ export const assets = {
   user1,
   user2,
   user3,
+  user4,
   video,
   wallet,
   save,
