@@ -64,7 +64,7 @@ const Testimonials = () => {
                       />
                     ))}
                 </div>
-                <p className="text-sm text-gray-700 dark:text-gray-300 mb-5 line-clamp-4">
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-5 max-h-[160px] overflow-y-auto pr-1 custom-scroll">
                   “{t.text}”
                 </p>
               </div>
