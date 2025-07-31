@@ -5,38 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import { assets } from "../assets/assets.js";
-
-const testimonials = [
-  {
-    id: 1,
-    name: "Robert Fox",
-    role: "UI/UX Designer",
-    text: "Ut ullamcorper hendrerit tempor. Aliquam in rutrum dui. Maecenas ac placerat metus, in faucibus est.",
-    image: assets.user1,
-  },
-  {
-    id: 2,
-    name: "Bessie Cooper",
-    role: "Creative Director",
-    text: "Mauris eget lorem odio. Mauris convallis justo molestie metus aliquam lacinia. Suspendisse ut dui vulputate augue condimentum ornare. Morbi vitae tristique ante.",
-    image: assets.user2,
-  },
-  {
-    id: 3,
-    name: "Jane Cooper",
-    role: "Photographer",
-    text: "Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse et magna quis nibh accumsan venenatis sit amet id orci. Duis vestibulum bibendum dapibus.",
-    image: assets.user3,
-  },
-  {
-    id: 4,
-    name: "Jane Cooper",
-    role: "Photographer",
-    text: "Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse et magna quis nibh accumsan venenatis sit amet id orci. Duis vestibulum bibendum dapibus.",
-    image: assets.user3,
-  },
-];
+import { testimonials } from "../constants/TestimonialUsers.js";
 
 const Testimonials = () => {
   return (
@@ -84,7 +53,7 @@ const Testimonials = () => {
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm max-w-sm w-full h-80 flex flex-col justify-between text-left mx-auto">
               <div>
                 <div className="flex mb-3 gap-1">
-                  {Array(5)
+                  {Array(t.stars)
                     .fill(0)
                     .map((_, i) => (
                       <Star
