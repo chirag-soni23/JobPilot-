@@ -21,8 +21,11 @@ const JobDetails = () => {
   }, [id]);
 
   useEffect(() => {
-    if (singleJob) setIsSaved(Boolean(singleJob.isSaved));
-  }, [singleJob]);
+    if (singleJob && user) {
+      const isThisJobSaved = user.savedJobs.includes(singleJob._id);
+      setIsSaved(isThisJobSaved);
+    }
+  }, [singleJob, user]);
 
   const handleSavedJob = useCallback(() => {
     if (!singleJob) return;
@@ -87,11 +90,19 @@ const JobDetails = () => {
             </p>
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">
-            <Link onClick={scrollTopSmooth} className="text-blue-600 hover:underline" to="/">
+            <Link
+              onClick={scrollTopSmooth}
+              className="text-blue-600 hover:underline"
+              to="/"
+            >
               Home
             </Link>{" "}
             /{" "}
-            <Link onClick={scrollTopSmooth} className="text-blue-600 hover:underline" to="/findjobs">
+            <Link
+              onClick={scrollTopSmooth}
+              className="text-blue-600 hover:underline"
+              to="/findjobs"
+            >
               Find Job
             </Link>{" "}
             / {title} / jobdetails
@@ -211,16 +222,32 @@ const JobDetails = () => {
                 <OverviewItem
                   icon={assets.calendar}
                   label="JOB POSTED"
-                  value={postedDate ? new Date(postedDate).toLocaleDateString() : "-"}
+                  value={
+                    postedDate ? new Date(postedDate).toLocaleDateString() : "-"
+                  }
                 />
                 <OverviewItem
                   icon={assets.timer}
                   label="JOB EXPIRE"
-                  value={expireDate ? new Date(expireDate).toLocaleDateString() : "-"}
+                  value={
+                    expireDate ? new Date(expireDate).toLocaleDateString() : "-"
+                  }
                 />
-                <OverviewItem icon={assets.stack} label="JOB LEVEL" value={jobLevel || "-"} />
-                <OverviewItem icon={assets.wallet} label="EXPERIENCE" value={experience || "-"} />
-                <OverviewItem icon={assets.briefcase} label="EDUCATION" value={education || "-"} />
+                <OverviewItem
+                  icon={assets.stack}
+                  label="JOB LEVEL"
+                  value={jobLevel || "-"}
+                />
+                <OverviewItem
+                  icon={assets.wallet}
+                  label="EXPERIENCE"
+                  value={experience || "-"}
+                />
+                <OverviewItem
+                  icon={assets.briefcase}
+                  label="EDUCATION"
+                  value={education || "-"}
+                />
               </div>
             </div>
 
@@ -242,7 +269,11 @@ const JobDetails = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <img src={assets.linkedin} alt="LinkedIn" className="w-8 h-8" />
+                  <img
+                    src={assets.linkedin}
+                    alt="LinkedIn"
+                    className="w-8 h-8"
+                  />
                 </a>
                 <a
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
@@ -251,19 +282,25 @@ const JobDetails = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <img src={assets.facebook} alt="Facebook" className="w-8 h-8" />
+                  <img
+                    src={assets.facebook}
+                    alt="Facebook"
+                    className="w-8 h-8"
+                  />
                 </a>
                 <a
-                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}`}
+                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                    currentUrl
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <img src={assets.twitter} alt="Twitter" className="w-8 h-8" />
                 </a>
                 <a
-                  href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(
-                    currentUrl
-                  )}`}
+                  href={`mailto:?subject=${encodeURIComponent(
+                    title
+                  )}&body=${encodeURIComponent(currentUrl)}`}
                 >
                   <img src={assets.mail} alt="Mail" className="w-8 h-8" />
                 </a>
@@ -299,7 +336,9 @@ const OverviewItem = ({ icon, label, value }) => (
     <img src={icon} className="w-5 h-5 mt-1" alt={label} />
     <div>
       <p className="text-xs text-gray-400 dark:text-gray-500">{label}</p>
-      <p className="text-sm font-medium text-gray-800 dark:text-white">{value}</p>
+      <p className="text-sm font-medium text-gray-800 dark:text-white">
+        {value}
+      </p>
     </div>
   </div>
 );
