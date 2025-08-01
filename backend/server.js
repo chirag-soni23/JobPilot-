@@ -26,9 +26,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compression());
 
-app.get("/",(req,res)=>{
-  res.json("Backend is Live!")
-})
+app.get("/", (req, res) => {
+  res.json("Backend is Live!");
+});
 
 // routes
 app.use("/api/user", userRoutes);
