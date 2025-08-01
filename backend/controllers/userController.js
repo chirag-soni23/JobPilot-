@@ -43,9 +43,11 @@ export const userProfile = TryCatch(async (req, res) => {
 
 export const logout = TryCatch(async (req, res) => {
   res.clearCookie("token", {
+    maxAge: 15 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
+    path: "/",
   });
 
   res.status(200).json({ message: "Logged out successfully!" });
