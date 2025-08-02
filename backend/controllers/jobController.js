@@ -160,7 +160,7 @@ export const toggleSavedJob = TryCatch(async (req, res) => {
   const user = await User.findById(userId).select("savedJobs");
   if (!user) return res.status(404).json({ message: "User not found" });
 
-  const already = user.savedJobs.some(j => j.equals(jobId));
+  const already = user.savedJobs.some((j) => j.equals(jobId));
 
   if (already) {
     user.savedJobs.pull(jobId);
@@ -172,9 +172,11 @@ export const toggleSavedJob = TryCatch(async (req, res) => {
 
   await Promise.all([user.save(), job.save()]);
 
-  res.json({ message: already ? "Job unsaved" : "Job saved", isSaved: job.isSaved });
+  res.json({
+    message: already ? "Job unsaved" : "Job saved",
+    isSaved: job.isSaved,
+  });
 });
-
 
 // get saved job
 export const getSavedJobs = TryCatch(async (req, res) => {
