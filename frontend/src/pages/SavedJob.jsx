@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import Footer from "../components/Footer";
 import { JobData } from "../context/JobContext";
 import { Link, useNavigate } from "react-router-dom";
-import { MapPin, Search, SlidersHorizontal, Bookmark } from "lucide-react";
+import { MapPin, Search, SlidersHorizontal, Bookmark, BanIcon } from "lucide-react";
 import toast from "react-hot-toast";
 
 const formatSalary = (value) => {
@@ -18,6 +18,8 @@ const formatSalary = (value) => {
   }
   return `₹${salary.toLocaleString("en-IN")}`;
 };
+
+const isExpired = (dateStr) => new Date(dateStr).getTime() < Date.now();
 
 const SavedJob = () => {
   const { savedJobs, isAuth } = JobData();
@@ -47,6 +49,7 @@ const SavedJob = () => {
   return (
     <>
       <div className="w-full py-6 space-y-10 px-6 md:px-16 lg:px-24 xl:px-32">
+        {/* ── Header */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
@@ -138,52 +141,73 @@ const SavedJob = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {displayedJobs.map((job) => (
-              <div
-                onClick={() => navigateJobDetails(job._id)}
-                key={job._id}
-                className="relative bg-white cursor-pointer dark:bg-gray-800 
-                  transition-transform duration-300 ease-in-out 
-                  hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400 
-                  dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30
-                  shadow-md rounded-xl p-4 w-full"
-              >
-                <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400 flex items-center gap-1 w-fit">
-                  {job.type}
-                  <Bookmark className="absolute top-3 right-3 w-5 h-5 text-green-500" />
-                </span>
+            {displayedJobs.map((job) => {
+              const expired = isExpired(job.expireDate);
 
-                <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
-                  {job.title}
-                </h2>
+              return (
+                <div
+                  key={job._id}
+                  onClick={() => {
+                    if (expired) {
+                      toast.error("This job listing has expired");
+                      return;
+                    }
+                    navigateJobDetails(job._id);
+                  }}
+                  className={`relative bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 w-full transition-transform duration-300 ease-in-out ${
+                    expired
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400 dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30 cursor-pointer"
+                  }`}
+                >
+                  {/* Job Type and Bookmark Icon */}
+                  <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400 flex items-center gap-1 w-fit">
+                    {job.type}
+                    <Bookmark className="absolute top-3 right-3 w-5 h-5 text-green-500" />
+                  </span>
 
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  Salary: {formatSalary(job.minSalary)} –{" "}
-                  {formatSalary(job.maxSalary)}
-                </p>
-
-                <div className="flex items-center gap-2 mt-2">
-                  {job.logoUrl?.url && (
-                    <img
-                      src={job.logoUrl.url}
-                      alt="Company"
-                      className="w-6 h-6 rounded"
-                    />
+                  {/* Expired Icon */}
+                  {expired && (
+                    <BanIcon className="absolute top-3 left-3 w-5 h-5 text-red-500" />
                   )}
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    {job.company}
+
+                  {/* Job Title */}
+                  <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
+                    {job.title}
+                  </h2>
+
+                  {/* Salary */}
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Salary: {formatSalary(job.minSalary)} –{" "}
+                    {formatSalary(job.maxSalary)}
+                  </p>
+
+                  {/* Company Info */}
+                  <div className="flex items-center gap-2 mt-2">
+                    {job.logoUrl?.url && (
+                      <img
+                        src={job.logoUrl.url}
+                        alt="Company"
+                        className="w-6 h-6 rounded"
+                      />
+                    )}
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      {job.company}
+                    </p>
+                  </div>
+
+                  {/* Location */}
+                  <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
+                    <MapPin className="w-4 h-4 text-blue-500" />
+                    {job.location}
                   </p>
                 </div>
-
-                <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
-                  <MapPin className="w-4 h-4 text-blue-500" />
-                  {job.location}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
+
       <Footer />
     </>
   );

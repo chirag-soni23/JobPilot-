@@ -1,4 +1,3 @@
-// utils/jobMailer.js
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
@@ -8,17 +7,16 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: process.env.EMAIL_USER,   // “from” ID
+    user: process.env.EMAIL_USER, 
     pass: process.env.EMAIL_PASS,
   },
 });
 
 export const sendJobApplicationEmail = async (jobEmail, applicant) => {
-  // ✨ fallback agar recruiter ka email nahi mila
   const recipient =
     jobEmail?.trim() ||
-    process.env.DEFAULT_JOB_EMAIL ||      // optional: set alag env var
-    process.env.EMAIL_USER;              // last‑resort fallback
+    process.env.DEFAULT_JOB_EMAIL ||
+    process.env.EMAIL_USER; 
 
   const {
     jobTitle,
