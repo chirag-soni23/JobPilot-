@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router-dom";
-import { MapPin, Search, SlidersHorizontal, Bookmark } from "lucide-react";
+import { MapPin, Search, SlidersHorizontal, FolderCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import { UseJobApply } from "../context/JobApplyContext";
 
@@ -52,7 +52,7 @@ const AppliedJob = () => {
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-              <Bookmark className="w-6 h-6 text-yellow-500" />
+              <FolderCheck className="w-6 h-6 text-yellow-500" />
               Applied Jobs
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -152,7 +152,7 @@ const AppliedJob = () => {
               >
                 <span className="text-sm font-bold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-300/20 dark:text-yellow-400 flex items-center justify-center gap-1 w-fit">
                   {job.type}
-                  <Bookmark className="absolute top-3 right-3 w-5 h-5 text-green-500" />
+                  <FolderCheck className="absolute top-3 right-3 w-5 h-5 text-green-500" />
                 </span>
 
                 <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
@@ -160,7 +160,8 @@ const AppliedJob = () => {
                 </h2>
 
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  Salary: {formatSalary(job.minSalary)} – {formatSalary(job.maxSalary)}
+                  Salary: {formatSalary(job.minSalary)} –{" "}
+                  {formatSalary(job.maxSalary)}
                 </p>
 
                 <div className="flex items-center gap-2 mt-2">
