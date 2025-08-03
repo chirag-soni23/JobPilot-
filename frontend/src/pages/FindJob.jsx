@@ -191,82 +191,83 @@ const FindJob = () => {
               {loadingSingleJob ? (
                 <Loading />
               ) : (
-                filteredJobs
-                  .slice(offset, offset + jobsPerPage)
-                  .map((job) => {
-                    const expired = isExpired(job.expireDate);
-                    const applied = applications.some(
-                      (app) =>
-                        app.job?._id?.toString() === job._id?.toString()
-                    );
+                filteredJobs.slice(offset, offset + jobsPerPage).map((job) => {
+                  const expired = isExpired(job.expireDate);
+                  const applied = applications.some(
+                    (app) => app.job?._id?.toString() === job._id?.toString()
+                  );
 
-                    return (
-                      <div
-                        key={job._id}
-                        onClick={() => {
-                          if (expired) {
-                            toast.error("This job listing has expired");
-                            return;
-                          }
-                          navigateJobDetails(job._id);
-                        }}
-                        className="relative bg-white dark:bg-gray-800 cursor-pointer shadow-md rounded-xl p-4 w-full transition-transform duration-300 ease-in-out hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400 dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30"
-                      >
-                        {user?.role === "admin" && (
-                          <Trash
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteJobById(job._id);
-                            }}
-                            className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-red-500 hover:text-red-600"
-                          />
-                        )}
+                  return (
+                    <div
+                      key={job._id}
+                      onClick={() => {
+                        if (expired) {
+                          toast.error("This job listing has expired");
+                          return;
+                        }
+                        navigateJobDetails(job._id);
+                      }}
+                      className="relative bg-white dark:bg-gray-800 cursor-pointer shadow-md rounded-xl p-4 w-full transition-transform duration-300 ease-in-out hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400 dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30"
+                    >
+                      {user?.role === "admin" && (
+                        <Trash
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteJobById(job._id);
+                          }}
+                          className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-red-500 hover:text-red-600"
+                        />
+                      )}
 
-                        {expired && (
-                          <BanIcon className={`absolute top-3 w-4 h-4 text-red-400 dark:text-red-500 ${user.role !== "admin" ? "right-3":"right-10"}`}/>
-                        )}
+                      {expired && (
+                        <BanIcon
+                          className={`absolute top-3 w-4 h-4 text-red-400 dark:text-red-500 ${
+                            user.role !== "admin" ? "right-3" : "right-10"
+                          }`}
+                        />
+                      )}
 
-                        {applied && (
-                          <span className="absolute bottom-3 right-3 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 text-xs font-bold px-2 py-1 rounded">
-                            Applied
-                          </span>
-                        )}
-
-                        <span
-                          className={`text-xs font-bold px-2 py-1 rounded-full ${getBadgeColor(
-                            job.type
-                          )}`}
-                        >
-                          {job.type}
+                      {applied && (
+                        <span className="absolute bottom-3 right-3 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 text-xs font-bold px-2 py-1 rounded">
+                          Applied
                         </span>
+                      )}
 
-                        <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
-                          {job.title}
-                        </h2>
+                      <span
+                        className={`text-xs font-bold px-2 py-1 rounded-full ${getBadgeColor(
+                          job.type
+                        )}`}
+                      >
+                        {job.type}
+                      </span>
 
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                          Salary: {formatSalary(job.minSalary)} –{" "}
-                          {formatSalary(job.maxSalary)}
-                        </p>
+                      <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
+                        {job.title}
+                      </h2>
 
-                        <div className="flex items-center gap-2 mt-2">
-                          <img
-                            src={job.logoUrl?.url}
-                            alt="Company"
-                            className="w-6 h-6 rounded"
-                          />
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
-                            {job.company}
-                          </p>
-                        </div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Salary: {formatSalary(job.minSalary)} –{" "}
+                        {formatSalary(job.maxSalary)}
+                      </p>
 
-                        <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
-                          <MapPin className="w-4 h-4 text-blue-500" />
-                          {job.location}
+                      <div className="flex items-center gap-2 mt-2">
+                        <img
+                          src={job.logoUrl?.url}
+                          alt="Company"
+                          className="w-6 h-6 rounded"
+                        />
+                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                          {job.company}
                         </p>
                       </div>
-                    );
-                  })
+
+                      <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
+                        <MapPin className="w-4 h-4 text-blue-500" />
+                        {job.location}
+                      </p>
+                    </div>
+                  );
+                })
               )}
             </div>
 

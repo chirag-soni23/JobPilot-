@@ -1,8 +1,9 @@
-import { MapPin, BadgeCheck, Search } from "lucide-react";
+import { MapPin, BadgeCheck, Search, BanIcon } from "lucide-react";
 import { useState } from "react";
 import { JobData } from "../context/JobContext.jsx";
 import Footer from "../components/Footer.jsx";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const getBadgeColor = (type) => {
   switch (type) {
@@ -24,6 +25,8 @@ const formatSalary = (value) => {
   return `₹${salary.toLocaleString("en-IN")}`;
 };
 
+const isExpired = (dateStr) => new Date(dateStr).getTime() < Date.now();
+
 const FeaturedJobsPage = () => {
   const { jobs } = JobData();
   const featuredJobs = jobs.filter((job) => job.isFeatured);
@@ -44,7 +47,6 @@ const FeaturedJobsPage = () => {
   return (
     <>
       <div className="w-full py-6 space-y-10 px-6 md:px-16 lg:px-24 xl:px-32">
-        {/* Header */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -62,7 +64,6 @@ const FeaturedJobsPage = () => {
           </div>
         </div>
 
-        {/* Filters */}
         <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
           <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
             <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-l-lg flex-1 bg-white dark:bg-gray-800 shadow-sm">
@@ -101,7 +102,6 @@ const FeaturedJobsPage = () => {
           </div>
         </div>
 
-        {/* Job Cards */}
         <section className="pt-10">
           {filteredJobs.length === 0 ? (
             <p className="text-center text-gray-500 dark:text-gray-400">
@@ -109,52 +109,68 @@ const FeaturedJobsPage = () => {
             </p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredJobs.map((job) => (
-                <div
-                  key={job._id}
-                  onClick={() => navigate(`/jobdetails/${job._id}`)}
-                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 shadow-sm hover:shadow-md transition cursor-pointer"
-                >
-                  <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
-                    {job.title}
-                  </h3>
+              {filteredJobs.map((job) => {
+                const expired = isExpired(job.expireDate);
+                return (
+                  <div
+                    key={job._id}
+                    onClick={() => {
+                      if (expired) {
+                        toast.error("This job listing has expired");
+                        return;
+                      }
+                      navigate(`/jobdetails/${job._id}`);
+                    }}
+                    className="relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 shadow-sm hover:shadow-md transition cursor-pointer"
+                  >
+                    {expired && (
+                      <BanIcon
+                        className="absolute top-3 right-3 w-4 h-4 text-red-400 dark:text-red-500"
+                        title="Expired"
+                      />
+                    )}
 
-                  <div className="flex items-center justify-between mb-3">
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full font-medium ${getBadgeColor(
-                        job.type
-                      )}`}
-                    >
-                      {job.type}
-                    </span>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Salary: {formatSalary(job.minSalary)} -{" "}
-                      {formatSalary(job.maxSalary)}
-                    </p>
-                  </div>
+                    <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
+                      {job.title}
+                    </h3>
 
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={job.logoUrl.url}
-                      alt={job.company}
-                      className="w-8 h-8 object-contain"
-                    />
-                    <div className="text-sm text-gray-700 dark:text-gray-300">
-                      <p className="font-medium">{job.company}</p>
-                      <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs mt-0.5">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        {job.location}
+                    <div className="flex items-center justify-between mb-3">
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full font-medium ${getBadgeColor(
+                          job.type
+                        )}`}
+                      >
+                        {job.type}
+                      </span>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Salary: {formatSalary(job.minSalary)} -{" "}
+                        {formatSalary(job.maxSalary)}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={job.logoUrl.url}
+                        alt={job.company}
+                        className="w-8 h-8 object-contain"
+                      />
+                      <div className="text-sm text-gray-700 dark:text-gray-300">
+                        <p className="font-medium">{job.company}</p>
+                        <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs mt-0.5">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          {job.location}
+                        </div>
+                      </div>
+                      <div className="ml-auto">
+                        <BadgeCheck
+                          className="w-5 h-5 text-blue-500 dark:text-blue-400"
+                          title="Featured"
+                        />
                       </div>
                     </div>
-                    <div className="ml-auto">
-                      <BadgeCheck
-                        className="w-5 h-5 text-blue-500 dark:text-blue-400"
-                        title="Featured"
-                      />
-                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </section>
