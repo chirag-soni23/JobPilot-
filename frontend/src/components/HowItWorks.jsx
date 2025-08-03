@@ -1,4 +1,4 @@
-import { assets } from '../assets/assets';
+import { assets } from "../assets/assets";
 
 const steps = [
   {
@@ -60,7 +60,7 @@ const HowItWorks = () => {
               <img
                 src={vectors[index]}
                 alt={`arrow-${index}`}
-                className="hidden z-10 md:block absolute top-[30px] right-[-60px] h-auto w-40"
+                className="hidden md:block absolute top-[30px] right-[-60px] h-auto w-40"
               />
             )}
           </div>

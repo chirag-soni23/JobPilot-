@@ -1,5 +1,6 @@
-import { Bookmark, MapPin, ArrowRight } from "lucide-react";
+import { MapPin, ArrowRight, BadgeCheck } from "lucide-react";
 import { JobData } from "../context/JobContext.jsx";
+import { Link } from "react-router-dom";
 
 const getBadgeColor = (type) => {
   switch (type) {
@@ -23,17 +24,23 @@ const formatSalary = (value) => {
 
 const FeaturedJobs = () => {
   const { jobs } = JobData();
-  const featuredJobs = jobs.filter((job) => job.isFeatured);
+  const featuredJobs = jobs.filter((job) => job.isFeatured).slice(0, 6);
+
+  const scrollTopSmooth = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <section className="px-6 md:px-16 lg:px-24 xl:px-32 py-14">
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
-          Featured job
+          Featured Jobs
         </h2>
-        <button className="text-[#0A65CC] text-sm md:text-base flex items-center gap-1 font-medium hover:underline">
+        <Link
+          onClick={scrollTopSmooth}
+          to="/featured-jobs"
+          className="text-[#0A65CC] text-sm md:text-base flex items-center gap-1 font-medium hover:underline"
+        >
           View All <ArrowRight className="w-4 h-4" />
-        </button>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -48,12 +55,15 @@ const FeaturedJobs = () => {
 
             <div className="flex items-center justify-between mb-3">
               <span
-                className={`text-xs px-2 py-1 rounded-full font-medium ${getBadgeColor(job.type)}`}
+                className={`text-xs px-2 py-1 rounded-full font-medium ${getBadgeColor(
+                  job.type
+                )}`}
               >
                 {job.type}
               </span>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Salary: {formatSalary(job.minSalary)} - {formatSalary(job.maxSalary)}
+                Salary: {formatSalary(job.minSalary)} -{" "}
+                {formatSalary(job.maxSalary)}
               </p>
             </div>
 
@@ -71,7 +81,10 @@ const FeaturedJobs = () => {
                 </div>
               </div>
               <div className="ml-auto">
-                <Bookmark className="w-4 h-4 text-gray-400 dark:text-gray-300 cursor-pointer" />
+                <BadgeCheck
+                  className="w-5 h-5 text-blue-500 dark:text-blue-400"
+                  title="Featured"
+                />
               </div>
             </div>
           </div>
