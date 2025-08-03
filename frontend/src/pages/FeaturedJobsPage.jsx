@@ -1,8 +1,8 @@
 import { MapPin, BadgeCheck, Search } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { JobData } from "../context/JobContext.jsx";
 import Footer from "../components/Footer.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const getBadgeColor = (type) => {
   switch (type) {
@@ -32,6 +32,8 @@ const FeaturedJobsPage = () => {
   const [city, setCity] = useState("");
   const [type, setType] = useState("");
 
+  const navigate = useNavigate();
+
   const filteredJobs = featuredJobs.filter(
     (j) =>
       j.title.toLowerCase().includes(keyword.toLowerCase()) &&
@@ -46,7 +48,7 @@ const FeaturedJobsPage = () => {
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-              Find Job
+              Featured Jobs
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Browse featured jobs tailored to your profile and preferences.
@@ -60,10 +62,9 @@ const FeaturedJobsPage = () => {
           </div>
         </div>
 
-        {/* Search and Filters */}
+        {/* Filters */}
         <div className="flex flex-col lg:flex-row gap-6 justify-between items-center flex-wrap">
           <div className="flex flex-wrap items-start gap-0 w-full lg:w-2/3">
-            {/* Keyword */}
             <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-l-lg flex-1 bg-white dark:bg-gray-800 shadow-sm">
               <Search className="w-5 h-5 text-[#0A65CC]" />
               <input
@@ -75,7 +76,6 @@ const FeaturedJobsPage = () => {
               />
             </div>
 
-            {/* City */}
             <div className="flex items-center gap-3 px-4 py-4 border border-gray-200 dark:border-gray-700 flex-1 bg-white dark:bg-gray-800 shadow-sm">
               <MapPin className="w-5 h-5 text-[#0A65CC]" />
               <input
@@ -87,7 +87,6 @@ const FeaturedJobsPage = () => {
               />
             </div>
 
-            {/* Type */}
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
@@ -102,12 +101,8 @@ const FeaturedJobsPage = () => {
           </div>
         </div>
 
-        {/* Featured Jobs */}
+        {/* Job Cards */}
         <section className="pt-10">
-          <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white mb-8">
-            Featured Jobs
-          </h2>
-
           {filteredJobs.length === 0 ? (
             <p className="text-center text-gray-500 dark:text-gray-400">
               No featured jobs found.
@@ -117,7 +112,8 @@ const FeaturedJobsPage = () => {
               {filteredJobs.map((job) => (
                 <div
                   key={job._id}
-                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 shadow-sm hover:shadow-md transition"
+                  onClick={() => navigate(`/job/${job._id}`)}
+                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 shadow-sm hover:shadow-md transition cursor-pointer"
                 >
                   <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
                     {job.title}
