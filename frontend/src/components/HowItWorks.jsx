@@ -60,7 +60,7 @@ const HowItWorks = () => {
               <img
                 src={vectors[index]}
                 alt={`arrow-${index}`}
-                className="hidden md:block absolute top-[30px] right-[-60px] h-auto w-40"
+                className="hidden md:block absolute top-[30px] right-[-60px] h-auto z-1 w-40"
               />
             )}
           </div>
