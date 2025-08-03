@@ -112,7 +112,7 @@ const FeaturedJobsPage = () => {
               {filteredJobs.map((job) => (
                 <div
                   key={job._id}
-                  onClick={() => navigate(`/job/${job._id}`)}
+                  onClick={() => navigate(`/jobdetails/${job._id}`)}
                   className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 shadow-sm hover:shadow-md transition cursor-pointer"
                 >
                   <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
