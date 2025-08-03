@@ -43,7 +43,7 @@ const Contact = () => {
             <div className="space-y-10">
               <div className="flex items-start gap-4">
                 <Phone className="w-6 h-6" />
-                <span className="text-lg">+91 1234567890</span>
+                <span className="text-lg">+91 8233877457</span>
               </div>
               <div className="flex items-start gap-4">
                 <Mail className="w-6 h-6" />

@@ -23,7 +23,7 @@ const Footer = () => {
           </div>
           <p>
             Call now:{" "}
-            <span className="text-white font-medium">(+91) 123456789</span>
+            <span className="text-white font-medium">(+91) 8233877457</span>
           </p>
           <p className="mt-2 text-sm">
             6391 Elgin St. Celina, Delaware 10299, New York, United States of

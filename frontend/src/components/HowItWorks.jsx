@@ -4,22 +4,22 @@ const steps = [
   {
     icon: assets.user,
     title: "Create account",
-    desc: "Aliquam facilisis egestas sapien, nec tempor leo tristique at.",
+    desc: "Easily register and set up your account in just a few steps.",
   },
   {
     icon: assets.upload,
     title: "Upload CV/Resume",
-    desc: "Curabitur sit amet maximus ligula. Nam a nulla ante. Nam sodales.",
+    desc: "Add your resume to showcase your skills and experience.",
   },
   {
     icon: assets.search,
     title: "Find suitable job",
-    desc: "Phasellus quis eleifend ex. Morbi nec fringilla nibh.",
+    desc: "Browse and search for jobs that match your profile.",
   },
   {
     icon: assets.tick,
     title: "Apply job",
-    desc: "Curabitur sit amet maximus ligula. Nam a nulla ante. Nam sodales purus.",
+    desc: "Apply directly to your chosen job with one click.",
   },
 ];
 
