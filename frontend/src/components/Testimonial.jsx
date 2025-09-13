@@ -14,12 +14,12 @@ const Testimonials = () => {
         Clients Testimonial
       </h2>
 
-      <div className="hidden md:block absolute top-1/2 left-0 -translate-y-1/2 z-10">
+      <div className="hidden md:block absolute top-1/2 left-0 -translate-y-1/2">
         <div className="swiper-button-prev-custom p-3 bg-white dark:bg-gray-800 border rounded-full shadow-md ml-2">
           <ChevronLeft className="text-gray-700 dark:text-white w-5 h-5" />
         </div>
       </div>
-      <div className="hidden md:block absolute top-1/2 right-0 -translate-y-1/2 z-10">
+      <div className="hidden md:block absolute top-1/2 right-0 -translate-y-1/2">
         <div className="swiper-button-next-custom p-3 bg-white dark:bg-gray-800 border rounded-full shadow-md mr-2">
           <ChevronRight className="text-gray-700 dark:text-white w-5 h-5" />
         </div>

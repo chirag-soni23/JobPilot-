@@ -38,9 +38,7 @@ export const JobProvider = ({ children }) => {
         { withCredentials: true }
       );
       toast.success(data.message);
-      setJobs((prev) =>
-        prev.map((job) => (job._id === id ? data.job : job))
-      );
+      setJobs((prev) => prev.map((job) => (job._id === id ? data.job : job)));
       if (singleJob?._id === id) setSingleJob(data.job);
     } catch (error) {
       console.error(`Unable to update job ${error.message}`);
@@ -127,10 +125,31 @@ export const JobProvider = ({ children }) => {
     }
   };
 
+  const removeSavedJob = async (jobId) => {
+    try {
+      await axios.put(
+        `${VITE_URL}/api/job/savedJob/${jobId}`,
+        {},
+        { withCredentials: true }
+      );
+      setSavedJobs((prev) => prev.filter((job) => job._id !== jobId));
+    } catch (err) {
+      console.error("Unable to remove saved job", err);
+    }
+  };
+
   useEffect(() => {
     getAllJobs();
     fetchSavedJobs();
   }, []);
+
+  useEffect(() => {
+    savedJobs.forEach((job) => {
+      if (new Date(job.expireDate).getTime() < Date.now()) {
+        removeSavedJob(job._id);
+      }
+    });
+  }, [savedJobs]);
 
   return (
     <JobContext.Provider
@@ -149,6 +168,7 @@ export const JobProvider = ({ children }) => {
         savedLoading,
         fetchSavedJobs,
         loadingSingleJob,
+        removeSavedJob,
       }}
     >
       {children}
