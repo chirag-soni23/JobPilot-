@@ -34,11 +34,10 @@ const JobDetails = () => {
     }
   }, [singleJob, user]);
 
-  const handleSavedJob = useCallback(() => {
+  const handleSavedJob = () => {
     if (!singleJob) return;
     toggleSaveJob(singleJob._id);
-    setIsSaved((prev) => !prev);
-  }, [singleJob, toggleSaveJob]);
+  };
 
   if (!singleJob) return null;
 
@@ -157,7 +156,7 @@ const JobDetails = () => {
                 >
                   <img
                     className="w-10 h-10"
-                    src={isSaved ? assets?.saved : assets?.save}
+                    src={singleJob?.isSaved ? assets.saved : assets.save}
                     alt="save"
                   />
                 </button>
