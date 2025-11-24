@@ -14,15 +14,24 @@ const Testimonials = () => {
         Clients Testimonial
       </h2>
 
+      {/* Custom Nav Buttons (use real <button> + type="button") */}
       <div className="hidden md:block absolute top-1/2 left-0 -translate-y-1/2">
-        <div className="swiper-button-prev-custom p-3 bg-white dark:bg-gray-800 border rounded-full shadow-md ml-2">
+        <button
+          type="button"
+          className="swiper-button-prev-custom p-3 bg-white dark:bg-gray-800 border rounded-full shadow-md ml-2"
+          aria-label="Previous testimonials"
+        >
           <ChevronLeft className="text-gray-700 dark:text-white w-5 h-5" />
-        </div>
+        </button>
       </div>
       <div className="hidden md:block absolute top-1/2 right-0 -translate-y-1/2">
-        <div className="swiper-button-next-custom p-3 bg-white dark:bg-gray-800 border rounded-full shadow-md mr-2">
+        <button
+          type="button"
+          className="swiper-button-next-custom p-3 bg-white dark:bg-gray-800 border rounded-full shadow-md mr-2"
+          aria-label="Next testimonials"
+        >
           <ChevronRight className="text-gray-700 dark:text-white w-5 h-5" />
-        </div>
+        </button>
       </div>
 
       <Swiper
@@ -39,12 +48,17 @@ const Testimonials = () => {
           el: ".swiper-pagination-custom",
         }}
         breakpoints={{
-          768: {
-            slidesPerView: 2,
-          },
-          1024: {
-            slidesPerView: 3,
-          },
+          768: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+        }}
+        // Silence A11y "first/last slide" announcements while keeping other a11y features
+        a11y={{
+          enabled: true,
+          firstSlideMessage: "",
+          lastSlideMessage: "",
+          prevSlideMessage: "Previous testimonials",
+          nextSlideMessage: "Next testimonials",
+          paginationBulletMessage: "Go to testimonial {{index}}",
         }}
         className="pb-20"
       >
@@ -56,12 +70,7 @@ const Testimonials = () => {
                   {Array(t.stars)
                     .fill(0)
                     .map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-5 h-5"
-                        fill="#f59e0b"
-                        stroke="#f59e0b"
-                      />
+                      <Star key={i} className="w-5 h-5" fill="#f59e0b" stroke="#f59e0b" />
                     ))}
                 </div>
                 <p className="text-sm text-gray-700 dark:text-gray-300 mb-5 max-h-[160px] overflow-y-auto pr-1 custom-scroll">
@@ -79,9 +88,7 @@ const Testimonials = () => {
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">
                     {t.name}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {t.role}
-                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{t.role}</p>
                 </div>
                 <Quote className="ml-auto text-gray-200 dark:text-gray-600 w-6 h-6" />
               </div>
