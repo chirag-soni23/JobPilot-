@@ -24,9 +24,9 @@ export const JobApplyProvider = ({ children }) => {
         }
       );
 
-      toast.success(data.message);
       setApplications((prev) => [...prev, data.application]);
       navigate(`/jobdetails/${jobId}`);
+      toast.success(data.message);
       window.location.reload();
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to apply");

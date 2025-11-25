@@ -71,7 +71,7 @@ const PostJob = () => {
 
       <form
         onSubmit={handleSubmit}
-        className="grid md:grid-cols-2 gap-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6"
+        className="grid md:grid-cols-2 gap-6 backdrop-blur-sm bg-white/60 dark:bg-transparent shadow-lg rounded-xl p-6"
       >
         {[
           "title",
@@ -94,7 +94,7 @@ const PostJob = () => {
               name={field}
               value={form[field]}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-black dark:text-white"
+              className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-transparent text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               placeholder={`Enter ${field}`}
               required={[
                 "title",
@@ -115,7 +115,7 @@ const PostJob = () => {
             name="type"
             value={form.type}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-black dark:text-white"
+            className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-transparent text-black dark:text-white"
           >
             <option value="FULL-TIME">Full-Time</option>
             <option value="PART-TIME">Part-Time</option>
@@ -132,7 +132,7 @@ const PostJob = () => {
             value={form.description}
             onChange={handleChange}
             rows="4"
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-black dark:text-white"
+            className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-transparent text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             placeholder="Enter job description"
             required
           />
@@ -146,7 +146,7 @@ const PostJob = () => {
             <input
               type="text"
               onChange={(e) => handleArrayChange(e, field)}
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-black dark:text-white"
+              className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-transparent text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               placeholder={`Enter comma separated ${field}`}
             />
           </div>
@@ -161,7 +161,7 @@ const PostJob = () => {
             name="expireDate"
             value={form.expireDate}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-black dark:text-white"
+            className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-transparent text-black dark:text-white"
             required
           />
         </div>
@@ -172,7 +172,7 @@ const PostJob = () => {
             name="isFeatured"
             checked={form.isFeatured}
             onChange={handleChange}
-            className="h-5 w-5"
+            className="h-5 w-5 accent-indigo-600"
           />
           <label
             htmlFor="isFeatured"
@@ -193,7 +193,7 @@ const PostJob = () => {
               name={field}
               value={form[field]}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-black dark:text-white"
+              className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-transparent text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               placeholder={`Enter ${field} url`}
             />
           </div>
@@ -207,7 +207,7 @@ const PostJob = () => {
             type="file"
             accept="image/*"
             onChange={(e) => setLogo(e.target.files[0])}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-black dark:text-white"
+            className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-transparent text-black dark:text-white"
           />
         </div>
 

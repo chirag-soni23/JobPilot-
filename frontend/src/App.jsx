@@ -13,7 +13,7 @@ import Contact from "./pages/Contact";
 import ApplyJob from "./pages/ApplyJob";
 import AppliedJob from "./pages/AppliedJob";
 import FeaturedJobsPage from "./pages/FeaturedJobsPage";
-// import EditJob from "./pages/EditJob";
+import EditJob from "./pages/EditJob";
 
 const App = () => {
   const { isAuth, loading } = UserData();
@@ -40,7 +40,7 @@ const App = () => {
           path="/appliedjob"
           element={isAuth ? <AppliedJob /> : <Signin />}
         />
-        {/* <Route path="/editjob/:id" element={<EditJob/>}/> */}
+        <Route path="/editjob/:id" element={<EditJob/>}/>
         <Route path="/postjob" element={isAuth ? <PostJob /> : <Signin />} />
         <Route
           path="/featured-jobs"

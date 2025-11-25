@@ -8,6 +8,7 @@ import {
   ChevronRight,
   BanIcon,
   Trash,
+  Pencil,
 } from "lucide-react";
 import Footer from "../components/Footer";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -78,6 +79,7 @@ const FindJob = () => {
   const handlePageClick = ({ selected }) => setCurrentPage(selected);
 
   const navigateJobDetails = (id) => navigate(`/jobdetails/${id}`);
+  const navigateJobEdit = (id) => navigate(`/editjob/${id}`);
 
   const scrollTopSmooth = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -209,30 +211,63 @@ const FindJob = () => {
                       }}
                       className="relative bg-white dark:bg-gray-800 cursor-pointer shadow-md rounded-xl p-4 w-full transition-transform duration-300 ease-in-out hover:scale-[1.03] hover:shadow-lg hover:ring-1 hover:ring-indigo-400 dark:hover:shadow-indigo-700/40 dark:hover:ring-indigo-500/30"
                     >
+                      {/* Admin Actions */}
                       {user?.role === "admin" && (
-                        <Trash
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteJobById(job._id);
-                          }}
-                          className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-red-500 hover:text-red-600"
-                        />
+                        <>
+                          {/* Edit */}
+                          <Pencil
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigateJobEdit(job._id);
+                            }}
+                            className="absolute top-3 right-10 w-4 h-4 text-gray-400 hover:text-blue-600 dark:text-blue-400"
+                            aria-label="Edit job"
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                navigateJobEdit(job._id);
+                              }
+                            }}
+                          />
+                          {/* Delete */}
+                          <Trash
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteJobById(job._id);
+                            }}
+                            className="absolute top-3 right-3 w-4 h-4 text-gray-400 dark:text-red-500 hover:text-red-600"
+                            aria-label="Delete job"
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                deleteJobById(job._id);
+                              }
+                            }}
+                          />
+                        </>
                       )}
 
+                      {/* Expired Badge */}
                       {expired && (
                         <BanIcon
                           className={`absolute top-3 w-4 h-4 text-red-400 dark:text-red-500 ${
-                            user.role !== "admin" ? "right-3" : "right-10"
+                            user?.role === "admin" ? "right-16" : "right-3"
                           }`}
                         />
                       )}
 
+                      {/* Applied Badge */}
                       {applied && (
                         <span className="absolute bottom-3 right-3 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 text-xs font-bold px-2 py-1 rounded">
                           Applied
                         </span>
                       )}
 
+                      {/* Type */}
                       <span
                         className={`text-xs font-bold px-2 py-1 rounded-full ${getBadgeColor(
                           job.type
@@ -241,15 +276,18 @@ const FindJob = () => {
                         {job.type}
                       </span>
 
+                      {/* Title */}
                       <h2 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
                         {job.title}
                       </h2>
 
+                      {/* Salary */}
                       <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                         Salary: {formatSalary(job.minSalary)} –{" "}
                         {formatSalary(job.maxSalary)}
                       </p>
 
+                      {/* Company */}
                       <div className="flex items-center gap-2 mt-2">
                         <img
                           src={job.logoUrl?.url}
@@ -261,6 +299,7 @@ const FindJob = () => {
                         </p>
                       </div>
 
+                      {/* Location */}
                       <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
                         <MapPin className="w-4 h-4 text-blue-500" />
                         {job.location}
@@ -305,3 +344,4 @@ const FindJob = () => {
 };
 
 export default FindJob;
+``
