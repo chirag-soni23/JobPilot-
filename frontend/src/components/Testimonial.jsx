@@ -14,8 +14,8 @@ const Testimonials = () => {
         Clients Testimonial
       </h2>
 
-      {/* Custom Nav Buttons (use real <button> + type="button") */}
-      <div className="hidden md:block absolute top-1/2 left-0 -translate-y-1/2">
+      {/* Custom Navigation Buttons */}
+      <div className="hidden md:block absolute top-1/2 left-0 -translate-y-1/2 z-10">
         <button
           type="button"
           className="swiper-button-prev-custom p-3 bg-white dark:bg-gray-800 border rounded-full shadow-md ml-2"
@@ -24,7 +24,8 @@ const Testimonials = () => {
           <ChevronLeft className="text-gray-700 dark:text-white w-5 h-5" />
         </button>
       </div>
-      <div className="hidden md:block absolute top-1/2 right-0 -translate-y-1/2">
+
+      <div className="hidden md:block absolute top-1/2 right-0 -translate-y-1/2 z-10">
         <button
           type="button"
           className="swiper-button-next-custom p-3 bg-white dark:bg-gray-800 border rounded-full shadow-md mr-2"
@@ -36,7 +37,7 @@ const Testimonials = () => {
 
       <Swiper
         modules={[Navigation, Pagination, A11y]}
-        spaceBetween={30}
+        spaceBetween={20}
         slidesPerView={1}
         loop={true}
         navigation={{
@@ -48,10 +49,9 @@ const Testimonials = () => {
           el: ".swiper-pagination-custom",
         }}
         breakpoints={{
-          768: { slidesPerView: 2 },
-          1024: { slidesPerView: 3 },
+          768: { slidesPerView: 2, spaceBetween: 24 },
+          1024: { slidesPerView: 3, spaceBetween: 30 },
         }}
-        // Silence A11y "first/last slide" announcements while keeping other a11y features
         a11y={{
           enabled: true,
           firstSlideMessage: "",
@@ -64,20 +64,27 @@ const Testimonials = () => {
       >
         {testimonials.map((t) => (
           <SwiperSlide key={t.id}>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm max-w-sm w-full h-80 flex flex-col justify-between text-left mx-auto">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm w-full max-w-sm mx-auto flex flex-col justify-between text-left h-auto min-h-[280px]">
+              {/* Rating Stars */}
               <div>
                 <div className="flex mb-3 gap-1">
-                  {Array(t.stars)
-                    .fill(0)
-                    .map((_, i) => (
-                      <Star key={i} className="w-5 h-5" fill="#f59e0b" stroke="#f59e0b" />
-                    ))}
+                  {Array.from({ length: t.stars }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className="w-5 h-5"
+                      fill="#f59e0b"
+                      stroke="#f59e0b"
+                    />
+                  ))}
                 </div>
-                <p className="text-sm text-gray-700 dark:text-gray-300 mb-5 max-h-[160px] overflow-y-auto pr-1 custom-scroll">
+
+                {/* Testimonial Text */}
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-5 leading-relaxed">
                   “{t.text}”
                 </p>
               </div>
 
+              {/* Author Info */}
               <div className="flex items-center gap-3 pt-2 mt-auto">
                 <img
                   src={t.image}
@@ -88,7 +95,9 @@ const Testimonials = () => {
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">
                     {t.name}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{t.role}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {t.role}
+                  </p>
                 </div>
                 <Quote className="ml-auto text-gray-200 dark:text-gray-600 w-6 h-6" />
               </div>
@@ -97,6 +106,7 @@ const Testimonials = () => {
         ))}
       </Swiper>
 
+      {/* Pagination Dots */}
       <div className="swiper-pagination-custom mt-10 flex justify-center gap-2"></div>
     </section>
   );
