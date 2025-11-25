@@ -14,6 +14,7 @@ import ApplyJob from "./pages/ApplyJob";
 import AppliedJob from "./pages/AppliedJob";
 import FeaturedJobsPage from "./pages/FeaturedJobsPage";
 import EditJob from "./pages/EditJob";
+import Profile from "./pages/Profile";
 
 const App = () => {
   const { isAuth, loading } = UserData();
@@ -47,6 +48,7 @@ const App = () => {
           element={isAuth ? <FeaturedJobsPage /> : <Signin />}
         />
         <Route path="/savedjob" element={isAuth ? <SavedJob /> : <Signin />} />
+        <Route path="/profile" element={isAuth ? <Profile/> : <Signup/>}/>
         <Route path="/signup" element={isAuth ? <Home /> : <Signup />} />
         <Route path="/signin" element={isAuth ? <Home /> : <Signin />} />
       </Routes>
