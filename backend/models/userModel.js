@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema(
       id: String,
       url: String,
     },
+    about: {
+      type:String
+    },
     role: {
       type: String,
       enum: ["candidate", "employer", "admin"],

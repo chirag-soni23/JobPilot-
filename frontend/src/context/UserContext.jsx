@@ -123,6 +123,36 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const getAbout = async () => {
+    try {
+      const { data } = await axios.get(`${VITE_URL}/api/user/me/about`, {
+        withCredentials: true,
+      });
+      if (data.about !== undefined) {
+        setUser((prev) => ({ ...prev, about: data.about }));
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to fetch about info");
+    }
+  };
+
+   const updateAbout = async (about) => {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.put(
+        `${VITE_URL}/api/user/me/about`,
+        { about },
+        { withCredentials: true }
+      );
+      setUser((prev) => ({ ...prev, about: data.about }));
+      toast.success(data.message);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update about");
+    } finally {
+      setBtnLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchUser();
     fetchAllUsers();
@@ -134,6 +164,8 @@ export const UserProvider = ({ children }) => {
         registerUser,
         loginUser,
         logout,
+         getAbout,
+        updateAbout,
         uploadProfile,
         deleteProfile,
         user,

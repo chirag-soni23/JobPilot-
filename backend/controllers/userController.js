@@ -101,3 +101,30 @@ export const getAllUsers = TryCatch(async (req, res) => {
 
   res.json(users);
 });
+
+export const getAbout = TryCatch(async (req, res) => {
+  const user = await User.findById(req.user._id).select("about");
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  res.json({
+    message: "About fetched successfully",
+    about: user.about || "",
+  });
+});
+
+export const updateAbout = TryCatch(async (req, res) => {
+  const { about } = req.body;
+  if (typeof about !== "string" || about.trim() === "")
+    return res.status(400).json({ message: "About field is required" });
+
+  const user = await User.findById(req.user._id);
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  user.about = about.trim();
+  await user.save();
+
+  res.json({
+    message: "About updated successfully",
+    about: user.about,
+  });
+});

@@ -16,6 +16,8 @@ import {
   MapPin,
   Building2,
   ChevronRight,
+  Save,
+  X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -121,7 +123,7 @@ const ApplicationCard = ({ app }) => {
 
 /* ---------- Page ---------- */
 export default function Profile() {
-  const { user, logout, uploadProfile, deleteProfile, btnLoading } = UserData();
+  const { user, logout, uploadProfile, deleteProfile, btnLoading, updateAbout } = UserData(); // ⬅️ optional: updateAbout from context (if available)
   const { savedJobs, removeSavedJob, savedLoading, fetchSavedJobs } = JobData();
   const { applications, loadingApplications, getAllApplications } = UseJobApply();
 
@@ -139,6 +141,29 @@ export default function Profile() {
     () => (user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "-"),
     [user?.createdAt]
   );
+
+  // ===== About: inline edit state =====
+  const defaultAbout = `Hello! I’m ${user?.name || "Rahul"}. Keep your information updated and apply to roles that fit your interests and skills.`;
+  const [about, setAbout] = useState(user?.about || defaultAbout);
+  const [editingAbout, setEditingAbout] = useState(false);
+  const [aboutSaving, setAboutSaving] = useState(false);
+
+  useEffect(() => {
+    setAbout(user?.about || defaultAbout);
+  }, [user?.about, user?.name]); // sync when user changes
+
+  const handleSaveAbout = async () => {
+    try {
+      setAboutSaving(true);
+      // If context provides an API, use it. Else just close editor (local save).
+      if (typeof updateAbout === "function") {
+        await updateAbout(about); // implement in your context to persist to backend
+      }
+      setEditingAbout(false);
+    } finally {
+      setAboutSaving(false);
+    }
+  };
 
   useEffect(() => {
     const root = document.documentElement;
@@ -269,20 +294,60 @@ export default function Profile() {
         {/* Overview */}
         {tab === "overview" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* ===== About with inline edit ===== */}
             <SectionCard
               title="About"
               action={
-                <Link
-                  to="#"
-                  className="inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg border dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  <Edit3 className="w-4 h-4" /> Edit
-                </Link>
+                !editingAbout ? (
+                  <button
+                    onClick={() => setEditingAbout(true)}
+                    className="inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg border dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    <Edit3 className="w-4 h-4" /> Edit
+                  </button>
+                ) : (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleSaveAbout}
+                      disabled={aboutSaving}
+                      className="inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg bg-[#0A65CC] text-white hover:bg-[#084ea0] disabled:opacity-60"
+                    >
+                      <Save className="w-4 h-4" />
+                      {aboutSaving ? "Saving..." : "Save"}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAbout(user?.about || defaultAbout);
+                        setEditingAbout(false);
+                      }}
+                      className="inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg border dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      <X className="w-4 h-4" /> Cancel
+                    </button>
+                  </div>
+                )
               }
             >
-              <p className="text-sm leading-6 text-gray-600 dark:text-gray-300">
-                Hello! I’m {user?.name || "Rahul"}. Keep your information updated and apply to roles that fit your interests and skills.
-              </p>
+              {!editingAbout ? (
+                <p className="text-sm leading-6 text-gray-600 dark:text-gray-300 whitespace-pre-line">
+                  {about}
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  <textarea
+                    value={about}
+                    onChange={(e) => setAbout(e.target.value)}
+                    rows={5}
+                    maxLength={600}
+                    className="w-full px-3 py-2 rounded-xl border dark:border-gray-800 bg-transparent outline-none text-sm"
+                    placeholder="Write something about yourself..."
+                  />
+                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                    <span>Tip: Keep it crisp and job-focused.</span>
+                    <span>{about.length}/600</span>
+                  </div>
+                </div>
+              )}
             </SectionCard>
 
             <SectionCard title="Recent Activity">
@@ -308,12 +373,10 @@ export default function Profile() {
                   <Briefcase className="w-5 h-5 mb-2" />
                   Find Jobs
                 </Link>
-                <a target="_blank" href="https://job-pilot-dashboard.streamlit.app/" className="p-4 rounded-xl border dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 text-left">
+                <a target="_blank" href="https://job-pilot-dashboard.streamlit.app/" className="p-4 rounded-xl border dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 text-left" rel="noreferrer">
                   <Bookmark className="w-5 h-5 mb-2" />
                   Go to Dashboard
                 </a>
-              
-              
               </div>
             </SectionCard>
           </div>
