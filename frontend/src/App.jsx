@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Loading from "./components/Loading";
 import Home from "./pages/Home";
@@ -17,40 +17,38 @@ import EditJob from "./pages/EditJob";
 import Profile from "./pages/Profile";
 
 const App = () => {
-  const { isAuth, loading } = UserData();
+  const { loading, isAuth } = UserData();
+  const location = useLocation();
+
+  const hideNavbarRoutes = ["/signin", "/signup"];
 
   if (loading) return <Loading />;
 
   return (
     <>
-      {isAuth && <Navbar />}
+      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
 
       <Routes>
-        <Route path="/" element={isAuth ? <Home /> : <Signin />} />
-        <Route path="/findjobs" element={isAuth ? <FindJob /> : <Signin />} />
-        <Route path="/contact" element={isAuth ? <Contact /> : <Signin />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/findjobs" element={<FindJob />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/jobdetails/:id" element={<JobDetails />} />
+        <Route path="/applyjob/:id" element={<ApplyJob />} />
+        <Route path="/appliedjob" element={<AppliedJob />} />
+        <Route path="/editjob/:id" element={<EditJob />} />
+        <Route path="/postjob" element={<PostJob />} />
+        <Route path="/featured-jobs" element={<FeaturedJobsPage />} />
+        <Route path="/savedjob" element={<SavedJob />} />
+        <Route path="/profile" element={<Profile />} />
+
         <Route
-          path="/jobdetails/:id"
-          element={isAuth ? <JobDetails /> : <Signin />}
+          path="/signup"
+          element={isAuth ? <Navigate to="/" replace /> : <Signup />}
         />
         <Route
-          path="/applyjob/:id"
-          element={isAuth ? <ApplyJob /> : <Signin />}
+          path="/signin"
+          element={isAuth ? <Navigate to="/" replace /> : <Signin />}
         />
-        <Route
-          path="/appliedjob"
-          element={isAuth ? <AppliedJob /> : <Signin />}
-        />
-        <Route path="/editjob/:id" element={<EditJob/>}/>
-        <Route path="/postjob" element={isAuth ? <PostJob /> : <Signin />} />
-        <Route
-          path="/featured-jobs"
-          element={isAuth ? <FeaturedJobsPage /> : <Signin />}
-        />
-        <Route path="/savedjob" element={isAuth ? <SavedJob /> : <Signin />} />
-        <Route path="/profile" element={isAuth ? <Profile/> : <Signup/>}/>
-        <Route path="/signup" element={isAuth ? <Home /> : <Signup />} />
-        <Route path="/signin" element={isAuth ? <Home /> : <Signin />} />
       </Routes>
     </>
   );
