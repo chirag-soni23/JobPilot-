@@ -288,7 +288,7 @@ const ApplyJob = () => {
       </div>
 
       <div class="footer">
-        <span class="stamp">${svg(
+        <span style="color:black" class="stamp">${svg(
           "calendar"
         )} Saved on ${new Date().toLocaleString()}</span>
         <span class="muted">Powered by your Job Portal</span>
