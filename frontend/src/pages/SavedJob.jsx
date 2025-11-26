@@ -208,7 +208,6 @@ const SavedJob = () => {
         )}
       </div>
 
-      <Footer />
     </>
   );
 };

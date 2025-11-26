@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from "react";
-import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router-dom";
 import { MapPin, Search, SlidersHorizontal, FolderCheck } from "lucide-react";
 import toast from "react-hot-toast";
@@ -186,7 +185,6 @@ const AppliedJob = () => {
           </div>
         )}
       </div>
-      <Footer />
     </>
   );
 };

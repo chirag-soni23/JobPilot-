@@ -1,7 +1,6 @@
 import { MapPin, BadgeCheck, Search, BanIcon } from "lucide-react";
 import { useState } from "react";
 import { JobData } from "../context/JobContext.jsx";
-import Footer from "../components/Footer.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -175,8 +174,6 @@ const FeaturedJobsPage = () => {
           )}
         </section>
       </div>
-
-      <Footer />
     </>
   );
 };

@@ -6,7 +6,6 @@ import HowItWorks from '../components/HowItWorks'
 import PopularCategory from '../components/PopularCategory'
 import FeaturedJobs from '../components/FeaturedJobs'
 import Testimonials from '../components/Testimonial'
-import Footer from '../components/Footer'
 
 const Home = () => {
   return (
@@ -18,7 +17,6 @@ const Home = () => {
       <PopularCategory/>
       <FeaturedJobs/>
       <Testimonials/>
-      <Footer/>
     </div>
   )
 }

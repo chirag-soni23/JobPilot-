@@ -1,10 +1,9 @@
 import { ArrowRight, MapPin, Coins } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import Footer from "../components/Footer";
 import { assets } from "../assets/assets.js";
 import { JobData } from "../context/JobContext.jsx";
 import { UseJobApply } from "../context/JobApplyContext";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { UserData } from "../context/UserContext.jsx";
 import { toast } from "react-hot-toast";
 import Loading from "../components/Loading.jsx";
@@ -348,7 +347,6 @@ const JobDetails = () => {
           </div>
         </section>
       )}
-      <Footer />
     </>
   );
 };

@@ -1,9 +1,7 @@
-// pages/Contact.jsx
 import { useState } from "react";
 import { Phone, Mail, MapPin, Twitter, Instagram, Disc } from "lucide-react";
 import { useMailData } from "../context/NodeMailerContext.jsx";
 import { assets } from "../assets/assets.js";
-import Footer from "../components/Footer.jsx";
 
 const Contact = () => {
   const { sendMail, isLoading } = useMailData();
@@ -67,9 +65,14 @@ const Contact = () => {
         </div>
 
         <div className="relative md:w-2/3 p-10">
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          >
             <div className="flex flex-col">
-              <label className="text-sm mb-2 text-gray-700 dark:text-gray-200">First Name</label>
+              <label className="text-sm mb-2 text-gray-700 dark:text-gray-200">
+                First Name
+              </label>
               <input
                 type="text"
                 value={firstName}
@@ -79,7 +82,9 @@ const Contact = () => {
               />
             </div>
             <div className="flex flex-col">
-              <label className="text-sm mb-2 text-gray-700 dark:text-gray-200">Last Name</label>
+              <label className="text-sm mb-2 text-gray-700 dark:text-gray-200">
+                Last Name
+              </label>
               <input
                 type="text"
                 value={lastName}
@@ -89,7 +94,9 @@ const Contact = () => {
               />
             </div>
             <div className="flex flex-col">
-              <label className="text-sm mb-2 text-gray-700 dark:text-gray-200">Email</label>
+              <label className="text-sm mb-2 text-gray-700 dark:text-gray-200">
+                Email
+              </label>
               <input
                 type="email"
                 value={email}
@@ -99,7 +106,9 @@ const Contact = () => {
               />
             </div>
             <div className="flex flex-col">
-              <label className="text-sm mb-2 text-gray-700 dark:text-gray-200">Phone Number</label>
+              <label className="text-sm mb-2 text-gray-700 dark:text-gray-200">
+                Phone Number
+              </label>
               <input
                 type="tel"
                 value={phone}
@@ -110,7 +119,9 @@ const Contact = () => {
               />
             </div>
             <div className="col-span-full mt-6 flex flex-col">
-              <label className="text-sm mb-2 text-gray-700 dark:text-gray-200">Message</label>
+              <label className="text-sm mb-2 text-gray-700 dark:text-gray-200">
+                Message
+              </label>
               <textarea
                 rows="4"
                 value={message}
@@ -130,10 +141,13 @@ const Contact = () => {
               </button>
             </div>
           </form>
-          <img src={assets.send} alt="" className="pointer-events-none select-none absolute -bottom-1 -left-80 w-72" />
+          <img
+            src={assets.send}
+            alt=""
+            className="pointer-events-none select-none absolute -bottom-1 -left-80 w-72"
+          />
         </div>
       </section>
-      <Footer />
     </>
   );
 };

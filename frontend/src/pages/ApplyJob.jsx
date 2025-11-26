@@ -617,7 +617,6 @@ const Popup = ({ children, onClose }) => (
 const pretty = (k) =>
   k.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase());
 
-// helper to place inline placeholders for icons (replaced inside printable)
 function svg(name, extra = "") {
   return `<span class="icon ${extra}">${name}</span>`;
 }

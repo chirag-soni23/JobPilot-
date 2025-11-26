@@ -24,13 +24,18 @@ import { Link } from "react-router-dom";
 import { UserData } from "../context/UserContext";
 import { JobData } from "../context/JobContext";
 import { UseJobApply } from "../context/JobApplyContext";
+import ThemeToggle from "../components/ThemeToggle";
 
 /* ---------- Small UI atoms ---------- */
 const TabBtn = ({ active, onClick, children }) => (
   <button
     onClick={onClick}
     className={`px-4 py-2 rounded-xl text-sm md:text-base font-medium transition [&:focus-visible]:ring-2 [&:focus-visible]:ring-offset-2 [&:focus-visible]:ring-[#0A65CC]
-      ${active ? "bg-[#0A65CC] text-white shadow" : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
+      ${
+        active
+          ? "bg-[#0A65CC] text-white shadow"
+          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+      }`}
   >
     {children}
   </button>
@@ -72,14 +77,20 @@ const SavedJobCard = ({ job, onRemove }) => (
   <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 justify-between p-4 rounded-xl border dark:border-gray-800 bg-white dark:bg-gray-900">
     <div className="min-w-0 flex-1">
       <div className="flex items-center gap-2 min-w-0">
-        <h4 className="font-semibold truncate">{job?.title || "Untitled Job"}</h4>
+        <h4 className="font-semibold truncate">
+          {job?.title || "Untitled Job"}
+        </h4>
         <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 shrink-0">
           {job?.type || "Full-time"}
         </span>
       </div>
       <div className="mt-1 flex flex-wrap gap-3 text-sm text-gray-600 dark:text-gray-300">
-        <span className="inline-flex items-center gap-1"><Building2 className="w-4 h-4" /> {job?.companyName || "Company"}</span>
-        <span className="inline-flex items-center gap-1"><MapPin className="w-4 h-4" /> {job?.location || job?.city || "India"}</span>
+        <span className="inline-flex items-center gap-1">
+          <Building2 className="w-4 h-4" /> {job?.companyName || "Company"}
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <MapPin className="w-4 h-4" /> {job?.location || job?.city || "India"}
+        </span>
       </div>
     </div>
 
@@ -105,10 +116,17 @@ const ApplicationCard = ({ app }) => {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 justify-between p-4 rounded-xl border dark:border-gray-800 bg-white dark:bg-gray-900">
       <div className="min-w-0 flex-1">
-        <h4 className="font-semibold truncate">{job?.title || "Applied Position"}</h4>
+        <h4 className="font-semibold truncate">
+          {job?.title || "Applied Position"}
+        </h4>
         <div className="mt-1 flex flex-wrap gap-3 text-sm text-gray-600 dark:text-gray-300">
-          <span className="inline-flex items-center gap-1"><Building2 className="w-4 h-4" /> {job?.companyName || "Company"}</span>
-          <span className="inline-flex items-center gap-1"><MapPin className="w-4 h-4" /> {job?.location || job?.city || "India"}</span>
+          <span className="inline-flex items-center gap-1">
+            <Building2 className="w-4 h-4" /> {job?.companyName || "Company"}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <MapPin className="w-4 h-4" />{" "}
+            {job?.location || job?.city || "India"}
+          </span>
         </div>
       </div>
       <Link
@@ -123,27 +141,41 @@ const ApplicationCard = ({ app }) => {
 
 /* ---------- Page ---------- */
 export default function Profile() {
-  const { user, logout, uploadProfile, deleteProfile, btnLoading, updateAbout } = UserData(); // ⬅️ optional: updateAbout from context (if available)
+  const {
+    user,
+    logout,
+    uploadProfile,
+    deleteProfile,
+    btnLoading,
+    updateAbout,
+  } = UserData(); // ⬅️ optional: updateAbout from context (if available)
   const { savedJobs, removeSavedJob, savedLoading, fetchSavedJobs } = JobData();
-  const { applications, loadingApplications, getAllApplications } = UseJobApply();
+  const { applications, loadingApplications, getAllApplications } =
+    UseJobApply();
 
   const [tab, setTab] = useState("overview");
   const [preview, setPreview] = useState(user?.profile?.url || "");
   const [theme, setTheme] = useState(
     localStorage.getItem("theme") ||
-      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+      (window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light")
   );
   const fileRef = useRef(null);
 
-  const appliedCount = (Array.isArray(applications) ? applications.length : 0) || 0;
+  const appliedCount =
+    (Array.isArray(applications) ? applications.length : 0) || 0;
   const savedCount = (Array.isArray(savedJobs) ? savedJobs.length : 0) || 0;
   const joinDate = useMemo(
-    () => (user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "-"),
+    () =>
+      user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "-",
     [user?.createdAt]
   );
 
   // ===== About: inline edit state =====
-  const defaultAbout = `Hello! I’m ${user?.name || "Rahul"}. Keep your information updated and apply to roles that fit your interests and skills.`;
+  const defaultAbout = `Hello! I’m ${
+    user?.name || "Rahul"
+  }. Keep your information updated and apply to roles that fit your interests and skills.`;
   const [about, setAbout] = useState(user?.about || defaultAbout);
   const [editingAbout, setEditingAbout] = useState(false);
   const [aboutSaving, setAboutSaving] = useState(false);
@@ -231,7 +263,13 @@ export default function Profile() {
                       </button>
                     )}
                   </div>
-                  <input ref={fileRef} type="file" accept="image/*" hidden onChange={onAvatarChange} />
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={onAvatarChange}
+                  />
                 </div>
               </div>
             </div>
@@ -270,9 +308,17 @@ export default function Profile() {
               </div>
 
               <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <Stat icon={Briefcase} label="Applied Jobs" value={appliedCount} />
+                <Stat
+                  icon={Briefcase}
+                  label="Applied Jobs"
+                  value={appliedCount}
+                />
                 <Stat icon={Bookmark} label="Saved Jobs" value={savedCount} />
-                <Stat icon={Upload} label="Avatar" value={user?.profile?.url ? "Uploaded" : "Default"} />
+                <Stat
+                  icon={Upload}
+                  label="Avatar"
+                  value={user?.profile?.url ? "Uploaded" : "Default"}
+                />
                 <Stat icon={Calendar} label="Member Since" value={joinDate} />
               </div>
             </div>
@@ -283,10 +329,27 @@ export default function Profile() {
         <div className="relative mb-6">
           <div className="flex gap-2 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-1 -mx-4 px-4">
             <div className="flex gap-2 mx-auto md:mx-0">
-              <TabBtn active={tab === "overview"} onClick={() => setTab("overview")}>Overview</TabBtn>
-              <TabBtn active={tab === "applications"} onClick={() => setTab("applications")}>Applications</TabBtn>
-              <TabBtn active={tab === "saved"} onClick={() => setTab("saved")}>Saved</TabBtn>
-              <TabBtn active={tab === "settings"} onClick={() => setTab("settings")}>Settings</TabBtn>
+              <TabBtn
+                active={tab === "overview"}
+                onClick={() => setTab("overview")}
+              >
+                Overview
+              </TabBtn>
+              <TabBtn
+                active={tab === "applications"}
+                onClick={() => setTab("applications")}
+              >
+                Applications
+              </TabBtn>
+              <TabBtn active={tab === "saved"} onClick={() => setTab("saved")}>
+                Saved
+              </TabBtn>
+              <TabBtn
+                active={tab === "settings"}
+                onClick={() => setTab("settings")}
+              >
+                Settings
+              </TabBtn>
             </div>
           </div>
         </div>
@@ -353,15 +416,23 @@ export default function Profile() {
             <SectionCard title="Recent Activity">
               <ul className="space-y-3 text-sm">
                 <li className="flex items-center justify-between gap-4">
-                  <span className="text-gray-600 dark:text-gray-300">Account created</span>
-                  <span className="text-gray-500 dark:text-gray-400 shrink-0">{joinDate}</span>
+                  <span className="text-gray-600 dark:text-gray-300">
+                    Account created
+                  </span>
+                  <span className="text-gray-500 dark:text-gray-400 shrink-0">
+                    {joinDate}
+                  </span>
                 </li>
                 <li className="flex items-center justify-between gap-4">
-                  <span className="text-gray-600 dark:text-gray-300">Applications submitted</span>
+                  <span className="text-gray-600 dark:text-gray-300">
+                    Applications submitted
+                  </span>
                   <span className="font-medium shrink-0">{appliedCount}</span>
                 </li>
                 <li className="flex items-center justify-between gap-4">
-                  <span className="text-gray-600 dark:text-gray-300">Jobs saved</span>
+                  <span className="text-gray-600 dark:text-gray-300">
+                    Jobs saved
+                  </span>
                   <span className="font-medium shrink-0">{savedCount}</span>
                 </li>
               </ul>
@@ -369,11 +440,19 @@ export default function Profile() {
 
             <SectionCard title="Quick Actions">
               <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3">
-                <Link to="/findjobs" className="p-4 rounded-xl border dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 text-left">
+                <Link
+                  to="/findjobs"
+                  className="p-4 rounded-xl border dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 text-left"
+                >
                   <Briefcase className="w-5 h-5 mb-2" />
                   Find Jobs
                 </Link>
-                <a target="_blank" href="https://job-pilot-dashboard.streamlit.app/" className="p-4 rounded-xl border dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 text-left" rel="noreferrer">
+                <a
+                  target="_blank"
+                  href="https://job-pilot-dashboard.streamlit.app/"
+                  className="p-4 rounded-xl border dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 text-left"
+                  rel="noreferrer"
+                >
                   <Bookmark className="w-5 h-5 mb-2" />
                   Go to Dashboard
                 </a>
@@ -396,7 +475,11 @@ export default function Profile() {
                 ))}
               </div>
             ) : (
-              <Placeholder title="No applications yet" subtitle="Apply to jobs and track them here." Icon={Briefcase} />
+              <Placeholder
+                title="No applications yet"
+                subtitle="Apply to jobs and track them here."
+                Icon={Briefcase}
+              />
             )}
           </SectionCard>
         )}
@@ -411,11 +494,18 @@ export default function Profile() {
             ) : Array.isArray(savedJobs) && savedJobs.length > 0 ? (
               <div className="grid gap-3">
                 {savedJobs.map((job) => (
-                  <SavedJobCard key={job?._id} job={job} onRemove={removeSavedJob} />
+                  <SavedJobCard
+                    key={job?._id}
+                    job={job}
+                    onRemove={removeSavedJob}
+                  />
                 ))}
               </div>
             ) : (
-              <Placeholder title="No saved jobs" subtitle="Bookmark jobs to review later." />
+              <Placeholder
+                title="No saved jobs"
+                subtitle="Bookmark jobs to review later."
+              />
             )}
           </SectionCard>
         )}
@@ -426,14 +516,18 @@ export default function Profile() {
             <SectionCard title="Profile Details">
               <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
                 <div>
-                  <label className="text-sm text-gray-600 dark:text-gray-300">Full Name</label>
+                  <label className="text-sm text-gray-600 dark:text-gray-300">
+                    Full Name
+                  </label>
                   <input
                     className="mt-1 w-full px-3 py-2 rounded-xl border dark:border-gray-800 bg-transparent outline-none"
                     defaultValue={user?.name || ""}
                   />
                 </div>
                 <div>
-                  <label className="text-sm text-gray-600 dark:text-gray-300">Email</label>
+                  <label className="text-sm text-gray-600 dark:text-gray-300">
+                    Email
+                  </label>
                   <input
                     disabled
                     className="mt-1 w-full px-3 py-2 rounded-xl border dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 outline-none"
@@ -452,13 +546,18 @@ export default function Profile() {
                     Switch between Light and Dark.
                   </p>
                 </div>
-                <button
+                {/* <button
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                   className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
-                  {theme === "dark" ? <SunMedium className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                  {theme === "dark" ? (
+                    <SunMedium className="w-5 h-5" />
+                  ) : (
+                    <Moon className="w-5 h-5" />
+                  )}
                   {theme === "dark" ? "Light" : "Dark"}
-                </button>
+                </button> */}
+                <ThemeToggle/>
               </div>
             </SectionCard>
           </div>

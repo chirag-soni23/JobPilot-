@@ -192,7 +192,7 @@ const Navbar = () => {
             ref={dropdownRef}
             className="absolute top-16 right-6 md:right-20 bg-white dark:bg-gray-800 shadow-lg rounded-md w-48 z-50 py-2 dark:text-white"
           >
-            <button
+            {/* <button
               onClick={() => fileRef.current.click()}
               className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
               disabled={btnLoading}
@@ -208,7 +208,7 @@ const Navbar = () => {
               disabled={btnLoading}
             >
               Delete Profile
-            </button>
+            </button> */}
             <Link
               to={"/profile"}
               className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"

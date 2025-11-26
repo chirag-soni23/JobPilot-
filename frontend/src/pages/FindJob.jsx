@@ -10,7 +10,6 @@ import {
   Trash,
   Pencil,
 } from "lucide-react";
-import Footer from "../components/Footer";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { UserData } from "../context/UserContext";
@@ -337,11 +336,9 @@ const FindJob = () => {
           </>
         )}
       </div>
-
-      <Footer />
     </>
   );
 };
 
 export default FindJob;
-``
+``;
