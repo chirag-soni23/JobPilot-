@@ -20,7 +20,7 @@ app.use(
   helmet({
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
     crossOriginEmbedderPolicy: false,
-    contentSecurityPolicy: false,
+    // contentSecurityPolicy: false,
   })
 );
 
