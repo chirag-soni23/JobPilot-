@@ -96,9 +96,13 @@ export const UserProvider = ({ children }) => {
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const { data } = await axios.post(`${VITE_URL}/api/user/uploadprofile`, fd, {
-        withCredentials: true,
-      });
+      const { data } = await axios.post(
+        `${VITE_URL}/api/user/uploadprofile`,
+        fd,
+        {
+          withCredentials: true,
+        }
+      );
       setUser((prev) => ({ ...prev, profile: data.profile }));
       toast.success(data.message);
     } catch (err) {
@@ -111,9 +115,12 @@ export const UserProvider = ({ children }) => {
   const deleteProfile = async () => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.delete(`${VITE_URL}/api/user/deleteprofile`, {
-        withCredentials: true,
-      });
+      const { data } = await axios.delete(
+        `${VITE_URL}/api/user/deleteprofile`,
+        {
+          withCredentials: true,
+        }
+      );
       setUser((prev) => ({ ...prev, profile: { url: "", id: "" } }));
       toast.success(data.message);
     } catch (err) {
@@ -136,7 +143,7 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-   const updateAbout = async (about) => {
+  const updateAbout = async (about) => {
     setBtnLoading(true);
     try {
       const { data } = await axios.put(
@@ -153,6 +160,23 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const updateName = async (name) => {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.patch(
+        `${VITE_URL}/api/user/me/edit-name`,
+        { name },
+        { withCredentials: true }
+      );
+      setUser((prev) => ({ ...prev, name: data.user?.name || name }));
+      toast.success(data.message || "Name updated successfully");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update name");
+    } finally {
+      setBtnLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchUser();
     fetchAllUsers();
@@ -164,7 +188,8 @@ export const UserProvider = ({ children }) => {
         registerUser,
         loginUser,
         logout,
-         getAbout,
+        getAbout,
+        updateName,
         updateAbout,
         uploadProfile,
         deleteProfile,

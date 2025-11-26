@@ -1,6 +1,7 @@
 import express from "express";
 import {
   deleteProfileImage,
+  editUser,
   getAbout,
   getAllUsers,
   loginUser,
@@ -24,4 +25,5 @@ router.post("/uploadprofile", isAuth, uploadFile, profileUpload);
 router.delete("/deleteprofile", isAuth, deleteProfileImage);
 router.get("/me/about", isAuth, getAbout);
 router.put("/me/about", isAuth, updateAbout);
+router.patch("/me/edit-name",isAuth,editUser);
 export default router;

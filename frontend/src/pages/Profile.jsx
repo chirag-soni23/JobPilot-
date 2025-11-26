@@ -25,7 +25,6 @@ import { JobData } from "../context/JobContext";
 import { UseJobApply } from "../context/JobApplyContext";
 import ThemeToggle from "../components/ThemeToggle";
 
-/* ---------- Small UI atoms ---------- */
 const TabBtn = ({ active, onClick, children }) => (
   <button
     onClick={onClick}
@@ -138,7 +137,6 @@ const ApplicationCard = ({ app }) => {
   );
 };
 
-/* ---------- Minimal Pagination (no size selector, shows "current / total") ---------- */
 const Pagination = ({ page, total, pageSize, onPageChange }) => {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const canPrev = page > 1;
@@ -181,9 +179,16 @@ const Pagination = ({ page, total, pageSize, onPageChange }) => {
   );
 };
 
-/* ---------- Page ---------- */
 export default function Profile() {
-  const { user, uploadProfile, deleteProfile, updateAbout } = UserData();
+  const {
+    user,
+    uploadProfile,
+    deleteProfile,
+    updateAbout,
+    updateName,
+    btnLoading,
+  } = UserData();
+  const [newName, setNewName] = useState(user?.name || "");
   const { savedJobs, removeSavedJob, savedLoading, fetchSavedJobs } = JobData();
   const { applications, loadingApplications, getAllApplications } =
     UseJobApply();
@@ -586,19 +591,27 @@ export default function Profile() {
             )}
           </SectionCard>
         )}
-
         {/* Settings */}
         {tab === "settings" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <SectionCard title="Profile Details">
-              <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (newName.trim() && newName !== user?.name) {
+                    await updateName(newName);
+                  }
+                }}
+                className="space-y-4"
+              >
                 <div>
                   <label className="text-sm text-gray-600 dark:text-gray-300">
                     Full Name
                   </label>
                   <input
                     className="mt-1 w-full px-3 py-2 rounded-xl border dark:border-gray-800 bg-transparent outline-none"
-                    defaultValue={user?.name || ""}
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
                   />
                 </div>
                 <div>
@@ -612,6 +625,22 @@ export default function Profile() {
                     readOnly
                   />
                 </div>
+
+                <button
+                  type="submit"
+                  disabled={btnLoading || newName.trim() === user?.name}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0A65CC] text-white hover:bg-[#084ea0] disabled:opacity-60"
+                >
+                  {btnLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" /> Save Changes
+                    </>
+                  )}
+                </button>
               </form>
             </SectionCard>
 

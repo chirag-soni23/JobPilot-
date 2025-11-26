@@ -128,3 +128,18 @@ export const updateAbout = TryCatch(async (req, res) => {
     about: user.about,
   });
 });
+
+export const editUser = TryCatch(async (req, res) => {
+  const { name } = req.body;
+  if (!name?.trim()) {
+    return res.status(400).json({ message: "Name is required" });
+  }
+
+  const user = await User.findById(req.user._id);
+  if (!user) return res.status(400).json({ message: "User not found" });
+
+  user.name = name.trim();
+  await user.save();
+
+  res.status(200).json({ message: "Name updated successfully!" });
+});
