@@ -24,6 +24,13 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
+  next();
+});
+
+
 app.use(
   cors({
     origin: ["http://localhost:5173", "https://job-pilot-nu.vercel.app"],
