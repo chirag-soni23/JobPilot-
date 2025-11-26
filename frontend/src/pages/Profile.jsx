@@ -9,8 +9,6 @@ import {
   Edit3,
   Upload,
   Camera,
-  Moon,
-  SunMedium,
   Trash2,
   Loader2,
   MapPin,
@@ -18,6 +16,7 @@ import {
   ChevronRight,
   Save,
   X,
+  ChevronLeft,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -139,16 +138,52 @@ const ApplicationCard = ({ app }) => {
   );
 };
 
+/* ---------- Minimal Pagination (no size selector, shows "current / total") ---------- */
+const Pagination = ({ page, total, pageSize, onPageChange }) => {
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const canPrev = page > 1;
+  const canNext = page < totalPages;
+
+  const start = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const end = Math.min(page * pageSize, total);
+
+  return (
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
+      <div className="text-sm text-gray-600 dark:text-gray-400">
+        Showing <span className="font-medium">{start}</span>
+        {" - "}
+        <span className="font-medium">{end}</span> of{" "}
+        <span className="font-medium">{total}</span>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => canPrev && onPageChange?.(page - 1)}
+          disabled={!canPrev}
+          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border dark:border-gray-800 disabled:opacity-50"
+        >
+          <ChevronLeft className="w-4 h-4" /> Prev
+        </button>
+
+        <span className="text-sm px-2">
+          {page} / {totalPages}
+        </span>
+
+        <button
+          onClick={() => canNext && onPageChange?.(page + 1)}
+          disabled={!canNext}
+          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border dark:border-gray-800 disabled:opacity-50"
+        >
+          Next <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
 /* ---------- Page ---------- */
 export default function Profile() {
-  const {
-    user,
-    logout,
-    uploadProfile,
-    deleteProfile,
-    btnLoading,
-    updateAbout,
-  } = UserData(); // ⬅️ optional: updateAbout from context (if available)
+  const { user, uploadProfile, deleteProfile, updateAbout } = UserData();
   const { savedJobs, removeSavedJob, savedLoading, fetchSavedJobs } = JobData();
   const { applications, loadingApplications, getAllApplications } =
     UseJobApply();
@@ -172,7 +207,6 @@ export default function Profile() {
     [user?.createdAt]
   );
 
-  // ===== About: inline edit state =====
   const defaultAbout = `Hello! I’m ${
     user?.name || "Rahul"
   }. Keep your information updated and apply to roles that fit your interests and skills.`;
@@ -182,14 +216,13 @@ export default function Profile() {
 
   useEffect(() => {
     setAbout(user?.about || defaultAbout);
-  }, [user?.about, user?.name]); // sync when user changes
+  }, [user?.about, user?.name]);
 
   const handleSaveAbout = async () => {
     try {
       setAboutSaving(true);
-      // If context provides an API, use it. Else just close editor (local save).
       if (typeof updateAbout === "function") {
-        await updateAbout(about); // implement in your context to persist to backend
+        await updateAbout(about);
       }
       setEditingAbout(false);
     } finally {
@@ -216,6 +249,32 @@ export default function Profile() {
     setPreview(URL.createObjectURL(file));
     await uploadProfile?.(file);
   };
+
+  const APP_PAGE_SIZE = 4;
+  const SAVED_PAGE_SIZE = 4;
+
+  const [appPage, setAppPage] = useState(1);
+  const [savedPage, setSavedPage] = useState(1);
+
+  useEffect(() => setAppPage(1), [applications?.length]);
+  useEffect(() => setSavedPage(1), [savedJobs?.length]);
+
+  useEffect(() => {
+    if (tab === "applications") setAppPage(1);
+    if (tab === "saved") setSavedPage(1);
+  }, [tab]);
+
+  const paginatedApplications = useMemo(() => {
+    const list = Array.isArray(applications) ? applications : [];
+    const start = (appPage - 1) * APP_PAGE_SIZE;
+    return list.slice(start, start + APP_PAGE_SIZE);
+  }, [applications, appPage]);
+
+  const paginatedSaved = useMemo(() => {
+    const list = Array.isArray(savedJobs) ? savedJobs : [];
+    const start = (savedPage - 1) * SAVED_PAGE_SIZE;
+    return list.slice(start, start + SAVED_PAGE_SIZE);
+  }, [savedJobs, savedPage]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors">
@@ -357,7 +416,6 @@ export default function Profile() {
         {/* Overview */}
         {tab === "overview" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* ===== About with inline edit ===== */}
             <SectionCard
               title="About"
               action={
@@ -469,11 +527,22 @@ export default function Profile() {
                 <Loader2 className="w-6 h-6 animate-spin" />
               </div>
             ) : Array.isArray(applications) && applications.length > 0 ? (
-              <div className="grid gap-3">
-                {applications.map((app) => (
-                  <ApplicationCard key={app?._id || app?.job?._id} app={app} />
-                ))}
-              </div>
+              <>
+                <div className="grid gap-3">
+                  {paginatedApplications.map((app) => (
+                    <ApplicationCard
+                      key={app?._id || app?.job?._id}
+                      app={app}
+                    />
+                  ))}
+                </div>
+                <Pagination
+                  page={appPage}
+                  total={applications.length}
+                  pageSize={APP_PAGE_SIZE}
+                  onPageChange={setAppPage}
+                />
+              </>
             ) : (
               <Placeholder
                 title="No applications yet"
@@ -492,15 +561,23 @@ export default function Profile() {
                 <Loader2 className="w-6 h-6 animate-spin" />
               </div>
             ) : Array.isArray(savedJobs) && savedJobs.length > 0 ? (
-              <div className="grid gap-3">
-                {savedJobs.map((job) => (
-                  <SavedJobCard
-                    key={job?._id}
-                    job={job}
-                    onRemove={removeSavedJob}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="grid gap-3">
+                  {paginatedSaved.map((job) => (
+                    <SavedJobCard
+                      key={job?._id}
+                      job={job}
+                      onRemove={removeSavedJob}
+                    />
+                  ))}
+                </div>
+                <Pagination
+                  page={savedPage}
+                  total={savedJobs.length}
+                  pageSize={SAVED_PAGE_SIZE}
+                  onPageChange={setSavedPage}
+                />
+              </>
             ) : (
               <Placeholder
                 title="No saved jobs"
@@ -546,18 +623,7 @@ export default function Profile() {
                     Switch between Light and Dark.
                   </p>
                 </div>
-                {/* <button
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  {theme === "dark" ? (
-                    <SunMedium className="w-5 h-5" />
-                  ) : (
-                    <Moon className="w-5 h-5" />
-                  )}
-                  {theme === "dark" ? "Light" : "Dark"}
-                </button> */}
-                <ThemeToggle/>
+                <ThemeToggle />
               </div>
             </SectionCard>
           </div>
