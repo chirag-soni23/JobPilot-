@@ -1,16 +1,66 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import { JobData } from "./JobContext";
+import { UseJobApply } from "./JobApplyContext";
+import { useNavigate } from "react-router-dom";
 
 const UserContext = createContext();
 const VITE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const UserProvider = ({ children }) => {
+  const jobCtx = JobData();
+  const applyCtx = UseJobApply();
+
+  const getAllJobs = jobCtx?.getAllJobs;
+  const getAllApplications = applyCtx?.getAllApplications;
+
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [isAuth, setIsAuth] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const didInitRef = useRef(false);
+  const navigate = useNavigate();
+
+  const fetchUser = async () => {
+    try {
+      const { data } = await axios.get(`${VITE_URL}/api/user/me`, {
+        withCredentials: true,
+      });
+      setUser(data);
+      setIsAuth(true);
+    } catch {
+      setIsAuth(false);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAllUsers = async () => {
+    try {
+      const { data } = await axios.get(`${VITE_URL}/api/user/getall`, {
+        withCredentials: true,
+      });
+      setUsers(data);
+    } catch {}
+  };
+
+  useEffect(() => {
+    if (didInitRef.current) return;
+    didInitRef.current = true;
+    fetchUser();
+    fetchAllUsers();
+  }, []);
 
   const registerUser = async (name, email, password, navigate) => {
     setBtnLoading(true);
@@ -24,7 +74,9 @@ export const UserProvider = ({ children }) => {
       setIsAuth(true);
       toast.success(data.message);
       navigate("/");
-      window.location.reload();
+      await fetchUser();
+      if (getAllApplications) await getAllApplications();
+      if (getAllJobs) await getAllJobs();
     } catch (err) {
       toast.error(err.response?.data?.message || "Register failed");
     } finally {
@@ -44,7 +96,9 @@ export const UserProvider = ({ children }) => {
       setIsAuth(true);
       toast.success(data.message);
       navigate("/");
-      window.location.reload();
+      await fetchUser();
+      if (getAllApplications) await getAllApplications();
+      if (getAllJobs) await getAllJobs();
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
     } finally {
@@ -52,38 +106,17 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const fetchUser = async () => {
-    try {
-      const { data } = await axios.get(`${VITE_URL}/api/user/me`, {
-        withCredentials: true,
-      });
-      setUser(data);
-      setIsAuth(true);
-    } catch {
-      setIsAuth(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchAllUsers = async () => {
-    try {
-      const { data } = await axios.get(`${VITE_URL}/api/user/getall`, {
-        withCredentials: true,
-      });
-      setUsers(data);
-    } catch {}
-  };
-
   const logout = async () => {
     setBtnLoading(true);
     try {
-      await axios.get(`${VITE_URL}/api/user/logout`, {
-        withCredentials: true,
-      });
+      await axios.get(`${VITE_URL}/api/user/logout`, { withCredentials: true });
       setUser(null);
       setIsAuth(false);
       toast.success("Logged out successfully!");
+      navigate("/");
+      await fetchUser();
+      if (getAllApplications) await getAllApplications();
+      if (getAllJobs) await getAllJobs();
     } catch (err) {
       toast.error(err.response?.data?.message || "Logout failed");
     } finally {
@@ -99,9 +132,7 @@ export const UserProvider = ({ children }) => {
       const { data } = await axios.post(
         `${VITE_URL}/api/user/uploadprofile`,
         fd,
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       setUser((prev) => ({ ...prev, profile: data.profile }));
       toast.success(data.message);
@@ -177,29 +208,27 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    fetchUser();
-    fetchAllUsers();
-  }, []);
+  const value = useMemo(
+    () => ({
+      registerUser,
+      loginUser,
+      logout,
+      getAbout,
+      updateName,
+      updateAbout,
+      uploadProfile,
+      deleteProfile,
+      user,
+      users,
+      isAuth,
+      loading,
+      btnLoading,
+    }),
+    [user, users, isAuth, loading, btnLoading]
+  );
 
   return (
-    <UserContext.Provider
-      value={{
-        registerUser,
-        loginUser,
-        logout,
-        getAbout,
-        updateName,
-        updateAbout,
-        uploadProfile,
-        deleteProfile,
-        user,
-        users,
-        isAuth,
-        loading,
-        btnLoading,
-      }}
-    >
+    <UserContext.Provider value={value}>
       {children}
       <Toaster />
     </UserContext.Provider>

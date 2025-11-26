@@ -16,6 +16,7 @@ import FeaturedJobsPage from "./pages/FeaturedJobsPage";
 import EditJob from "./pages/EditJob";
 import Profile from "./pages/Profile";
 import MainLayout from "./layouts/MainLayout.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 const App = () => {
   const { loading, isAuth } = UserData();
@@ -34,7 +35,8 @@ const App = () => {
         <Route path="/postjob" element={<PostJob />} />
         <Route path="/featured-jobs" element={<FeaturedJobsPage />} />
         <Route path="/savedjob" element={<SavedJob />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={isAuth && <Profile/> } />
+        <Route path="*" element={<NotFound />} />
         <Route
           path="/signup"
           element={isAuth ? <Navigate to="/" replace /> : <Signup />}

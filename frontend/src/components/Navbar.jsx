@@ -79,7 +79,7 @@ const Navbar = () => {
         <ChevronDown className="w-4 h-4 text-gray-600 dark:text-gray-300" />
       </button>
     ) : (
-      <User2Icon className="w-6 h-6 text-white" />
+      <User2Icon className="w-6 h-6 dark:text-white" />
     );
 
   return (

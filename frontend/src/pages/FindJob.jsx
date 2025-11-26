@@ -260,7 +260,7 @@ const FindJob = () => {
                       )}
 
                       {/* Applied Badge */}
-                      {applied && (
+                      {isAuth && applied && (
                         <span className="absolute bottom-3 right-3 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 text-xs font-bold px-2 py-1 rounded">
                           Applied
                         </span>

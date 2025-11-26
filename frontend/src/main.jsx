@@ -13,17 +13,17 @@ import { ThemeProvider } from "./context/ThemeContext.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <UserProvider>
-        <JobProvider>
-          <MailerProvider>
-            <JobApplyProvider>
+      <JobProvider>
+        <JobApplyProvider>
+          <UserProvider>
+            <MailerProvider>
               <ThemeProvider>
                 <App />
               </ThemeProvider>
-            </JobApplyProvider>
-          </MailerProvider>
-        </JobProvider>
-      </UserProvider>
+            </MailerProvider>
+          </UserProvider>
+        </JobApplyProvider>
+      </JobProvider>
     </BrowserRouter>
   </StrictMode>
 );

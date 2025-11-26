@@ -18,7 +18,7 @@ const JobDetails = () => {
     loadingSingleJob,
   } = JobData();
   const { applications } = UseJobApply();
-  const { user } = UserData();
+  const { user, isAuth } = UserData();
 
   const [isSaved, setIsSaved] = useState(false);
 
@@ -327,7 +327,7 @@ const JobDetails = () => {
                 </div>
               </div>
 
-              {isApplied ? (
+              {isAuth && isApplied ? (
                 <button
                   disabled
                   className="bg-gray-400 cursor-not-allowed text-white w-full py-3 rounded-md font-medium flex justify-center items-center gap-2 transition"

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -11,7 +11,38 @@ export const JobApplyProvider = ({ children }) => {
   const [applying, setApplying] = useState(false);
   const [loadingApplications, setLoadingApplications] = useState(false);
 
-  // Apply for a job
+  const didInitRef = useRef(false);
+
+  const getAllApplications = async () => {
+    setLoadingApplications(true);
+    try {
+      const { data } = await axios.get(`${VITE_URL}/api/apply/getall`, {
+        withCredentials: true,
+      });
+      setApplications(data);
+    } catch {}
+    finally {
+      setLoadingApplications(false);
+    }
+  };
+
+  const getApplicationById = async (id) => {
+    try {
+      const { data } = await axios.get(`${VITE_URL}/api/apply/get/${id}`, {
+        withCredentials: true,
+      });
+      setApplication(data.application);
+    } catch {
+      toast.error("Unable to fetch application");
+    }
+  };
+
+  useEffect(() => {
+    if (didInitRef.current) return;
+    didInitRef.current = true;
+    getAllApplications();
+  }, []);
+
   const applyJob = async (jobId, formData, navigate) => {
     setApplying(true);
     try {
@@ -23,11 +54,10 @@ export const JobApplyProvider = ({ children }) => {
           withCredentials: true,
         }
       );
-
       setApplications((prev) => [...prev, data.application]);
-      navigate(`/jobdetails/${jobId}`);
       toast.success(data.message);
-      window.location.reload();
+      navigate(`/jobdetails/${jobId}`);
+      await getAllApplications();
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to apply");
     } finally {
@@ -35,49 +65,29 @@ export const JobApplyProvider = ({ children }) => {
     }
   };
 
-  // Fetch all applications
-  const getAllApplications = async () => {
-    setLoadingApplications(true);
-    try {
-      const { data } = await axios.get(`${VITE_URL}/api/apply/getall`, {
-        withCredentials: true,
-      });
-      setApplications(data);
-    } catch (err) {
-      console.error("Failed to fetch applications");
-    } finally {
-      setLoadingApplications(false);
-    }
+  const clearApplications = () => {
+    setApplications([]);
+    setApplication(null);
+    setApplying(false);
+    setLoadingApplications(false);
   };
 
-  // Get single application
-  const getApplicationById = async (id) => {
-    try {
-      const { data } = await axios.get(`${VITE_URL}/api/apply/get/${id}`, {
-        withCredentials: true,
-      });
-      setApplication(data.application);
-    } catch (err) {
-      toast.error("Unable to fetch application");
-    }
-  };
-
-  useEffect(() => {
-    getAllApplications();
-  }, []);
+  const value = useMemo(
+    () => ({
+      applications,
+      application,
+      applyJob,
+      applying,
+      getAllApplications,
+      getApplicationById,
+      loadingApplications,
+      clearApplications,
+    }),
+    [applications, application, applying, loadingApplications]
+  );
 
   return (
-    <JobApplyContext.Provider
-      value={{
-        applications,
-        application,
-        applyJob,
-        applying,
-        getAllApplications,
-        getApplicationById,
-        loadingApplications,
-      }}
-    >
+    <JobApplyContext.Provider value={value}>
       {children}
     </JobApplyContext.Provider>
   );
