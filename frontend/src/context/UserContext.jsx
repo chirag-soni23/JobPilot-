@@ -1,3 +1,4 @@
+// context/UserContext.jsx  (updated)
 import {
   createContext,
   useContext,
@@ -106,6 +107,29 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const googleLogin = async (idToken, navigate) => {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.post(
+        `${VITE_URL}/api/user/google`,
+        { idToken },
+        { withCredentials: true }
+      );
+      setUser(data.user);
+      setIsAuth(true);
+      toast.success(data.message || "Logged in with Google");
+      navigate("/");
+      await fetchUser();
+      if (getAllApplications) await getAllApplications();
+      if (getAllJobs) await getAllJobs();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Google login failed");
+      setIsAuth(false);
+    } finally {
+      setBtnLoading(false);
+    }
+  };
+
   const logout = async () => {
     setBtnLoading(true);
     try {
@@ -148,9 +172,7 @@ export const UserProvider = ({ children }) => {
     try {
       const { data } = await axios.delete(
         `${VITE_URL}/api/user/deleteprofile`,
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       setUser((prev) => ({ ...prev, profile: { url: "", id: "" } }));
       toast.success(data.message);
@@ -212,6 +234,7 @@ export const UserProvider = ({ children }) => {
     () => ({
       registerUser,
       loginUser,
+      googleLogin,
       logout,
       getAbout,
       updateName,

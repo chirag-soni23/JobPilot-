@@ -1,20 +1,75 @@
-import { useRef, useState } from "react";
+// src/pages/Signin.jsx
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+// ❌ axios ki zarurat nahi ab (googleLogin context me call karta hai)
+// import axios from "axios";
 import { assets } from "../assets/assets.js";
 import { BriefcaseIcon, Eye, EyeOff, MoveLeft } from "lucide-react";
 import { gsap } from "gsap";
 import { UserData } from "../context/UserContext.jsx";
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
 const Signin = () => {
   const formPanelRef = useRef(null);
   const illustrationRef = useRef(null);
+  const googleBtnRef = useRef(null);
+  const gisInitedRef = useRef(false);
+
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const { loginUser, btnLoading } = UserData();
+  // ✅ googleLogin add karo yaha se
+  const { loginUser, btnLoading, googleLogin } = UserData();
+
+  useEffect(() => {
+    const ready = () => window.google && window.google.accounts?.id;
+
+    const init = () => {
+      if (gisInitedRef.current || !ready()) return;
+
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        // ✅ direct context method call: sets user + isAuth + navigation + toasts
+        callback: async ({ credential }) => {
+          await googleLogin(credential, navigate);
+        },
+        use_fedcm_for_prompt: false, // FedCM off -> popup path
+        ux_mode: "popup",
+        auto_select: false,
+        context: "signin",
+      });
+
+      if (googleBtnRef.current) {
+        window.google.accounts.id.renderButton(googleBtnRef.current, {
+          type: "standard",
+          theme: "outline",
+          size: "large",
+          text: "continue_with",
+          shape: "pill",
+          logo_alignment: "left",
+          width: "100",
+        });
+      }
+
+      gisInitedRef.current = true;
+    };
+
+    if (ready()) {
+      init();
+      return;
+    }
+    const t = setInterval(() => {
+      if (ready()) {
+        clearInterval(t);
+        init();
+      }
+    }, 200);
+    return () => clearInterval(t);
+  }, [navigate, googleLogin]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -23,12 +78,10 @@ const Signin = () => {
 
   const handleSignupClick = () => {
     const isMobile = window.innerWidth < 768;
-
     if (isMobile) {
       navigate("/signup");
       return;
     }
-
     const tl = gsap.timeline({
       defaults: { ease: "expo.out" },
       onComplete: () => navigate("/signup"),
@@ -92,15 +145,10 @@ const Signin = () => {
             Welcome back! Please login to your account.
           </p>
 
-          <button
-            type="button"
-            className="w-full mt-8 bg-gray-500/10 flex items-center justify-center h-12 rounded-full"
-          >
-            <img
-              src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleLogo.svg"
-              alt="googleLogo"
-            />
-          </button>
+          <div
+            ref={googleBtnRef}
+            className="w-full mt-8 flex items-center justify-center h-12 rounded-full bg-gray-500/10"
+          />
 
           <div className="flex items-center gap-4 w-full my-5">
             <div className="w-full h-px bg-gray-300/90"></div>

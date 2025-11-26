@@ -16,14 +16,19 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      select: false,
+      required: function () {
+        return !this.googleId;
+      },
     },
+    googleId: { type: String, default: "" },
+    authProvider: { type: String, enum: ["local", "google"], default: "local" },
     profile: {
       id: String,
       url: String,
     },
     about: {
-      type:String
+      type: String,
     },
     role: {
       type: String,

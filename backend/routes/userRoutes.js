@@ -4,6 +4,7 @@ import {
   editUser,
   getAbout,
   getAllUsers,
+  googleAuth,
   loginUser,
   logout,
   Myprofile,
@@ -18,6 +19,7 @@ const router = express.Router();
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", isAuth, logout);
+router.post("/google", googleAuth);
 router.get("/me", isAuth, Myprofile);
 router.get("/getall", isAuth, getAllUsers);
 router.get("/:id", isAuth, userProfile);

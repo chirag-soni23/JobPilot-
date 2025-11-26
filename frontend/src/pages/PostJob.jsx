@@ -106,7 +106,6 @@ const PostJob = () => {
             />
           </div>
         ))}
-
         <div className="form-group">
           <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
             Job Type
@@ -115,11 +114,29 @@ const PostJob = () => {
             name="type"
             value={form.type}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-transparent text-black dark:text-white"
+            className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md 
+    focus:outline-none focus:ring-2 focus:ring-indigo-500 
+    bg-white dark:bg-transparent 
+    text-black dark:text-white"
           >
-            <option value="FULL-TIME">Full-Time</option>
-            <option value="PART-TIME">Part-Time</option>
-            <option value="INTERNSHIP">Internship</option>
+            <option
+              className="bg-white dark:bg-gray-800 dark:text-white"
+              value="FULL-TIME"
+            >
+              Full-Time
+            </option>
+            <option
+              className="bg-white dark:bg-gray-800 dark:text-white"
+              value="PART-TIME"
+            >
+              Part-Time
+            </option>
+            <option
+              className="bg-white dark:bg-gray-800 dark:text-white"
+              value="INTERNSHIP"
+            >
+              Internship
+            </option>
           </select>
         </div>
 

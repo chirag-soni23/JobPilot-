@@ -8,10 +8,18 @@ import nodemailerRoutes from "./routes/nodemailer.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import compression from "compression";
+import helmet from "helmet";
 
 const app = express();
 const PORT = 5000;
 dotenv.config();
+
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+    crossOriginEmbedderPolicy: false,
+  })
+);
 
 // middleware
 app.use(
