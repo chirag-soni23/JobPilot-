@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from "react";
-import Footer from "../components/Footer";
 import { JobData } from "../context/JobContext";
 import { Link, useNavigate } from "react-router-dom";
 import { MapPin, Search, SlidersHorizontal, Bookmark, BanIcon } from "lucide-react";

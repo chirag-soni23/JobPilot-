@@ -155,7 +155,9 @@ const JobDetails = () => {
                 >
                   <img
                     className="w-10 h-10"
-                    src={singleJob?.isSaved ? assets.saved : assets.save}
+                    src={
+                      isAuth && singleJob?.isSaved ? assets.saved : assets.save
+                    }
                     alt="save"
                   />
                 </button>

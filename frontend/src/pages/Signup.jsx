@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets.js";
-import { BriefcaseIcon, Eye, EyeOff } from "lucide-react";
+import { BriefcaseIcon, Eye, EyeOff, Home, MoveLeft } from "lucide-react";
 import { UserData } from "../context/UserContext.jsx";
 import { gsap } from "gsap";
 
@@ -24,12 +24,10 @@ const Signup = () => {
 
   const handleLoginClick = () => {
     const isMobile = window.innerWidth < 768;
-
     if (isMobile) {
       navigate("/signin");
       return;
     }
-
     const tl = gsap.timeline({
       defaults: { ease: "expo.out" },
       onComplete: () => navigate("/signin"),
@@ -50,6 +48,10 @@ const Signup = () => {
       },
       "<"
     );
+  };
+
+  const handleBackHome = () => {
+    navigate("/");
   };
 
   return (
@@ -215,6 +217,15 @@ const Signup = () => {
               Login
             </button>
           </p>
+
+          <button
+            type="button"
+            onClick={handleBackHome}
+            className="mt-3 flex items-center gap-2 text-sm text-gray-500 hover:text-indigo-500 transition-all underline cursor-pointer"
+          >
+            <MoveLeft size={16} />
+            Back to Home
+          </button>
         </form>
       </div>
     </section>
