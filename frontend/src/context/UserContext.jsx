@@ -1,4 +1,4 @@
-// context/UserContext.jsx
+// context/UserContext.jsx  (updated)
 import {
   createContext,
   useContext,
@@ -14,23 +14,7 @@ import { UseJobApply } from "./JobApplyContext";
 import { useNavigate } from "react-router-dom";
 
 const UserContext = createContext();
-
-const API = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL, // e.g. https://jobpilot-1-8vnh.onrender.com
-  withCredentials: true,
-  timeout: 20000,
-});
-
-API.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    const status = err?.response?.status;
-    if (status === 401 || status === 403) {
-      toast.error(err?.response?.data?.message || "Session expired. Please login.");
-    }
-    return Promise.reject(err);
-  }
-);
+const VITE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const UserProvider = ({ children }) => {
   const jobCtx = JobData();
@@ -46,14 +30,15 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const didInitRef = useRef(false);
-  const navigateHook = useNavigate();
+  const navigate = useNavigate();
 
   const fetchUser = async () => {
     try {
-      const { data } = await API.get(`/api/user/me`);
-      const u = data?.user ?? data ?? null;
-      setUser(u);
-      setIsAuth(Boolean(u));
+      const { data } = await axios.get(`${VITE_URL}/api/user/me`, {
+        withCredentials: true,
+      });
+      setUser(data);
+      setIsAuth(true);
     } catch {
       setIsAuth(false);
       setUser(null);
@@ -64,73 +49,81 @@ export const UserProvider = ({ children }) => {
 
   const fetchAllUsers = async () => {
     try {
-      const { data } = await API.get(`/api/user/getall`);
-      setUsers(Array.isArray(data) ? data : data?.users || []);
-    } catch {
-      /* silent */
-    }
+      const { data } = await axios.get(`${VITE_URL}/api/user/getall`, {
+        withCredentials: true,
+      });
+      setUsers(data);
+    } catch {}
   };
 
   useEffect(() => {
     if (didInitRef.current) return;
     didInitRef.current = true;
-    (async () => {
-      await Promise.allSettled([fetchUser(), fetchAllUsers()]);
-    })();
+    fetchUser();
+    fetchAllUsers();
   }, []);
 
-  const registerUser = async (name, email, password, navArg) => {
+  const registerUser = async (name, email, password, navigate) => {
     setBtnLoading(true);
     try {
-      const { data } = await API.post(`/api/user/register`, { name, email, password });
-      const u = data?.user ?? null;
-      setUser(u);
-      setIsAuth(Boolean(u));
-      toast.success(data?.message || "Registered successfully");
-      (navArg || navigateHook)("/");
+      const { data } = await axios.post(
+        `${VITE_URL}/api/user/register`,
+        { name, email, password },
+        { withCredentials: true }
+      );
+      setUser(data.user);
+      setIsAuth(true);
+      toast.success(data.message);
+      navigate("/");
       await fetchUser();
       if (getAllApplications) await getAllApplications();
       if (getAllJobs) await getAllJobs();
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Register failed");
+      toast.error(err.response?.data?.message || "Register failed");
     } finally {
       setBtnLoading(false);
     }
   };
 
-  const loginUser = async (email, password, navArg) => {
+  const loginUser = async (email, password, navigate) => {
     setBtnLoading(true);
     try {
-      const { data } = await API.post(`/api/user/login`, { email, password });
-      const u = data?.user ?? null;
-      setUser(u);
-      setIsAuth(Boolean(u));
-      toast.success(data?.message || "Logged in");
-      (navArg || navigateHook)("/");
+      const { data } = await axios.post(
+        `${VITE_URL}/api/user/login`,
+        { email, password },
+        { withCredentials: true }
+      );
+      setUser(data.user);
+      setIsAuth(true);
+      toast.success(data.message);
+      navigate("/");
       await fetchUser();
       if (getAllApplications) await getAllApplications();
       if (getAllJobs) await getAllJobs();
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Login failed");
     } finally {
       setBtnLoading(false);
     }
   };
 
-  const googleLogin = async (idToken, navArg) => {
+  const googleLogin = async (idToken, navigate) => {
     setBtnLoading(true);
     try {
-      const { data } = await API.post(`/api/user/google`, { idToken });
-      const u = data?.user ?? null;
-      setUser(u);
-      setIsAuth(Boolean(u));
-      toast.success(data?.message || "Logged in with Google");
-      (navArg || navigateHook)("/");
+      const { data } = await axios.post(
+        `${VITE_URL}/api/user/google`,
+        { idToken },
+        { withCredentials: true }
+      );
+      setUser(data.user);
+      setIsAuth(true);
+      toast.success(data.message || "Logged in with Google");
+      navigate("/");
       await fetchUser();
       if (getAllApplications) await getAllApplications();
       if (getAllJobs) await getAllJobs();
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Google login failed");
+      toast.error(err.response?.data?.message || "Google login failed");
       setIsAuth(false);
     } finally {
       setBtnLoading(false);
@@ -140,16 +133,16 @@ export const UserProvider = ({ children }) => {
   const logout = async () => {
     setBtnLoading(true);
     try {
-      await API.get(`/api/user/logout`);
+      await axios.get(`${VITE_URL}/api/user/logout`, { withCredentials: true });
       setUser(null);
       setIsAuth(false);
       toast.success("Logged out successfully!");
-      navigateHook("/");
+      navigate("/");
       await fetchUser();
       if (getAllApplications) await getAllApplications();
       if (getAllJobs) await getAllJobs();
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Logout failed");
+      toast.error(err.response?.data?.message || "Logout failed");
     } finally {
       setBtnLoading(false);
     }
@@ -160,13 +153,15 @@ export const UserProvider = ({ children }) => {
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const { data } = await API.post(`/api/user/uploadprofile`, fd, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setUser((prev) => ({ ...prev, profile: data?.profile || prev?.profile }));
-      toast.success(data?.message || "Profile updated");
+      const { data } = await axios.post(
+        `${VITE_URL}/api/user/uploadprofile`,
+        fd,
+        { withCredentials: true }
+      );
+      setUser((prev) => ({ ...prev, profile: data.profile }));
+      toast.success(data.message);
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Upload failed");
+      toast.error(err.response?.data?.message || "Upload failed");
     } finally {
       setBtnLoading(false);
     }
@@ -175,11 +170,14 @@ export const UserProvider = ({ children }) => {
   const deleteProfile = async () => {
     setBtnLoading(true);
     try {
-      const { data } = await API.delete(`/api/user/deleteprofile`);
+      const { data } = await axios.delete(
+        `${VITE_URL}/api/user/deleteprofile`,
+        { withCredentials: true }
+      );
       setUser((prev) => ({ ...prev, profile: { url: "", id: "" } }));
-      toast.success(data?.message || "Profile removed");
+      toast.success(data.message);
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Delete failed");
+      toast.error(err.response?.data?.message || "Delete failed");
     } finally {
       setBtnLoading(false);
     }
@@ -187,23 +185,29 @@ export const UserProvider = ({ children }) => {
 
   const getAbout = async () => {
     try {
-      const { data } = await API.get(`/api/user/me/about`);
-      if (data?.about !== undefined) {
+      const { data } = await axios.get(`${VITE_URL}/api/user/me/about`, {
+        withCredentials: true,
+      });
+      if (data.about !== undefined) {
         setUser((prev) => ({ ...prev, about: data.about }));
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to fetch about info");
+      toast.error(err.response?.data?.message || "Failed to fetch about info");
     }
   };
 
   const updateAbout = async (about) => {
     setBtnLoading(true);
     try {
-      const { data } = await API.put(`/api/user/me/about`, { about });
-      setUser((prev) => ({ ...prev, about: data?.about ?? about }));
-      toast.success(data?.message || "About updated");
+      const { data } = await axios.put(
+        `${VITE_URL}/api/user/me/about`,
+        { about },
+        { withCredentials: true }
+      );
+      setUser((prev) => ({ ...prev, about: data.about }));
+      toast.success(data.message);
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to update about");
+      toast.error(err.response?.data?.message || "Failed to update about");
     } finally {
       setBtnLoading(false);
     }
@@ -212,11 +216,15 @@ export const UserProvider = ({ children }) => {
   const updateName = async (name) => {
     setBtnLoading(true);
     try {
-      const { data } = await API.patch(`/api/user/me/edit-name`, { name });
-      setUser((prev) => ({ ...prev, name: data?.user?.name ?? name }));
-      toast.success(data?.message || "Name updated");
+      const { data } = await axios.patch(
+        `${VITE_URL}/api/user/me/edit-name`,
+        { name },
+        { withCredentials: true }
+      );
+      setUser((prev) => ({ ...prev, name: data.user?.name || name }));
+      toast.success(data.message || "Name updated successfully");
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to update name");
+      toast.error(err.response?.data?.message || "Failed to update name");
     } finally {
       setBtnLoading(false);
     }
@@ -245,7 +253,7 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider value={value}>
       {children}
-      <Toaster position="top-center" />
+      <Toaster />
     </UserContext.Provider>
   );
 };
