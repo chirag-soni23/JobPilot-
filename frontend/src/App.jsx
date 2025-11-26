@@ -17,6 +17,8 @@ import EditJob from "./pages/EditJob";
 import Profile from "./pages/Profile";
 import MainLayout from "./layouts/MainLayout.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import TermsAndConditions from "./pages/TermsAndConditions.jsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
 
 const App = () => {
   const { loading, isAuth } = UserData();
@@ -35,6 +37,8 @@ const App = () => {
         <Route path="/postjob" element={<PostJob />} />
         <Route path="/featured-jobs" element={<FeaturedJobsPage />} />
         <Route path="/savedjob" element={<SavedJob />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/profile" element={isAuth && <Profile/> } />
         <Route path="*" element={<NotFound />} />
         <Route

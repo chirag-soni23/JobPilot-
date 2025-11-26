@@ -89,10 +89,10 @@ const Footer = () => {
         {/* Support */}
         <div>
           <h4 className="text-white font-semibold mb-4">Support</h4>
-          <ul className="space-y-2 text-sm">
-            <li>Faqs</li>
-            <li>Privacy Policy</li>
-            <li>Terms & Conditions</li>
+          <ul className="space-y-2 flex flex-col text-sm">
+            <Link>Faqs</Link>
+            <Link to={"/privacy-policy"}>Privacy Policy</Link>
+            <Link to={"/terms-and-conditions"}>Terms & Conditions</Link>
           </ul>
         </div>
       </div>
