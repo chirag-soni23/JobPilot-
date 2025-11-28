@@ -10,8 +10,8 @@
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "https://jobpilot-1-8vnh.onrender.com/api/$1"
+      "source": "/(.*)",
+      "destination": "https://jobpilot-1-8vnh.onrender.com/$1"
     }
   ]
 }
