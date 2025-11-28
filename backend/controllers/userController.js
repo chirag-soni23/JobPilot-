@@ -109,7 +109,7 @@ export const logout = TryCatch(async (req, res) => {
   res.cookie("token", "", {
     maxAge: 0,
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: "none",
   });
   res.json({ message: "Logged out successfully!" });
