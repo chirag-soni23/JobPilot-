@@ -106,13 +106,17 @@ export const userProfile = TryCatch(async (req, res) => {
 });
 
 export const logout = TryCatch(async (req, res) => {
+  const isProd = process.env.NODE_ENV === "production";
   res.cookie("token", "", {
-    maxAge: 0,
     httpOnly: true,
-    secure: true,
-    sameSite: "lax",
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+    domain: "https://job-pilot-nu.vercel.app",
+    maxAge: 0,
+    expires: new Date(0),
+    path: "/",
   });
-  res.json({ message: "Logged out successfully!" });
+  res.status(200).json({ message: "Logged out successfully!" });
 });
 
 export const profileUpload = TryCatch(async (req, res) => {
