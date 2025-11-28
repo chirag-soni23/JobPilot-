@@ -52,6 +52,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
+app.get("/api/health", (req, res) => {
+  res.json({ ok: true, host: req.headers.host, url: req.originalUrl });
+});
+
 app.use(
   helmet({
     crossOriginOpenerPolicy: false,
