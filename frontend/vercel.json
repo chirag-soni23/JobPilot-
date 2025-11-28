@@ -3,7 +3,7 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "unsafe-none" },
         { "key": "Cross-Origin-Embedder-Policy", "value": "unsafe-none" }
       ]
     }
@@ -11,11 +11,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://jobpilot-1-8vnh.onrender.com/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/"
+      "destination": "https://jobpilot-1-8vnh.onrender.com/api/$1"
     }
   ]
 }
