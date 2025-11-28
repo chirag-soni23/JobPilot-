@@ -1,10 +1,15 @@
+// context/MailerContext.jsx (fixed for rewrites)
 import { createContext, useContext, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
 const MailerContext = createContext();
-const VITE_URL = import.meta.env.VITE_BACKEND_URL;
 
+// Axios instance: relative to frontend, proxy handled by vercel.json rewrites
+const api = axios.create({
+  baseURL: "/api",
+  withCredentials: true,
+});
 
 export const MailerProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,7 +17,7 @@ export const MailerProvider = ({ children }) => {
   const sendMail = async (dataObj) => {
     setIsLoading(true);
     try {
-      const { data } = await axios.post(`${VITE_URL}/api/mail/send-email`, dataObj);
+      const { data } = await api.post("/mail/send-email", dataObj);
       toast.success(data.message || "Email sent!");
       return true;
     } catch (err) {

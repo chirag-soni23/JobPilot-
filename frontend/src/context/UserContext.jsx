@@ -1,4 +1,4 @@
-// context/UserContext.jsx  (updated)
+// context/UserContext.jsx  (fixed for Vercel rewrites)
 import {
   createContext,
   useContext,
@@ -14,7 +14,12 @@ import { UseJobApply } from "./JobApplyContext";
 import { useNavigate } from "react-router-dom";
 
 const UserContext = createContext();
-const VITE_URL = import.meta.env.VITE_BACKEND_URL;
+
+// Axios instance: relative to frontend host, proxied by vercel.json rewrites
+const api = axios.create({
+  baseURL: "/api",
+  withCredentials: true,
+});
 
 export const UserProvider = ({ children }) => {
   const jobCtx = JobData();
@@ -34,9 +39,7 @@ export const UserProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get(`${VITE_URL}/api/user/me`, {
-        withCredentials: true,
-      });
+      const { data } = await api.get("/user/me");
       setUser(data);
       setIsAuth(true);
     } catch {
@@ -49,9 +52,7 @@ export const UserProvider = ({ children }) => {
 
   const fetchAllUsers = async () => {
     try {
-      const { data } = await axios.get(`${VITE_URL}/api/user/getall`, {
-        withCredentials: true,
-      });
+      const { data } = await api.get("/user/getall");
       setUsers(data);
     } catch {}
   };
@@ -63,18 +64,14 @@ export const UserProvider = ({ children }) => {
     fetchAllUsers();
   }, []);
 
-  const registerUser = async (name, email, password, navigate) => {
+  const registerUser = async (name, email, password, nav) => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post(
-        `${VITE_URL}/api/user/register`,
-        { name, email, password },
-        { withCredentials: true }
-      );
+      const { data } = await api.post("/user/register", { name, email, password });
       setUser(data.user);
       setIsAuth(true);
       toast.success(data.message);
-      navigate("/");
+      (nav || navigate)("/");
       await fetchUser();
       if (getAllApplications) await getAllApplications();
       if (getAllJobs) await getAllJobs();
@@ -85,18 +82,14 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const loginUser = async (email, password, navigate) => {
+  const loginUser = async (email, password, nav) => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post(
-        `${VITE_URL}/api/user/login`,
-        { email, password },
-        { withCredentials: true }
-      );
+      const { data } = await api.post("/user/login", { email, password });
       setUser(data.user);
       setIsAuth(true);
       toast.success(data.message);
-      navigate("/");
+      (nav || navigate)("/");
       await fetchUser();
       if (getAllApplications) await getAllApplications();
       if (getAllJobs) await getAllJobs();
@@ -107,18 +100,14 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const googleLogin = async (idToken, navigate) => {
+  const googleLogin = async (idToken, nav) => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post(
-        `${VITE_URL}/api/user/google`,
-        { idToken },
-        { withCredentials: true }
-      );
+      const { data } = await api.post("/user/google", { idToken });
       setUser(data.user);
       setIsAuth(true);
       toast.success(data.message || "Logged in with Google");
-      navigate("/");
+      (nav || navigate)("/");
       await fetchUser();
       if (getAllApplications) await getAllApplications();
       if (getAllJobs) await getAllJobs();
@@ -133,7 +122,7 @@ export const UserProvider = ({ children }) => {
   const logout = async () => {
     setBtnLoading(true);
     try {
-      await axios.get(`${VITE_URL}/api/user/logout`, { withCredentials: true });
+      await api.get("/user/logout");
       setUser(null);
       setIsAuth(false);
       toast.success("Logged out successfully!");
@@ -153,11 +142,7 @@ export const UserProvider = ({ children }) => {
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const { data } = await axios.post(
-        `${VITE_URL}/api/user/uploadprofile`,
-        fd,
-        { withCredentials: true }
-      );
+      const { data } = await api.post("/user/uploadprofile", fd);
       setUser((prev) => ({ ...prev, profile: data.profile }));
       toast.success(data.message);
     } catch (err) {
@@ -170,10 +155,7 @@ export const UserProvider = ({ children }) => {
   const deleteProfile = async () => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.delete(
-        `${VITE_URL}/api/user/deleteprofile`,
-        { withCredentials: true }
-      );
+      const { data } = await api.delete("/user/deleteprofile");
       setUser((prev) => ({ ...prev, profile: { url: "", id: "" } }));
       toast.success(data.message);
     } catch (err) {
@@ -185,9 +167,7 @@ export const UserProvider = ({ children }) => {
 
   const getAbout = async () => {
     try {
-      const { data } = await axios.get(`${VITE_URL}/api/user/me/about`, {
-        withCredentials: true,
-      });
+      const { data } = await api.get("/user/me/about");
       if (data.about !== undefined) {
         setUser((prev) => ({ ...prev, about: data.about }));
       }
@@ -199,11 +179,7 @@ export const UserProvider = ({ children }) => {
   const updateAbout = async (about) => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.put(
-        `${VITE_URL}/api/user/me/about`,
-        { about },
-        { withCredentials: true }
-      );
+      const { data } = await api.put("/user/me/about", { about });
       setUser((prev) => ({ ...prev, about: data.about }));
       toast.success(data.message);
     } catch (err) {
@@ -216,11 +192,7 @@ export const UserProvider = ({ children }) => {
   const updateName = async (name) => {
     setBtnLoading(true);
     try {
-      const { data } = await axios.patch(
-        `${VITE_URL}/api/user/me/edit-name`,
-        { name },
-        { withCredentials: true }
-      );
+      const { data } = await api.patch("/user/me/edit-name", { name });
       setUser((prev) => ({ ...prev, name: data.user?.name || name }));
       toast.success(data.message || "Name updated successfully");
     } catch (err) {
@@ -230,30 +202,28 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-const updatePassword = async (oldPassword, newPassword, confirmPassword) => {
-  setBtnLoading(true);
-  try {
-    const { data } = await axios.patch(
-      `${VITE_URL}/api/user/me/update-password`,
-      { oldPassword, newPassword, confirmPassword }, // 🔴 exact keys
-      { withCredentials: true }
-    );
-    toast.success(data.message || "Password updated successfully!");
-  } catch (err) {
-    toast.error(err.response?.data?.message || "Failed to update password");
-    throw err; // so UI handlers can show their own message if needed
-  } finally {
-    setBtnLoading(false);
-  }
-};
-
-
+  const updatePassword = async (oldPassword, newPassword, confirmPassword) => {
+    setBtnLoading(true);
+    try {
+      const { data } = await api.patch("/user/me/update-password", {
+        oldPassword,
+        newPassword,
+        confirmPassword,
+      });
+      toast.success(data.message || "Password updated successfully!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update password");
+      throw err;
+    } finally {
+      setBtnLoading(false);
+    }
+  };
 
   const value = useMemo(
     () => ({
       registerUser,
       loginUser,
-       updatePassword,
+      updatePassword,
       googleLogin,
       logout,
       getAbout,

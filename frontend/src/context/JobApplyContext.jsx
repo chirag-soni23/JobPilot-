@@ -1,9 +1,15 @@
+// context/JobApplyContext.jsx  (fixed for Vercel rewrites + same-origin cookies)
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
 const JobApplyContext = createContext();
-const VITE_URL = import.meta.env.VITE_BACKEND_URL;
+
+// Axios instance proxied by vercel.json rewrites
+const api = axios.create({
+  baseURL: "/api",
+  withCredentials: true,
+});
 
 export const JobApplyProvider = ({ children }) => {
   const [applications, setApplications] = useState([]);
@@ -16,21 +22,18 @@ export const JobApplyProvider = ({ children }) => {
   const getAllApplications = async () => {
     setLoadingApplications(true);
     try {
-      const { data } = await axios.get(`${VITE_URL}/api/apply/getall`, {
-        withCredentials: true,
-      });
+      const { data } = await api.get("/apply/getall");
       setApplications(data);
-    } catch {}
-    finally {
+    } catch {
+      // silent fail (likely unauth)
+    } finally {
       setLoadingApplications(false);
     }
   };
 
   const getApplicationById = async (id) => {
     try {
-      const { data } = await axios.get(`${VITE_URL}/api/apply/get/${id}`, {
-        withCredentials: true,
-      });
+      const { data } = await api.get(`/apply/get/${id}`);
       setApplication(data.application);
     } catch {
       toast.error("Unable to fetch application");
@@ -46,14 +49,9 @@ export const JobApplyProvider = ({ children }) => {
   const applyJob = async (jobId, formData, navigate) => {
     setApplying(true);
     try {
-      const { data } = await axios.post(
-        `${VITE_URL}/api/apply/apply/${jobId}`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
-        }
-      );
+      const { data } = await api.post(`/apply/apply/${jobId}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       setApplications((prev) => [...prev, data.application]);
       toast.success(data.message);
       navigate(`/jobdetails/${jobId}`);
