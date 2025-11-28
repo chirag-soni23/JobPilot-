@@ -24,7 +24,6 @@ app.use(cookieParser());
 const ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "https://job-pilot-nu.vercel.app",
-  "https://jobpilot-1-8vnh.onrender.com/api"
 ];
 
 app.use((req, res, next) => {
