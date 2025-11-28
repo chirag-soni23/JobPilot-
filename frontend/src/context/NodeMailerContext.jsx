@@ -5,7 +5,7 @@ import axios from "axios";
 const MailerContext = createContext();
 
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: "https://jobpilot-1-8vnh.onrender.com/api",
 });
 
 export const MailerProvider = ({ children }) => {
