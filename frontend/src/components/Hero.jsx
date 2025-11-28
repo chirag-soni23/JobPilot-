@@ -27,7 +27,7 @@ const Hero = () => {
         <h1 className="font-semibold text-3xl md:text-4xl text-black dark:text-white leading-snug">
           Find a Job that Suits{" "}
           <span className="text-[#0A65CC] dark:text-[#4f9eff]">
-            Your Interests and Skills
+            {/* Your Interests and Skills */}
           </span>
         </h1>
 
