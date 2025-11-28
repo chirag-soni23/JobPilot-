@@ -7,6 +7,9 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 5173
+ENV CHOKIDAR_USEPOLLING=1
+ENV WATCHPACK_POLLING=true
+ENV NODE_ENV=development
 
+EXPOSE 5173
 CMD ["sh", "-c", "npm run dev -- --host 0.0.0.0 --port 5173"]
