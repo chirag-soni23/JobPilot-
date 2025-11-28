@@ -33,18 +33,24 @@ app.use((req, res, next) => {
 
 const corsOptions = {
   origin(origin, cb) {
-    if (!origin) return cb(null, true); 
+    if (!origin) return cb(null, true);
     if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
     return cb(new Error("Not allowed by CORS"), false);
   },
   credentials: true,
-  origin:true,
+  origin: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Cache-Control",
+    "Pragma",
+  ],
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); 
+app.options("*", cors(corsOptions));
 
 app.use(
   helmet({
