@@ -9,11 +9,9 @@ import { JobProvider } from "./context/JobContext.jsx";
 import { MailerProvider } from "./context/NodeMailerContext.jsx";
 import { JobApplyProvider } from "./context/JobApplyContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <BrowserRouter>
         <JobProvider>
           <JobApplyProvider>
@@ -27,6 +25,5 @@ createRoot(document.getElementById("root")).render(
           </JobApplyProvider>
         </JobProvider>
       </BrowserRouter>
-    </GoogleOAuthProvider>
   </StrictMode>
 );
