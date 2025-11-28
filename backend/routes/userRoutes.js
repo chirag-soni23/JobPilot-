@@ -11,6 +11,7 @@ import {
   profileUpload,
   registerUser,
   updateAbout,
+  updatePassword,
   userProfile,
 } from "../controllers/userController.js";
 import { isAuth } from "../middlewares/isAuth.js";
@@ -28,4 +29,5 @@ router.delete("/deleteprofile", isAuth, deleteProfileImage);
 router.get("/me/about", isAuth, getAbout);
 router.put("/me/about", isAuth, updateAbout);
 router.patch("/me/edit-name",isAuth,editUser);
+router.patch("/me/update-password",isAuth,updatePassword);
 export default router;

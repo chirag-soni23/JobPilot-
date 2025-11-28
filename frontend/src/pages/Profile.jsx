@@ -17,9 +17,11 @@ import {
   Save,
   X,
   ChevronLeft,
+  Eye,
+  EyeOff,
+  ShieldCheck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-
 import { UserData } from "../context/UserContext";
 import { JobData } from "../context/JobContext";
 import { UseJobApply } from "../context/JobApplyContext";
@@ -28,12 +30,11 @@ import ThemeToggle from "../components/ThemeToggle";
 const TabBtn = ({ active, onClick, children }) => (
   <button
     onClick={onClick}
-    className={`px-4 py-2 rounded-xl text-sm md:text-base font-medium transition [&:focus-visible]:ring-2 [&:focus-visible]:ring-offset-2 [&:focus-visible]:ring-[#0A65CC]
-      ${
-        active
-          ? "bg-[#0A65CC] text-white shadow"
-          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-      }`}
+    className={`px-4 py-2 rounded-xl text-sm md:text-base font-medium transition [&:focus-visible]:ring-2 [&:focus-visible]:ring-offset-2 [&:focus-visible]:ring-[#0A65CC] ${
+      active
+        ? "bg-[#0A65CC] text-white shadow"
+        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+    }`}
   >
     {children}
   </button>
@@ -75,9 +76,7 @@ const SavedJobCard = ({ job, onRemove }) => (
   <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 justify-between p-4 rounded-xl border dark:border-gray-800 bg-white dark:bg-gray-900">
     <div className="min-w-0 flex-1">
       <div className="flex items-center gap-2 min-w-0">
-        <h4 className="font-semibold truncate">
-          {job?.title || "Untitled Job"}
-        </h4>
+        <h4 className="font-semibold truncate">{job?.title || "Untitled Job"}</h4>
         <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 shrink-0">
           {job?.type || "Full-time"}
         </span>
@@ -91,7 +90,6 @@ const SavedJobCard = ({ job, onRemove }) => (
         </span>
       </div>
     </div>
-
     <div className="flex sm:justify-end gap-2 w-full sm:w-auto">
       <Link
         to={`/jobdetails/${job?._id}`}
@@ -114,16 +112,13 @@ const ApplicationCard = ({ app }) => {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 justify-between p-4 rounded-xl border dark:border-gray-800 bg-white dark:bg-gray-900">
       <div className="min-w-0 flex-1">
-        <h4 className="font-semibold truncate">
-          {job?.title || "Applied Position"}
-        </h4>
+        <h4 className="font-semibold truncate">{job?.title || "Applied Position"}</h4>
         <div className="mt-1 flex flex-wrap gap-3 text-sm text-gray-600 dark:text-gray-300">
           <span className="inline-flex items-center gap-1">
             <Building2 className="w-4 h-4" /> {job?.companyName || "Company"}
           </span>
           <span className="inline-flex items-center gap-1">
-            <MapPin className="w-4 h-4" />{" "}
-            {job?.location || job?.city || "India"}
+            <MapPin className="w-4 h-4" /> {job?.location || job?.city || "India"}
           </span>
         </div>
       </div>
@@ -141,19 +136,14 @@ const Pagination = ({ page, total, pageSize, onPageChange }) => {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const canPrev = page > 1;
   const canNext = page < totalPages;
-
   const start = total === 0 ? 0 : (page - 1) * pageSize + 1;
   const end = Math.min(page * pageSize, total);
-
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
       <div className="text-sm text-gray-600 dark:text-gray-400">
-        Showing <span className="font-medium">{start}</span>
-        {" - "}
-        <span className="font-medium">{end}</span> of{" "}
+        Showing <span className="font-medium">{start}</span> - <span className="font-medium">{end}</span> of{" "}
         <span className="font-medium">{total}</span>
       </div>
-
       <div className="flex items-center gap-2">
         <button
           onClick={() => canPrev && onPageChange?.(page - 1)}
@@ -162,11 +152,9 @@ const Pagination = ({ page, total, pageSize, onPageChange }) => {
         >
           <ChevronLeft className="w-4 h-4" /> Prev
         </button>
-
         <span className="text-sm px-2">
           {page} / {totalPages}
         </span>
-
         <button
           onClick={() => canNext && onPageChange?.(page + 1)}
           disabled={!canNext}
@@ -179,45 +167,87 @@ const Pagination = ({ page, total, pageSize, onPageChange }) => {
   );
 };
 
+function PasswordField({ label, value, onChange, placeholder = "", name = "" }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div>
+      <label className="text-sm text-gray-600 dark:text-gray-300">{label}</label>
+      <div className="mt-1 relative">
+        <input
+          type={show ? "text" : "password"}
+          className="w-full pr-10 px-3 py-2 rounded-xl border dark:border-gray-800 bg-transparent outline-none"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          name={name}
+          autoComplete="new-password"
+        />
+        <button
+          type="button"
+          onClick={() => setShow((s) => !s)}
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+          aria-label={show ? "Hide password" : "Show password"}
+        >
+          {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function Profile() {
-  const {
-    user,
-    uploadProfile,
-    deleteProfile,
-    updateAbout,
-    updateName,
-    btnLoading,
-  } = UserData();
-  const [newName, setNewName] = useState(user?.name || "");
+  const { user, uploadProfile, deleteProfile, updateAbout, updateName, btnLoading, updatePassword } = UserData();
   const { savedJobs, removeSavedJob, savedLoading, fetchSavedJobs } = JobData();
-  const { applications, loadingApplications, getAllApplications } =
-    UseJobApply();
+  const { applications, loadingApplications, getAllApplications } = UseJobApply();
 
   const [tab, setTab] = useState("overview");
+
+  const initials = useMemo(() => {
+    const name = (user?.name || "C U").trim();
+    const parts = name.split(/\s+/).filter(Boolean);
+    const first = parts[0]?.[0] || "C";
+    const second = parts[1]?.[0] || parts[0]?.[1] || "U";
+    return (first + second).toUpperCase();
+  }, [user?.name]);
+
   const [preview, setPreview] = useState(user?.profile?.url || "");
   const [theme, setTheme] = useState(
     localStorage.getItem("theme") ||
-      (window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light")
+      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
   );
   const fileRef = useRef(null);
+  const [newName, setNewName] = useState(user?.name || "");
 
-  const appliedCount =
-    (Array.isArray(applications) ? applications.length : 0) || 0;
+  const appliedCount = (Array.isArray(applications) ? applications.length : 0) || 0;
   const savedCount = (Array.isArray(savedJobs) ? savedJobs.length : 0) || 0;
   const joinDate = useMemo(
-    () =>
-      user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "-",
+    () => (user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "-"),
     [user?.createdAt]
   );
 
-  const defaultAbout = `Hello! I’m ${
-    user?.name || "Rahul"
-  }. Keep your information updated and apply to roles that fit your interests and skills.`;
+  const defaultAbout = `Hello! I’m ${user?.name || "Rahul"}. Keep your information updated and apply to roles that fit your interests and skills.`;
   const [about, setAbout] = useState(user?.about || defaultAbout);
   const [editingAbout, setEditingAbout] = useState(false);
   const [aboutSaving, setAboutSaving] = useState(false);
+
+  const isGoogleAuth = user?.authProvider === "google";
+  const localKey = user?._id ? `pwd_set_${user._id}` : null;
+  const persistedHasPwd = localKey ? localStorage.getItem(localKey) === "1" : false;
+  const [hasLocalPassword, setHasLocalPassword] = useState(
+    !isGoogleAuth || persistedHasPwd || Boolean(user?.hasPassword)
+  );
+  useEffect(() => {
+    const val = !isGoogleAuth || persistedHasPwd || Boolean(user?.hasPassword);
+    setHasLocalPassword(val);
+  }, [isGoogleAuth, persistedHasPwd, user?.hasPassword]);
+
+  const showOldField = !isGoogleAuth || hasLocalPassword;
+
+  const [currPwd, setCurrPwd] = useState("");
+  const [newPwd, setNewPwd] = useState("");
+  const [confirmPwd, setConfirmPwd] = useState("");
+  const [pwdLoading, setPwdLoading] = useState(false);
+  const [pwdMsg, setPwdMsg] = useState({ type: "", text: "" });
 
   useEffect(() => {
     setAbout(user?.about || defaultAbout);
@@ -226,9 +256,7 @@ export default function Profile() {
   const handleSaveAbout = async () => {
     try {
       setAboutSaving(true);
-      if (typeof updateAbout === "function") {
-        await updateAbout(about);
-      }
+      await updateAbout(about);
       setEditingAbout(false);
     } finally {
       setAboutSaving(false);
@@ -255,15 +283,11 @@ export default function Profile() {
     await uploadProfile?.(file);
   };
 
-  const APP_PAGE_SIZE = 4;
-  const SAVED_PAGE_SIZE = 4;
-
   const [appPage, setAppPage] = useState(1);
   const [savedPage, setSavedPage] = useState(1);
 
   useEffect(() => setAppPage(1), [applications?.length]);
   useEffect(() => setSavedPage(1), [savedJobs?.length]);
-
   useEffect(() => {
     if (tab === "applications") setAppPage(1);
     if (tab === "saved") setSavedPage(1);
@@ -271,30 +295,84 @@ export default function Profile() {
 
   const paginatedApplications = useMemo(() => {
     const list = Array.isArray(applications) ? applications : [];
-    const start = (appPage - 1) * APP_PAGE_SIZE;
-    return list.slice(start, start + APP_PAGE_SIZE);
+    const start = (appPage - 1) * 4;
+    return list.slice(start, start + 4);
   }, [applications, appPage]);
 
   const paginatedSaved = useMemo(() => {
     const list = Array.isArray(savedJobs) ? savedJobs : [];
-    const start = (savedPage - 1) * SAVED_PAGE_SIZE;
-    return list.slice(start, start + SAVED_PAGE_SIZE);
+    const start = (savedPage - 1) * 4;
+    return list.slice(start, start + 4);
   }, [savedJobs, savedPage]);
+
+  const validateNew = () => {
+    if (newPwd.trim().length < 6) {
+      setPwdMsg({ type: "error", text: "Password must be at least 6 characters." });
+      return false;
+    }
+    if (newPwd !== confirmPwd) {
+      setPwdMsg({ type: "error", text: "New password and confirm password do not match." });
+      return false;
+    }
+    return true;
+  };
+
+  const handleSetPassword = async () => {
+    setPwdMsg({ type: "", text: "" });
+    if (!validateNew()) return;
+    try {
+      setPwdLoading(true);
+      await updatePassword("", newPwd, confirmPwd);
+      setPwdMsg({ type: "success", text: "Password set successfully." });
+      setNewPwd("");
+      setConfirmPwd("");
+      setHasLocalPassword(true);
+      if (localKey) localStorage.setItem(localKey, "1");
+    } catch {
+      setPwdMsg({ type: "error", text: "Failed to set password." });
+    } finally {
+      setPwdLoading(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    setPwdMsg({ type: "", text: "" });
+    if (!currPwd.trim()) {
+      setPwdMsg({ type: "error", text: "Current password is required." });
+      return;
+    }
+    if (!validateNew()) return;
+    if (newPwd === currPwd) {
+      setPwdMsg({ type: "error", text: "New password must be different from current password." });
+      return;
+    }
+    try {
+      setPwdLoading(true);
+      await updatePassword(currPwd, newPwd, confirmPwd);
+      setPwdMsg({ type: "success", text: "Password changed successfully." });
+      setCurrPwd("");
+      setNewPwd("");
+      setConfirmPwd("");
+      if (localKey) localStorage.setItem(localKey, "1");
+    } catch {
+      setPwdMsg({ type: "error", text: "Failed to change password." });
+    } finally {
+      setPwdLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors">
       <main className="max-w-6xl mx-auto px-4 py-6">
-        {/* Header */}
         <div className="rounded-2xl border dark:border-gray-800 bg-white dark:bg-gray-900 p-6 mb-6 shadow-sm hover:shadow-md transition-all duration-300">
           <div className="flex flex-col md:flex-row md:items-center gap-6">
-            {/* Avatar */}
             <div className="relative w-full md:w-auto shrink-0">
               <div className="flex flex-col items-center gap-4">
                 <img
                   src={
                     preview ||
                     `https://api.dicebear.com/9.x/initials/svg?radius=16&seed=${encodeURIComponent(
-                      user?.name || "C U"
+                      initials
                     )}`
                   }
                   alt="avatar"
@@ -327,18 +405,11 @@ export default function Profile() {
                       </button>
                     )}
                   </div>
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={onAvatarChange}
-                  />
+                  <input ref={fileRef} type="file" accept="image/*" hidden onChange={onAvatarChange} />
                 </div>
               </div>
             </div>
 
-            {/* Info */}
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
@@ -361,9 +432,7 @@ export default function Profile() {
                   <UserIcon className="w-4 h-4" /> Profile{" "}
                   <span
                     className={`font-medium ${
-                      user?.profile?.id
-                        ? "text-emerald-600 dark:text-emerald-400"
-                        : "text-gray-500 dark:text-gray-400"
+                      user?.profile?.id ? "text-emerald-600 dark:text-emerald-400" : "text-gray-500 dark:text-gray-400"
                     }`}
                   >
                     {user?.profile?.id ? "linked" : "not linked"}
@@ -372,53 +441,34 @@ export default function Profile() {
               </div>
 
               <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <Stat
-                  icon={Briefcase}
-                  label="Applied Jobs"
-                  value={appliedCount}
-                />
+                <Stat icon={Briefcase} label="Applied Jobs" value={appliedCount} />
                 <Stat icon={Bookmark} label="Saved Jobs" value={savedCount} />
-                <Stat
-                  icon={Upload}
-                  label="Avatar"
-                  value={user?.profile?.url ? "Uploaded" : "Default"}
-                />
+                <Stat icon={Upload} label="Avatar" value={user?.profile?.url ? "Uploaded" : "Default"} />
                 <Stat icon={Calendar} label="Member Since" value={joinDate} />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="relative mb-6">
           <div className="flex gap-2 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-1 -mx-4 px-4">
             <div className="flex gap-2 mx-auto md:mx-0">
-              <TabBtn
-                active={tab === "overview"}
-                onClick={() => setTab("overview")}
-              >
+              <TabBtn active={tab === "overview"} onClick={() => setTab("overview")}>
                 Overview
               </TabBtn>
-              <TabBtn
-                active={tab === "applications"}
-                onClick={() => setTab("applications")}
-              >
+              <TabBtn active={tab === "applications"} onClick={() => setTab("applications")}>
                 Applications
               </TabBtn>
               <TabBtn active={tab === "saved"} onClick={() => setTab("saved")}>
                 Saved
               </TabBtn>
-              <TabBtn
-                active={tab === "settings"}
-                onClick={() => setTab("settings")}
-              >
+              <TabBtn active={tab === "settings"} onClick={() => setTab("settings")}>
                 Settings
               </TabBtn>
             </div>
           </div>
         </div>
 
-        {/* Overview */}
         {tab === "overview" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <SectionCard
@@ -455,9 +505,7 @@ export default function Profile() {
               }
             >
               {!editingAbout ? (
-                <p className="text-sm leading-6 text-gray-600 dark:text-gray-300 whitespace-pre-line">
-                  {about}
-                </p>
+                <p className="text-sm leading-6 text-gray-600 dark:text-gray-300 whitespace-pre-line">{about}</p>
               ) : (
                 <div className="space-y-2">
                   <textarea
@@ -479,23 +527,15 @@ export default function Profile() {
             <SectionCard title="Recent Activity">
               <ul className="space-y-3 text-sm">
                 <li className="flex items-center justify-between gap-4">
-                  <span className="text-gray-600 dark:text-gray-300">
-                    Account created
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-400 shrink-0">
-                    {joinDate}
-                  </span>
+                  <span className="text-gray-600 dark:text-gray-300">Account created</span>
+                  <span className="text-gray-500 dark:text-gray-400 shrink-0">{joinDate}</span>
                 </li>
                 <li className="flex items-center justify-between gap-4">
-                  <span className="text-gray-600 dark:text-gray-300">
-                    Applications submitted
-                  </span>
+                  <span className="text-gray-600 dark:text-gray-300">Applications submitted</span>
                   <span className="font-medium shrink-0">{appliedCount}</span>
                 </li>
                 <li className="flex items-center justify-between gap-4">
-                  <span className="text-gray-600 dark:text-gray-300">
-                    Jobs saved
-                  </span>
+                  <span className="text-gray-600 dark:text-gray-300">Jobs saved</span>
                   <span className="font-medium shrink-0">{savedCount}</span>
                 </li>
               </ul>
@@ -524,7 +564,6 @@ export default function Profile() {
           </div>
         )}
 
-        {/* Applications */}
         {tab === "applications" && (
           <SectionCard title="Your Applications">
             {loadingApplications ? (
@@ -535,30 +574,17 @@ export default function Profile() {
               <>
                 <div className="grid gap-3">
                   {paginatedApplications.map((app) => (
-                    <ApplicationCard
-                      key={app?._id || app?.job?._id}
-                      app={app}
-                    />
+                    <ApplicationCard key={app?._id || app?.job?._id} app={app} />
                   ))}
                 </div>
-                <Pagination
-                  page={appPage}
-                  total={applications.length}
-                  pageSize={APP_PAGE_SIZE}
-                  onPageChange={setAppPage}
-                />
+                <Pagination page={appPage} total={applications.length} pageSize={4} onPageChange={setAppPage} />
               </>
             ) : (
-              <Placeholder
-                title="No applications yet"
-                subtitle="Apply to jobs and track them here."
-                Icon={Briefcase}
-              />
+              <Placeholder title="No applications yet" subtitle="Apply to jobs and track them here." Icon={Briefcase} />
             )}
           </SectionCard>
         )}
 
-        {/* Saved */}
         {tab === "saved" && (
           <SectionCard title="Saved Jobs">
             {savedLoading ? (
@@ -569,29 +595,17 @@ export default function Profile() {
               <>
                 <div className="grid gap-3">
                   {paginatedSaved.map((job) => (
-                    <SavedJobCard
-                      key={job?._id}
-                      job={job}
-                      onRemove={removeSavedJob}
-                    />
+                    <SavedJobCard key={job?._id} job={job} onRemove={removeSavedJob} />
                   ))}
                 </div>
-                <Pagination
-                  page={savedPage}
-                  total={savedJobs.length}
-                  pageSize={SAVED_PAGE_SIZE}
-                  onPageChange={setSavedPage}
-                />
+                <Pagination page={savedPage} total={savedJobs.length} pageSize={4} onPageChange={setSavedPage} />
               </>
             ) : (
-              <Placeholder
-                title="No saved jobs"
-                subtitle="Bookmark jobs to review later."
-              />
+              <Placeholder title="No saved jobs" subtitle="Bookmark jobs to review later." />
             )}
           </SectionCard>
         )}
-        {/* Settings */}
+
         {tab === "settings" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <SectionCard title="Profile Details">
@@ -605,9 +619,7 @@ export default function Profile() {
                 className="space-y-4"
               >
                 <div>
-                  <label className="text-sm text-gray-600 dark:text-gray-300">
-                    Full Name
-                  </label>
+                  <label className="text-sm text-gray-600 dark:text-gray-300">Full Name</label>
                   <input
                     className="mt-1 w-full px-3 py-2 rounded-xl border dark:border-gray-800 bg-transparent outline-none"
                     value={newName}
@@ -615,9 +627,7 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm text-gray-600 dark:text-gray-300">
-                    Email
-                  </label>
+                  <label className="text-sm text-gray-600 dark:text-gray-300">Email</label>
                   <input
                     disabled
                     className="mt-1 w-full px-3 py-2 rounded-xl border dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 outline-none"
@@ -625,7 +635,6 @@ export default function Profile() {
                     readOnly
                   />
                 </div>
-
                 <button
                   type="submit"
                   disabled={btnLoading || newName.trim() === user?.name}
@@ -644,13 +653,74 @@ export default function Profile() {
               </form>
             </SectionCard>
 
+            <SectionCard
+              title="Password"
+              action={
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
+                  <ShieldCheck className="w-4 h-4" /> {showOldField ? "Change Password" : "Set Password"}
+                </span>
+              }
+            >
+              <div className="space-y-4">
+                {showOldField && (
+                  <PasswordField
+                    label="Current Password"
+                    value={currPwd}
+                    onChange={setCurrPwd}
+                    placeholder="Enter current password"
+                    name="current-password"
+                  />
+                )}
+                <PasswordField
+                  label="New Password"
+                  value={newPwd}
+                  onChange={setNewPwd}
+                  placeholder="Enter new password (min 6 chars)"
+                  name="new-password"
+                />
+                <PasswordField
+                  label="Confirm New Password"
+                  value={confirmPwd}
+                  onChange={setConfirmPwd}
+                  placeholder="Re-enter new password"
+                  name="confirm-password"
+                />
+                {pwdMsg.text ? (
+                  <div
+                    className={`text-sm ${
+                      pwdMsg.type === "error" ? "text-red-600 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"
+                    }`}
+                  >
+                    {pwdMsg.text}
+                  </div>
+                ) : null}
+                <button
+                  type="button"
+                  onClick={showOldField ? handleChangePassword : handleSetPassword}
+                  disabled={pwdLoading}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0A65CC] text-white hover:bg-[#084ea0] disabled:opacity-60"
+                >
+                  {pwdLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {showOldField ? "Updating..." : "Setting..."}
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      {showOldField ? "Update Password" : "Set Password"}
+                    </>
+                  )}
+                </button>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Use at least 6 characters.</p>
+              </div>
+            </SectionCard>
+
             <SectionCard title="Appearance">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <h4 className="font-medium">Theme</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Switch between Light and Dark.
-                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Switch between Light and Dark.</p>
                 </div>
                 <ThemeToggle />
               </div>

@@ -83,6 +83,7 @@ export const googleAuth = TryCatch(async (req, res) => {
     user = await User.create({
       name: name || "Google User",
       email,
+      password: "",
       role: "candidate",
       authProvider: "google",
       googleId,
@@ -203,3 +204,45 @@ export const editUser = TryCatch(async (req, res) => {
 
   res.status(200).json({ message: "Name updated successfully!" });
 });
+
+export const updatePassword = TryCatch(async (req, res) => {
+  const { oldPassword, newPassword, confirmPassword } = req.body;
+
+  if (!newPassword || !confirmPassword) {
+    return res.status(400).json({ message: "New password and confirm password are required" });
+  }
+  if (newPassword.length < 6) {
+    return res.status(400).json({ message: "Password must be at least 6 characters" });
+  }
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ message: "Passwords do not match" });
+  }
+
+  const user = await User.findById(req.user._id).select("+password authProvider");
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  const hasLocalPassword = Boolean(user.password); // local users must provide oldPassword
+
+  if (hasLocalPassword) {
+    if (!oldPassword || oldPassword.trim() === "") {
+      return res.status(400).json({ message: "Old password is required" });
+    }
+    const ok = await bcrypt.compare(oldPassword, user.password);
+    if (!ok) return res.status(400).json({ message: "Old password is incorrect" });
+    if (oldPassword === newPassword) {
+      return res.status(400).json({ message: "New password must be different from old password" });
+    }
+  }
+  // Google-only (no local pwd yet) users don't need oldPassword
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  // Optional: once password set, treat as local for next time
+  if (user.authProvider === "google") user.authProvider = "local";
+  await user.save();
+
+  return res.json({ message: "Password updated successfully!" });
+});
+
+
+
+

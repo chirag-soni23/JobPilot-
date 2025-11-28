@@ -230,10 +230,30 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+const updatePassword = async (oldPassword, newPassword, confirmPassword) => {
+  setBtnLoading(true);
+  try {
+    const { data } = await axios.patch(
+      `${VITE_URL}/api/user/me/update-password`,
+      { oldPassword, newPassword, confirmPassword }, // 🔴 exact keys
+      { withCredentials: true }
+    );
+    toast.success(data.message || "Password updated successfully!");
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Failed to update password");
+    throw err; // so UI handlers can show their own message if needed
+  } finally {
+    setBtnLoading(false);
+  }
+};
+
+
+
   const value = useMemo(
     () => ({
       registerUser,
       loginUser,
+       updatePassword,
       googleLogin,
       logout,
       getAbout,
