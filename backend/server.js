@@ -51,10 +51,12 @@ app.options("*", cors(corsOptions));
 app.use(cookieParser());
 app.use(
   helmet({
-    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: false,   // <-- COOP off (postMessage block hatao)
+    crossOriginEmbedderPolicy: false, // <-- COEP off
+    crossOriginResourcePolicy: false, // <-- CORP off (optional but avoids image/font blocks)
   })
 );
+
 app.use(compression());
 
 // Test route
