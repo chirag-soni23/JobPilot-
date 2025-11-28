@@ -110,7 +110,7 @@ export const logout = TryCatch(async (req, res) => {
     maxAge: 0,
     httpOnly: true,
     secure: true,
-    sameSite: "none",
+    sameSite: "lax",
   });
   res.json({ message: "Logged out successfully!" });
 });
