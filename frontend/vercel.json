@@ -13,7 +13,6 @@
       "source": "/api/(.*)",
       "destination": "https://jobpilot-1-8vnh.onrender.com/api/$1"
     },
-     { "source": "/api/mail/(.*)", "destination": "/api/mail/$1" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
