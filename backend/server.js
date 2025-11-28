@@ -47,10 +47,12 @@ app.options("*", cors(corsOptions));
 
 app.use(
   helmet({
-    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+    crossOriginOpenerPolicy: false,
     crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false,
   })
 );
+
 app.use(compression());
 
 app.get("/", (req, res) => {
