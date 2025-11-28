@@ -106,17 +106,13 @@ export const userProfile = TryCatch(async (req, res) => {
 });
 
 export const logout = TryCatch(async (req, res) => {
-  const isProd = process.env.NODE_ENV === "production";
   res.cookie("token", "", {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? "none" : "lax",
-    domain: "https://job-pilot-nu.vercel.app",
     maxAge: 0,
-    expires: new Date(0),
-    path: "/",
+    httpOnly: true,
+    secure: false,
+    sameSite: "none",
   });
-  res.status(200).json({ message: "Logged out successfully!" });
+  res.json({ message: "Logged out successfully!" });
 });
 
 export const profileUpload = TryCatch(async (req, res) => {
@@ -213,22 +209,16 @@ export const updatePassword = TryCatch(async (req, res) => {
   const { oldPassword, newPassword, confirmPassword } = req.body;
 
   if (!newPassword || !confirmPassword) {
-    return res
-      .status(400)
-      .json({ message: "New password and confirm password are required" });
+    return res.status(400).json({ message: "New password and confirm password are required" });
   }
   if (newPassword.length < 6) {
-    return res
-      .status(400)
-      .json({ message: "Password must be at least 6 characters" });
+    return res.status(400).json({ message: "Password must be at least 6 characters" });
   }
   if (newPassword !== confirmPassword) {
     return res.status(400).json({ message: "Passwords do not match" });
   }
 
-  const user = await User.findById(req.user._id).select(
-    "+password authProvider"
-  );
+  const user = await User.findById(req.user._id).select("+password authProvider");
   if (!user) return res.status(404).json({ message: "User not found" });
 
   const hasLocalPassword = Boolean(user.password); // local users must provide oldPassword
@@ -238,12 +228,9 @@ export const updatePassword = TryCatch(async (req, res) => {
       return res.status(400).json({ message: "Old password is required" });
     }
     const ok = await bcrypt.compare(oldPassword, user.password);
-    if (!ok)
-      return res.status(400).json({ message: "Old password is incorrect" });
+    if (!ok) return res.status(400).json({ message: "Old password is incorrect" });
     if (oldPassword === newPassword) {
-      return res
-        .status(400)
-        .json({ message: "New password must be different from old password" });
+      return res.status(400).json({ message: "New password must be different from old password" });
     }
   }
   // Google-only (no local pwd yet) users don't need oldPassword
@@ -255,3 +242,7 @@ export const updatePassword = TryCatch(async (req, res) => {
 
   return res.json({ message: "Password updated successfully!" });
 });
+
+
+
+
