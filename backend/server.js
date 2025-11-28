@@ -15,17 +15,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Trust proxy (important for Vercel/Render HTTPS cookie forwarding)
 app.set("trust proxy", 1);
 
-// Body parsers
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Allowed origins list
 const ALLOWED_ORIGINS = [
   "http://localhost:5173",
-  process.env.FRONTEND_URL, // e.g. https://job-pilot-nu.vercel.app
+  process.env.FRONTEND_URL,
 ].filter(Boolean);
 
 // Dynamic CORS configuration
