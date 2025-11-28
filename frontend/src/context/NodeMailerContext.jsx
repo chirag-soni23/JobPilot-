@@ -12,11 +12,17 @@ const api = axios.create({
 export const MailerProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const sendMail = async (dataObj) => {
+  const sendMail = async (data) => {
     setIsLoading(true);
     try {
-      const { data } = await api.post("/mail/send-email", dataObj);
-      toast.success(data.message || "Email sent!");
+      const isFormData = typeof FormData !== "undefined" && data instanceof FormData;
+
+      const config = isFormData
+        ? {} 
+        : { headers: { "Content-Type": "application/json" } };
+
+      const { data: resp } = await api.post("/mail/send-email", data, config);
+      toast.success(resp.message || "Email sent!");
       return true;
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to send message.");
