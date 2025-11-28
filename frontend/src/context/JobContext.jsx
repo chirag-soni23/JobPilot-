@@ -1,5 +1,13 @@
 // context/JobContext.jsx  (infinite-requests fixed: guarded + batched cleanup)
-import { createContext, useContext, useState, useEffect, useRef, useMemo, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 
@@ -37,19 +45,22 @@ export const JobProvider = ({ children }) => {
     }
   }, []);
 
-  const updateJob = useCallback(async (id, formData) => {
-    setBtnLoading(true);
-    try {
-      const { data } = await api.put(`/job/update/${id}`, formData);
-      toast.success(data.message);
-      setJobs((prev) => prev.map((j) => (j._id === id ? data.job : j)));
-      if (singleJob?._id === id) setSingleJob(data.job);
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Unable to update job");
-    } finally {
-      setBtnLoading(false);
-    }
-  }, [singleJob?._id]);
+  const updateJob = useCallback(
+    async (id, formData) => {
+      setBtnLoading(true);
+      try {
+        const { data } = await api.put(`/job/update/${id}`, formData);
+        toast.success(data.message);
+        setJobs((prev) => prev.map((j) => (j._id === id ? data.job : j)));
+        if (singleJob?._id === id) setSingleJob(data.job);
+      } catch (err) {
+        toast.error(err.response?.data?.message || "Unable to update job");
+      } finally {
+        setBtnLoading(false);
+      }
+    },
+    [singleJob?._id]
+  );
 
   const getAllJobs = useCallback(async () => {
     setLoading(true);
@@ -72,27 +83,34 @@ export const JobProvider = ({ children }) => {
     }
   }, []);
 
-  const toggleSaveJob = useCallback(async (jobId) => {
-    setSavedLoading(true);
-    try {
-      const { data } = await api.put(`/job/savedJob/${jobId}`, {});
-      toast.success(data.message);
+  const toggleSaveJob = useCallback(
+    async (jobId) => {
+      setSavedLoading(true);
+      try {
+        const { data } = await api.put(`/job/savedJob/${jobId}`, {});
+        toast.success(data.message);
 
-      if (singleJob?._id === jobId) {
-        setSingleJob((prev) => (prev ? { ...prev, isSaved: data.isSaved } : prev));
+        if (singleJob?._id === jobId) {
+          setSingleJob((prev) =>
+            prev ? { ...prev, isSaved: data.isSaved } : prev
+          );
+        }
+
+        setJobs((prev) =>
+          prev.map((job) =>
+            job._id === jobId ? { ...job, isSaved: data.isSaved } : job
+          )
+        );
+
+        await fetchSavedJobs();
+      } catch (err) {
+        toast.error(err.response?.data?.message || "Unable to save/unsave job");
+      } finally {
+        setSavedLoading(false);
       }
-
-      setJobs((prev) =>
-        prev.map((job) => (job._id === jobId ? { ...job, isSaved: data.isSaved } : job))
-      );
-
-      await fetchSavedJobs();
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Unable to save/unsave job");
-    } finally {
-      setSavedLoading(false);
-    }
-  }, [fetchSavedJobs, singleJob?._id]);
+    },
+    [fetchSavedJobs, singleJob?._id]
+  );
 
   const getJobById = useCallback(async (id) => {
     setLoadingSingleJob(true);
@@ -106,18 +124,21 @@ export const JobProvider = ({ children }) => {
     }
   }, []);
 
-  const deleteJob = useCallback(async (id) => {
-    setLoading(true);
-    try {
-      const { data } = await api.delete(`/job/deletejob/${id}`);
-      toast.success(data.message);
-      await getAllJobs();
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Unable to delete job");
-    } finally {
-      setLoading(false);
-    }
-  }, [getAllJobs]);
+  const deleteJob = useCallback(
+    async (id) => {
+      setLoading(true);
+      try {
+        const { data } = await api.delete(`/job/deletejob/${id}`);
+        toast.success(data.message);
+        await getAllJobs();
+      } catch (err) {
+        toast.error(err.response?.data?.message || "Unable to delete job");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [getAllJobs]
+  );
 
   const removeSavedJob = useCallback(async (jobId) => {
     try {
