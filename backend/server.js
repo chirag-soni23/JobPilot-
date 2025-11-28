@@ -23,7 +23,7 @@ app.use(cookieParser());
 
 const ALLOWED_ORIGINS = [
   "http://localhost:5173",
-  "https://job-pilot-nu.vercel.app",
+  "https://job-pilot-gules.vercel.app",
 ];
 
 app.use((req, res, next) => {
