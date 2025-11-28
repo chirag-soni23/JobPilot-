@@ -53,12 +53,6 @@ app.use(
   })
 );
 
-app.use((req,res,next)=>{
-  res.removeHeader("Cross-Origin-Opener-Policy");
-  res.removeHeader("Cross-Origin-Embedder-Policy");
-  next();
-});
-
 app.use(compression());
 
 app.get("/", (req, res) => {

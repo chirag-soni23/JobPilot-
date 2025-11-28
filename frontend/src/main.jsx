@@ -9,21 +9,24 @@ import { JobProvider } from "./context/JobContext.jsx";
 import { MailerProvider } from "./context/NodeMailerContext.jsx";
 import { JobApplyProvider } from "./context/JobApplyContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
-      <JobProvider>
-        <JobApplyProvider>
-          <UserProvider>
-            <MailerProvider>
-              <ThemeProvider>
-                <App />
-              </ThemeProvider>
-            </MailerProvider>
-          </UserProvider>
-        </JobApplyProvider>
-      </JobProvider>
-    </BrowserRouter>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <BrowserRouter>
+        <JobProvider>
+          <JobApplyProvider>
+            <UserProvider>
+              <MailerProvider>
+                <ThemeProvider>
+                  <App />
+                </ThemeProvider>
+              </MailerProvider>
+            </UserProvider>
+          </JobApplyProvider>
+        </JobProvider>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   </StrictMode>
 );
