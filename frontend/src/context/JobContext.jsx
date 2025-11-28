@@ -66,7 +66,6 @@ export const JobProvider = ({ children }) => {
       const { data } = await api.get("/job/getsaved");
       setSavedJobs(data);
     } catch (err) {
-      // silent fail to avoid toast spam on unauth
       console.error("Unable to fetch saved jobs", err?.message);
     }
   };
@@ -133,7 +132,6 @@ export const JobProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    // Auto-clean expired saved jobs on render
     savedJobs.forEach((job) => {
       if (new Date(job.expireDate).getTime() < Date.now()) {
         removeSavedJob(job._id);

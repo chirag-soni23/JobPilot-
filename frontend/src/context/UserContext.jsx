@@ -1,4 +1,3 @@
-// context/UserContext.jsx  (fixed for Vercel rewrites)
 import {
   createContext,
   useContext,
@@ -15,7 +14,6 @@ import { useNavigate } from "react-router-dom";
 
 const UserContext = createContext();
 
-// Axios instance: relative to frontend host, proxied by vercel.json rewrites
 const api = axios.create({
   baseURL: "/api",
   withCredentials: true,

@@ -1,11 +1,9 @@
-// context/MailerContext.jsx (fixed for rewrites)
 import { createContext, useContext, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
 const MailerContext = createContext();
 
-// Axios instance: relative to frontend, proxy handled by vercel.json rewrites
 const api = axios.create({
   baseURL: "/api",
   withCredentials: true,

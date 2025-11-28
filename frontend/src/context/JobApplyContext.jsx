@@ -1,11 +1,9 @@
-// context/JobApplyContext.jsx  (fixed for Vercel rewrites + same-origin cookies)
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
 const JobApplyContext = createContext();
 
-// Axios instance proxied by vercel.json rewrites
 const api = axios.create({
   baseURL: "/api",
   withCredentials: true,
@@ -25,7 +23,6 @@ export const JobApplyProvider = ({ children }) => {
       const { data } = await api.get("/apply/getall");
       setApplications(data);
     } catch {
-      // silent fail (likely unauth)
     } finally {
       setLoadingApplications(false);
     }
