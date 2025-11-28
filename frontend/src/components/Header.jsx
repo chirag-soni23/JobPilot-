@@ -158,8 +158,9 @@ const Header = () => {
                 </button>
                 <Link
                   to="/postjob"
-                  onClick={() => setOpen(false)}
-                  className="bg-[#0A65CC] text-white px-4 py-2 rounded-md hover:bg-[#084d9bcf] transition text-base"
+                  className={`bg-[#0A65CC] text-white px-5 py-2 rounded-md hover:bg-[#084d9bcf] transition text-base ${
+                    user.role !== "admin" ? "hidden" : ""
+                  }`}
                 >
                   Post a Job
                 </Link>

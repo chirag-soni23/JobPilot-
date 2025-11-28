@@ -91,7 +91,7 @@ const Signup = () => {
             Join us today! Please fill the details to create an account.
           </p>
 
-          <button
+          {/* <button
             type="button"
             className="w-full mt-8 bg-gray-500/10 flex items-center justify-center h-12 rounded-full"
           >
@@ -99,15 +99,15 @@ const Signup = () => {
               src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleLogo.svg"
               alt="googleLogo"
             />
-          </button>
+          </button> */}
 
-          <div className="flex items-center gap-4 w-full my-5">
+          {/* <div className="flex items-center gap-4 w-full my-5">
             <div className="w-full h-px bg-gray-300/90"></div>
             <p className="w-full text-nowrap text-sm text-gray-500/90">
               or sign up with email
             </p>
             <div className="w-full h-px bg-gray-300/90"></div>
-          </div>
+          </div> */}
 
           {/* Full Name */}
           <div className="flex items-center w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2 mb-4">

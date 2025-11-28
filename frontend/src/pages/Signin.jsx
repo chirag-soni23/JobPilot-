@@ -1,8 +1,5 @@
-// src/pages/Signin.jsx
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// ❌ axios ki zarurat nahi ab (googleLogin context me call karta hai)
-// import axios from "axios";
 import { assets } from "../assets/assets.js";
 import { BriefcaseIcon, Eye, EyeOff, MoveLeft } from "lucide-react";
 import { gsap } from "gsap";
@@ -22,7 +19,6 @@ const Signin = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // ✅ googleLogin add karo yaha se
   const { loginUser, btnLoading, googleLogin } = UserData();
 
   useEffect(() => {
@@ -33,7 +29,6 @@ const Signin = () => {
 
       window.google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
-        // ✅ direct context method call: sets user + isAuth + navigation + toasts
         callback: async ({ credential }) => {
           await googleLogin(credential, navigate);
         },
@@ -147,7 +142,7 @@ const Signin = () => {
 
           <div
             ref={googleBtnRef}
-            className="w-full mt-8 flex items-center justify-center h-12 rounded-full bg-gray-500/10"
+            className="w-full mt-8 flex items-center justify-center h-12 rounded-full"
           />
 
           <div className="flex items-center gap-4 w-full my-5">
