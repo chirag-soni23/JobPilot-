@@ -1,12 +1,12 @@
-// context/JobContext.jsx  (fixed for Vercel rewrites + same-origin cookies)
-import { createContext, useContext, useState, useEffect } from "react";
+// context/JobContext.jsx  (infinite-requests fixed: guarded + batched cleanup)
+import { createContext, useContext, useState, useEffect, useRef, useMemo, useCallback } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 
 const JobContext = createContext();
 
-// Use a single axios instance that hits the frontend host.
-// Vercel rewrites will proxy `/api/*` to Render.
+// Single axios instance hitting the frontend host.
+// Vercel rewrites will proxy `/api/*` to your backend.
 const api = axios.create({
   baseURL: "/api",
   withCredentials: true,
@@ -22,7 +22,9 @@ export const JobProvider = ({ children }) => {
   const [savedLoading, setSavedLoading] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
 
-  const postJob = async (formData) => {
+  const isCleaningRef = useRef(false); // prevents re-entrant cleanup loops
+
+  const postJob = useCallback(async (formData) => {
     setBtnLoading(true);
     try {
       const { data } = await api.post("/job/createjob", formData);
@@ -33,9 +35,9 @@ export const JobProvider = ({ children }) => {
     } finally {
       setBtnLoading(false);
     }
-  };
+  }, []);
 
-  const updateJob = async (id, formData) => {
+  const updateJob = useCallback(async (id, formData) => {
     setBtnLoading(true);
     try {
       const { data } = await api.put(`/job/update/${id}`, formData);
@@ -47,9 +49,9 @@ export const JobProvider = ({ children }) => {
     } finally {
       setBtnLoading(false);
     }
-  };
+  }, [singleJob?._id]);
 
-  const getAllJobs = async () => {
+  const getAllJobs = useCallback(async () => {
     setLoading(true);
     try {
       const { data } = await api.get("/job/getall");
@@ -59,18 +61,18 @@ export const JobProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchSavedJobs = async () => {
+  const fetchSavedJobs = useCallback(async () => {
     try {
       const { data } = await api.get("/job/getsaved");
       setSavedJobs(data);
     } catch (err) {
       console.error("Unable to fetch saved jobs", err?.message);
     }
-  };
+  }, []);
 
-  const toggleSaveJob = async (jobId) => {
+  const toggleSaveJob = useCallback(async (jobId) => {
     setSavedLoading(true);
     try {
       const { data } = await api.put(`/job/savedJob/${jobId}`, {});
@@ -90,9 +92,9 @@ export const JobProvider = ({ children }) => {
     } finally {
       setSavedLoading(false);
     }
-  };
+  }, [fetchSavedJobs, singleJob?._id]);
 
-  const getJobById = async (id) => {
+  const getJobById = useCallback(async (id) => {
     setLoadingSingleJob(true);
     try {
       const { data } = await api.get(`/job/get/${id}`);
@@ -102,9 +104,9 @@ export const JobProvider = ({ children }) => {
     } finally {
       setLoadingSingleJob(false);
     }
-  };
+  }, []);
 
-  const deleteJob = async (id) => {
+  const deleteJob = useCallback(async (id) => {
     setLoading(true);
     try {
       const { data } = await api.delete(`/job/deletejob/${id}`);
@@ -115,53 +117,96 @@ export const JobProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getAllJobs]);
 
-  const removeSavedJob = async (jobId) => {
+  const removeSavedJob = useCallback(async (jobId) => {
     try {
       await api.put(`/job/savedJob/${jobId}`, {});
       setSavedJobs((prev) => prev.filter((job) => job._id !== jobId));
     } catch (err) {
       console.error("Unable to remove saved job", err);
     }
-  };
+  }, []);
 
+  // Initial load
   useEffect(() => {
     getAllJobs();
     fetchSavedJobs();
-  }, []);
+  }, [getAllJobs, fetchSavedJobs]);
 
+  // CLEANUP EXPIRED SAVED JOBS — batched + guarded to avoid infinite loops
   useEffect(() => {
-    savedJobs.forEach((job) => {
-      if (new Date(job.expireDate).getTime() < Date.now()) {
-        removeSavedJob(job._id);
+    if (isCleaningRef.current) return;
+    if (!savedJobs || savedJobs.length === 0) return;
+
+    const now = Date.now();
+    const expiredIds = savedJobs
+      .filter((job) => {
+        const t = new Date(job?.expireDate).getTime();
+        return Number.isFinite(t) && t < now;
+      })
+      .map((j) => j._id);
+
+    if (expiredIds.length === 0) return;
+
+    isCleaningRef.current = true;
+    (async () => {
+      try {
+        // Deduplicate just in case
+        const unique = [...new Set(expiredIds)];
+        await Promise.all(
+          unique.map((id) =>
+            api.put(`/job/savedJob/${id}`, {}).catch(() => null)
+          )
+        );
+        // Remove locally in one state update
+        setSavedJobs((prev) => prev.filter((j) => !unique.includes(j._id)));
+      } finally {
+        // Let the effect run again only after state has settled
+        // and only if there are still any newly-fetched expired items.
+        isCleaningRef.current = false;
       }
-    });
+    })();
   }, [savedJobs]);
 
-  return (
-    <JobContext.Provider
-      value={{
-        jobs,
-        savedJobs,
-        postJob,
-        updateJob,
-        getAllJobs,
-        deleteJob,
-        loading,
-        btnLoading,
-        getJobById,
-        singleJob,
-        toggleSaveJob,
-        savedLoading,
-        fetchSavedJobs,
-        loadingSingleJob,
-        removeSavedJob,
-      }}
-    >
-      {children}
-    </JobContext.Provider>
+  const value = useMemo(
+    () => ({
+      jobs,
+      savedJobs,
+      postJob,
+      updateJob,
+      getAllJobs,
+      deleteJob,
+      loading,
+      btnLoading,
+      getJobById,
+      singleJob,
+      toggleSaveJob,
+      savedLoading,
+      fetchSavedJobs,
+      loadingSingleJob,
+      removeSavedJob,
+    }),
+    [
+      jobs,
+      savedJobs,
+      postJob,
+      updateJob,
+      getAllJobs,
+      deleteJob,
+      loading,
+      btnLoading,
+      getJobById,
+      singleJob,
+      toggleSaveJob,
+      savedLoading,
+      fetchSavedJobs,
+      loadingSingleJob,
+      removeSavedJob,
+    ]
   );
+
+  return <JobContext.Provider value={value}>{children}</JobContext.Provider>;
 };
 
 export const JobData = () => useContext(JobContext);
