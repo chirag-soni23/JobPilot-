@@ -6,7 +6,12 @@ const MailerContext = createContext();
 
 const api = axios.create({
   baseURL: "/api",
-  withCredentials: true,
+  withCredentials: false, // ❌ mail route ko cookie ki zarurat nahi
+  headers: {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "X-Requested-With": "XMLHttpRequest", // helps with CORS preflight
+  },
 });
 
 export const MailerProvider = ({ children }) => {
@@ -15,10 +20,16 @@ export const MailerProvider = ({ children }) => {
   const sendMail = async (dataObj) => {
     setIsLoading(true);
     try {
-      const { data } = await api.post("/mail/send-email", dataObj);
+      const { data } = await api.post("/mail/send-email", dataObj, {
+        headers: {
+          "Cache-Control": "no-cache", // 🧠 avoids Vercel edge caching
+          Pragma: "no-cache",
+        },
+      });
       toast.success(data.message || "Email sent!");
       return true;
     } catch (err) {
+      console.error("Mail Error:", err);
       toast.error(err.response?.data?.message || "Failed to send message.");
       return false;
     } finally {
