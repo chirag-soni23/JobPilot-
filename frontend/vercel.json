@@ -1,5 +1,4 @@
 {
-  "version": 2,
   "headers": [
     {
       "source": "/(.*)",
@@ -13,9 +12,7 @@
     {
       "source": "/api/(.*)",
       "destination": "https://jobpilot-1-8vnh.onrender.com/api/$1"
-    }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "/dist/index.html" }
+    },
+    { "source": "/(.*)", "destination": "/" }
   ]
 }
