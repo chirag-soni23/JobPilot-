@@ -8,6 +8,7 @@ import nodemailerRoutes from "./routes/nodemailer.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import compression from "compression";
+import helmet from "helmet";
 
 dotenv.config();
 
@@ -55,7 +56,13 @@ app.get("/api/health", (req, res) => {
   res.json({ ok: true, host: req.headers.host, url: req.originalUrl });
 });
 
-
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false,
+  })
+);
 
 app.use(compression());
 
