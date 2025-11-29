@@ -17,12 +17,10 @@ const PORT = process.env.PORT || 5000;
 
 app.set("trust proxy", 1);
 
-// Body & cookies
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true, limit: "5mb" }));
 app.use(cookieParser());
 
-// CORS
 const ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "https://job-pilot-gules.vercel.app",
@@ -34,13 +32,14 @@ app.use((req, res, next) => {
 });
 
 const corsOptions = {
-  origin: (origin, cb) => {
-    if (!origin) return cb(null, true); // Postman/mobile etc.
+  origin(origin, cb) {
+    if (!origin) return cb(null, true);
     if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
-    return cb(new Error("Not allowed by CORS"));
+    return cb(new Error("Not allowed by CORS"), false);
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  origin: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: [
     "Content-Type",
     "Authorization",
@@ -51,9 +50,12 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // preflight
+app.options("*", cors(corsOptions));
 
-// Security (after CORS to avoid interference)
+app.get("/api/health", (req, res) => {
+  res.json({ ok: true, host: req.headers.host, url: req.originalUrl });
+});
+
 app.use(
   helmet({
     crossOriginOpenerPolicy: false,
@@ -62,26 +64,17 @@ app.use(
   })
 );
 
-// Compression
 app.use(compression());
 
-// Health
-app.get("/api/health", (req, res) => {
-  res.json({ ok: true, host: req.headers.host, url: req.originalUrl });
-});
-
-// Root
 app.get("/", (req, res) => {
   res.json("Backend is Live!");
 });
 
-// Routes
 app.use("/api/user", userRoutes);
 app.use("/api/job", jobRoutes);
 app.use("/api/apply", jobApplyRoutes);
-app.use("/api/mail", nodemailerRoutes); // POST /api/mail/send-email
+app.use("/api/mail", nodemailerRoutes);
 
-// Start
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running at http://localhost:${PORT}`);
   connectDb();
