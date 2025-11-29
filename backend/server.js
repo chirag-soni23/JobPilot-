@@ -1,14 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
 import { connectDb } from "./database/db.js";
-import userRoutes from "./routes/userRoutes.js";
-import jobRoutes from "./routes/jobRoutes.js";
-import jobApplyRoutes from "./routes/jobApplyRoutes.js";
-import nodemailerRoutes from "./routes/nodemailer.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import compression from "compression";
 import helmet from "helmet";
+import userRoutes from "./routes/userRoutes.js";
+import jobRoutes from "./routes/jobRoutes.js";
+import jobApplyRoutes from "./routes/jobApplyRoutes.js";
+import nodemailerRoutes from "./routes/nodemailer.route.js";
 
 dotenv.config();
 
