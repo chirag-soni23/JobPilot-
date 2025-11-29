@@ -4,10 +4,10 @@ import axios from "axios";
 
 const MailerContext = createContext();
 
-const api = axios.create({
-  baseURL: "/api",
-  withCredentials: false,
-});
+// const api = axios.create({
+//   baseURL: "/api",
+//   withCredentials: false,
+// });
 
 export const MailerProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +21,7 @@ export const MailerProvider = ({ children }) => {
         ? {} 
         : { headers: { "Content-Type": "application/json" } };
 
-      const { data: resp } = await api.post("/mail/send-email", data, config);
+      const { data: resp } = await axios.post("https://jobpilot-1-8vnh.onrender.com/api/mail/send-email", data, config);
       toast.success(resp.message || "Email sent!");
       return true;
     } catch (err) {
