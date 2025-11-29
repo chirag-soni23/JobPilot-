@@ -6,7 +6,7 @@ const MailerContext = createContext();
 
 const api = axios.create({
   baseURL: "/api",
-  withCredentials: true,
+  withCredentials: false,
 });
 
 export const MailerProvider = ({ children }) => {

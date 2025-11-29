@@ -20,16 +20,18 @@ const Contact = () => {
     setMessage("");
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const payload = {
-      name: `${firstName} ${lastName}`.trim(),
-      email,
-      phone,
-      message,
-    };
-    if (await sendMail(payload)) reset();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  const payload = {
+    name: `${firstName} ${lastName}`.trim(),
+    email: email.trim(),
+    phone: phone.trim(),
+    message: message.trim(),
   };
+  if (!payload.message) return; // empty message guard
+  if (await sendMail(payload)) reset();
+};
+
 
   return (
     <>
