@@ -9,11 +9,11 @@
     }
   ],
   "rewrites": [
+    { "source": "/api/mail/(.*)", "destination": "https://jobpilot-1-8vnh.onrender.com/api/mail/$1" },
     { "source": "/api/user/(.*)", "destination": "https://jobpilot-1-8vnh.onrender.com/api/user/$1" },
     { "source": "/api/job/(.*)", "destination": "https://jobpilot-1-8vnh.onrender.com/api/job/$1" },
     { "source": "/api/apply/(.*)", "destination": "https://jobpilot-1-8vnh.onrender.com/api/apply/$1" },
-    { "source": "/(.*)", "destination": "/" },
-    { "source": "/api/mail/(.*)", "destination": "https://jobpilot-1-8vnh.onrender.com/api/mail/$1" }
 
+    { "source": "/(.*)", "destination": "/" }  
   ]
 }
