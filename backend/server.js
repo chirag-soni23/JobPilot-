@@ -21,16 +21,10 @@ app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true, limit: "5mb" }));
 app.use(cookieParser());
 
-// --- CORS ---
 const ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "https://job-pilot-gules.vercel.app",
 ];
-
-const isAllowedOrigin = (origin = "") =>
-  !origin ||
-  ALLOWED_ORIGINS.includes(origin) ||
-  /^https:\/\/job-pilot-gules-[a-z0-9-]+\.vercel\.app$/.test(origin); // optional: preview builds
 
 app.use((req, res, next) => {
   res.header("Vary", "Origin");
@@ -39,12 +33,13 @@ app.use((req, res, next) => {
 
 const corsOptions = {
   origin(origin, cb) {
-    if (isAllowedOrigin(origin)) return cb(null, true);
-    // Don't throw error here; let browser block it cleanly
-    return cb(null, false);
+    if (!origin) return cb(null, true);
+    if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+    return cb(new Error("Not allowed by CORS"), false);
   },
-  credentials: true, // keep true if you use cookies anywhere
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  credentials: true,
+  origin: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: [
     "Content-Type",
     "Authorization",
@@ -57,12 +52,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
-// Health
 app.get("/api/health", (req, res) => {
   res.json({ ok: true, host: req.headers.host, url: req.originalUrl });
 });
 
-// Security headers (relaxed CO* policies so they don't fight CORS)
 app.use(
   helmet({
     crossOriginOpenerPolicy: false,
@@ -73,7 +66,6 @@ app.use(
 
 app.use(compression());
 
-// Routes
 app.get("/", (req, res) => {
   res.json("Backend is Live!");
 });
@@ -83,15 +75,7 @@ app.use("/api/job", jobRoutes);
 app.use("/api/apply", jobApplyRoutes);
 app.use("/api/mail", nodemailerRoutes);
 
-// Prefer connecting DB first, then listen
-(async () => {
-  try {
-    await connectDb();
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  } catch (err) {
-    console.error("DB connection failed, server not started:", err?.message || err);
-    process.exit(1);
-  }
-})();
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+  connectDb();
+});
