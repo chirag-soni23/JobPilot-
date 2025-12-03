@@ -1,12 +1,32 @@
+// MailerContext.jsx
 import { createContext, useContext, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
 const MailerContext = createContext();
 
+// Decide API base:
+// 1) Prefer VITE_BACKEND_URL (Render URL, e.g. https://your-backend.onrender.com)
+// 2) Fallback: if localhost front-end, use localhost:5000
+// 3) Else: use relative "/api" ONLY IF vercel.json rewrites configured
+const pickBase = () => {
+  const envBase = import.meta.env.VITE_BACKEND_URL?.trim();
+  if (envBase) return `${envBase.replace(/\/+$/, "")}/api`;
+
+  if (typeof window !== "undefined") {
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    if (isLocal) return "http://localhost:5000/api";
+  }
+
+  // Fallback if you set rewrites on Vercel to proxy /api -> Render
+  return "/api";
+};
+
 const api = axios.create({
-  baseURL: "/api",
-  withCredentials: false,
+  baseURL: pickBase(),
+  withCredentials: false, // set true only if you actually use cookies/JWT via cookies
+  timeout: 15000,
+  validateStatus: (s) => s >= 200 && s < 300,
 });
 
 export const MailerProvider = ({ children }) => {
@@ -21,11 +41,14 @@ export const MailerProvider = ({ children }) => {
         ? {} 
         : { headers: { "Content-Type": "application/json" } };
 
-      const { data: resp } = await api.post("/mail/send-email", data, config);
-      toast.success(resp.message || "Email sent!");
+      const res = await api.post("/mail/send-email", data, config);
+      toast.success(res.data?.message || "Email sent!");
       return true;
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to send message.");
+      const msg =
+        err?.response?.data?.message ||
+        (err?.code === "ECONNABORTED" ? "Request timed out." : "Failed to send message.");
+      toast.error(msg);
       return false;
     } finally {
       setIsLoading(false);
