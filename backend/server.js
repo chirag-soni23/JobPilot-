@@ -4,7 +4,7 @@ import { connectDb } from "./database/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import compression from "compression";
-// import helmet from "helmet";
+import helmet from "helmet";
 import userRoutes from "./routes/userRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import jobApplyRoutes from "./routes/jobApplyRoutes.js";
@@ -56,13 +56,13 @@ app.get("/api/health", (req, res) => {
   res.json({ ok: true, host: req.headers.host, url: req.originalUrl });
 });
 
-// app.use(
-//   helmet({
-//     crossOriginOpenerPolicy: false,
-//     crossOriginEmbedderPolicy: false,
-//     crossOriginResourcePolicy: false,
-//   })
-// );
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false,
+  })
+);
 
 app.use(compression());
 

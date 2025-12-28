@@ -9,7 +9,7 @@ route.post("/send-email", async (req, res) => {
   const { name, email, phone, message } = req.body;
 
   const transporter = nodemailer.createTransport({
-    host: "smtp-relay.brevo.com",
+    host: "smtp.gmail.com",
     port: 587,
     secure: false,
 
